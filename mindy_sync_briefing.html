@@ -545,12 +545,13 @@
     }
 
     function loadPortfolio() {
-      const saved = localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
+      const saved = localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
       if (saved) {
         try {
           const parsed = JSON.parse(saved);
           portfolioData = parsed.map(a => ({
             ...a,
+            businessUnit: a.businessUnit || 'Enterprise Solutions',
             followUp: normalizeYesNo(a.followUp),
             discussWithMindy: normalizeYesNo(a.discussWithMindy)
           }));
@@ -624,8 +625,7 @@
               ${app.activity && app.activity.trim() ? escapeHtml(app.activity) : 'No activity or talking point notes entered on portfolio card.'}
             </div>
             <div class="app-sync-footer">
-              <span>Owner: ${app.owner || 'App Support'}</span>
-              <span>Target SLA: ${app.sla || '99.9%'}</span>
+              <span>Business Unit: <strong style="color:#fff;">${app.businessUnit || 'Enterprise Solutions'}</strong></span>
             </div>
           </div>
         `).join("");
@@ -653,8 +653,7 @@
               ${app.activity && app.activity.trim() ? escapeHtml(app.activity) : 'No activity details recorded.'}
             </div>
             <div class="app-sync-footer">
-              <span>Owner: ${app.owner || 'App Support'}</span>
-              <span>Target SLA: ${app.sla || '99.9%'}</span>
+              <span>Business Unit: <strong style="color:#fff;">${app.businessUnit || 'Enterprise Solutions'}</strong></span>
             </div>
           </div>
         `).join("");
@@ -665,6 +664,7 @@
       const app = portfolioData.find(a => a.id === appId);
       if (app) {
         app.discussWithMindy = "No";
+        localStorage.setItem("app_support_portfolio_v3", JSON.stringify(portfolioData));
         localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
         renderSyncLists();
         showToast(`Unflagged ${app.name} from Mindy list`);
@@ -675,6 +675,7 @@
       const app = portfolioData.find(a => a.id === appId);
       if (app) {
         app.followUp = "No";
+        localStorage.setItem("app_support_portfolio_v3", JSON.stringify(portfolioData));
         localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
         renderSyncLists();
         showToast(`Cleared follow-up for ${app.name}`);
@@ -717,7 +718,7 @@
       md += `## 2. 🟣 Portfolio Items Flagged to Discuss with Mindy (${mindyApps.length})\n`;
       if (mindyApps.length > 0) {
         mindyApps.forEach(a => {
-          md += `### • ${a.name} (${a.stage}) [Owner: ${a.owner}]\n`;
+          md += `### • ${a.name} (${a.stage}) [Business Unit: ${a.businessUnit || 'Enterprise Solutions'}]\n`;
           md += `  - **Follow Up Required:** ${a.followUp}\n`;
           md += `  - **Activity & Context:** ${a.activity ? a.activity.replace(/\n/g, ' ') : "No notes logged."}\n`;
         });

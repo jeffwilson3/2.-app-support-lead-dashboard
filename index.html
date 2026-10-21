@@ -649,6 +649,15 @@
         <option value="YES">🟣 Discuss with Mindy: Yes only</option>
         <option value="NO">Discuss with Mindy: No</option>
       </select>
+      <select id="buFilter" class="filter-select" onchange="onFilterDropdownChange()">
+        <option value="ALL">All Business Units</option>
+        <option value="Legal Solutions">Legal Solutions</option>
+        <option value="Production and Post Production">Production and Post Production</option>
+        <option value="Marketing and Publicity Solutions">Marketing and Publicity Solutions</option>
+        <option value="Creative and Business Affairs">Creative and Business Affairs</option>
+        <option value="Studio and Production Finance">Studio and Production Finance</option>
+        <option value="Enterprise Solutions">Enterprise Solutions</option>
+      </select>
       <select id="stageFilter" class="filter-select" onchange="onFilterDropdownChange()">
         <option value="ALL">All Stages (Live & Onboarding)</option>
         <option value="LIVE">Live Applications (15)</option>
@@ -691,29 +700,29 @@
   <script>
     const DEFAULT_PORTFOLIO = [
       // 15 Live Apps
-      { id: "astrodocs", name: "AstroDocs", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "App Support Tier 2", sla: "99.9%", lastUpdate: "Today" },
-      { id: "atlas", name: "ATLAS", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Core Services", sla: "99.95%", lastUpdate: "Today" },
-      { id: "circa", name: "Circa", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Media Tools", sla: "99.9%", lastUpdate: "Today" },
-      { id: "columba", name: "Columba", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Communications", sla: "99.9%", lastUpdate: "Today" },
-      { id: "frameio", name: "Frame IO", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Creative Ops", sla: "99.95%", lastUpdate: "Today" },
-      { id: "givingtree", name: "Giving Tree", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "People & Community", sla: "99.8%", lastUpdate: "Today" },
-      { id: "iscript", name: "iScript", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Production Tech", sla: "99.9%", lastUpdate: "Today" },
-      { id: "juno", name: "Juno", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Workflow Automation", sla: "99.9%", lastUpdate: "Today" },
-      { id: "mycalls", name: "myCalls", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Call Services", sla: "99.9%", lastUpdate: "Today" },
-      { id: "polaris", name: "Polaris: Deal Tracker", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Finance & Legal", sla: "99.95%", lastUpdate: "Today" },
-      { id: "portalplus", name: "Portal+", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Enterprise Portals", sla: "99.9%", lastUpdate: "Today" },
-      { id: "scenechronize", name: "Scenechronize", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Studio Systems", sla: "99.9%", lastUpdate: "Today" },
-      { id: "screenbooker", name: "Screen Booker", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Facilities & Media", sla: "99.8%", lastUpdate: "Today" },
-      { id: "touchstone", name: "Touchstone", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Quality Platforms", sla: "99.9%", lastUpdate: "Today" },
-      { id: "vetter", name: "Vetter", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Compliance & Review", sla: "99.9%", lastUpdate: "Today" },
+      { id: "astrodocs", name: "AstroDocs", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "atlas", name: "ATLAS", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "circa", name: "Circa", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "columba", name: "Columba", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "frameio", name: "Frame IO", stage: "LIVE", businessUnit: "Marketing and Publicity Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "givingtree", name: "Giving Tree", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "iscript", name: "iScript", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "juno", name: "Juno", stage: "LIVE", businessUnit: "Studio and Production Finance", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "mycalls", name: "myCalls", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "polaris", name: "Polaris: Deal Tracker", stage: "LIVE", businessUnit: "Creative and Business Affairs", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "portalplus", name: "Portal+", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "scenechronize", name: "Scenechronize", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "screenbooker", name: "Screen Booker", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "touchstone", name: "Touchstone", stage: "LIVE", businessUnit: "Creative and Business Affairs", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "vetter", name: "Vetter", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
 
       // 6 Onboarding in Progress Apps
-      { id: "amity", name: "AMITY", stage: "ONBOARDING", followUp: "No", discussWithMindy: "No", activity: "", owner: "Onboarding Team", sla: "Target 99.9%", lastUpdate: "Today" },
-      { id: "appleticketing", name: "Apple Ticketing Tool", stage: "ONBOARDING", followUp: "Yes", discussWithMindy: "Yes", activity: "Follow up on QA sign-off and discuss onboarding milestone with Mindy", owner: "Service Desk Eng", sla: "Target 99.99%", lastUpdate: "Today" },
-      { id: "cudos", name: "Cudos", stage: "ONBOARDING", followUp: "No", discussWithMindy: "No", activity: "", owner: "Recognition Tech", sla: "Target 99.8%", lastUpdate: "Today" },
-      { id: "kroma", name: "Kroma", stage: "ONBOARDING", followUp: "No", discussWithMindy: "No", activity: "", owner: "Color & Imaging", sla: "Target 99.9%", lastUpdate: "Today" },
-      { id: "siriusplus", name: "Sirius+", stage: "ONBOARDING", followUp: "No", discussWithMindy: "No", activity: "", owner: "Platform Services", sla: "Target 99.95%", lastUpdate: "Today" },
-      { id: "watchlist", name: "Watchlist", stage: "ONBOARDING", followUp: "No", discussWithMindy: "No", activity: "", owner: "Content Security", sla: "Target 99.9%", lastUpdate: "Today" }
+      { id: "amity", name: "AMITY", stage: "ONBOARDING", businessUnit: "Enterprise Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "appleticketing", name: "Apple Ticketing Tool", stage: "ONBOARDING", businessUnit: "Enterprise Solutions", followUp: "Yes", discussWithMindy: "Yes", activity: "Follow up on QA sign-off and discuss onboarding milestone with Mindy", lastUpdate: "Today" },
+      { id: "cudos", name: "Cudos", stage: "ONBOARDING", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "kroma", name: "Kroma", stage: "ONBOARDING", businessUnit: "Marketing and Publicity Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "siriusplus", name: "Sirius+", stage: "ONBOARDING", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "watchlist", name: "Watchlist", stage: "ONBOARDING", businessUnit: "Studio and Production Finance", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" }
     ];
 
     let portfolioData = [];
@@ -724,7 +733,7 @@
     }
 
     function init() {
-      const savedPortfolio = localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
+      const savedPortfolio = localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
       if (savedPortfolio) {
         try {
           const parsed = JSON.parse(savedPortfolio);
@@ -733,6 +742,7 @@
             if (existing) {
               return {
                 ...defApp,
+                businessUnit: defApp.businessUnit,
                 followUp: normalizeYesNo(existing.followUp !== undefined ? existing.followUp : defApp.followUp),
                 discussWithMindy: normalizeYesNo(existing.discussWithMindy !== undefined ? existing.discussWithMindy : defApp.discussWithMindy),
                 activity: existing.activity !== undefined ? existing.activity : defApp.activity,
@@ -856,8 +866,7 @@
         </div>
 
         <div class="app-card-footer">
-          <span>Owner: <strong>${app.owner || 'App Support'}</strong></span>
-          <span>Target SLA: ${app.sla || '99.9%'}</span>
+          <span>Business Unit: <strong style="color:#fff;">${app.businessUnit || 'Enterprise Solutions'}</strong></span>
         </div>
       `;
 
@@ -955,6 +964,7 @@
     }
 
     function saveAll(showNotification) {
+      localStorage.setItem("app_support_portfolio_v3", JSON.stringify(portfolioData));
       localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
       if (showNotification) {
         showToast("Portfolio changes saved!");
@@ -981,6 +991,7 @@
         document.getElementById("followUpFilter").value = "ALL";
         document.getElementById("mindyFilter").value = "ALL";
         document.getElementById("stageFilter").value = "ALL";
+        if (document.getElementById("buFilter")) document.getElementById("buFilter").value = "ALL";
       } else if (mode === 'FOLLOWUP') {
         document.getElementById("followUpFilter").value = "YES";
         document.getElementById("mindyFilter").value = "ALL";
@@ -1051,6 +1062,7 @@
       const searchQuery = (document.getElementById("appSearchInput").value || "").toLowerCase().trim();
       const followUpVal = document.getElementById("followUpFilter").value.toUpperCase();
       const mindyVal = document.getElementById("mindyFilter").value.toUpperCase();
+      const buVal = document.getElementById("buFilter") ? document.getElementById("buFilter").value : "ALL";
       const stageVal = document.getElementById("stageFilter").value.toUpperCase();
       const notesVal = document.getElementById("notesFilter").value.toUpperCase();
 
@@ -1069,8 +1081,11 @@
         if (searchQuery.length > 0) {
           matchesSearch = app.name.toLowerCase().includes(searchQuery) ||
                           (app.activity && app.activity.toLowerCase().includes(searchQuery)) ||
-                          (app.owner && app.owner.toLowerCase().includes(searchQuery));
+                          (app.businessUnit && app.businessUnit.toLowerCase().includes(searchQuery));
         }
+
+        // Business Unit check
+        let matchesBU = (buVal === "ALL") || (app.businessUnit === buVal);
 
         // Follow Up check (Bulletproof & Case-Insensitive)
         const isFollowYes = (app.followUp === "Yes" || app.followUp === "YES" || app.followUp === true);
@@ -1102,7 +1117,7 @@
           matchesNotes = Boolean(app.activity && app.activity.trim().length > 0);
         }
 
-        if (matchesSearch && matchesFollowUp && matchesMindy && matchesStage && matchesNotes) {
+        if (matchesSearch && matchesBU && matchesFollowUp && matchesMindy && matchesStage && matchesNotes) {
           card.style.display = "flex";
           visibleCount++;
           if (app.stage === "LIVE") visibleLive++;
