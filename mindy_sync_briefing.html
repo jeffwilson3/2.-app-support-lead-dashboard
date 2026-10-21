@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Briefing & Mindy Sync Notes | App Support Lead</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --card-border: #30363d;
+      --card-hover: #1c2128;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #2f81f7;
+      --accent-hover: #58a6ff;
+      --green: #238636;
+      --orange: #db6d28;
+      --purple: #a371f7;
+      --purple-bg: rgba(163, 113, 247, 0.18);
+      --purple-border: rgba(163, 113, 247, 0.4);
+      --amber-bg: rgba(219, 109, 40, 0.18);
+      --amber-border: rgba(219, 109, 40, 0.4);
+      --border-radius: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", Menlo, Consolas, Monaco, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      padding: 24px;
+      max-width: 1540px;
+      margin: 0 auto;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--text);
+      background: var(--card-hover);
+    }
+
+    .nav-tab.active {
+      color: #fff;
+      background: rgba(163, 113, 247, 0.18);
+      border-color: rgba(163, 113, 247, 0.4);
+    }
+
+    .header-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .header-title h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .role-badge {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--purple-bg);
+      color: #d2a8ff;
+      border: 1px solid var(--purple-border);
+    }
+
+    .btn {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--card-hover);
+      border-color: #8b949e;
+    }
+
+    .btn-purple {
+      background: #8957e5;
+      border-color: #8957e5;
+      color: #fff;
+    }
+
+    .btn-purple:hover {
+      background: #a371f7;
+    }
+
+    /* Layout Grid */
+    .sync-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1100px) {
+      .sync-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Section Cards */
+    .panel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .panel-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+    }
+
+    /* Application items in list */
+    .app-sync-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .app-sync-item {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-left: 4px solid var(--purple);
+    }
+
+    .app-sync-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .app-title-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .app-sync-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stage-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .stage-live { background: rgba(35, 134, 54, 0.2); color: #3fb950; }
+    .stage-onboarding { background: rgba(56, 139, 253, 0.2); color: #58a6ff; }
+
+    .tag-followup {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--amber-bg);
+      color: #ff9b5e;
+      border: 1px solid var(--amber-border);
+    }
+
+    .notes-box {
+      background: #161b22;
+      border: 1px solid rgba(48, 54, 61, 0.6);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.45;
+    }
+
+    .notes-box.empty {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .app-sync-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding-top: 4px;
+    }
+
+    .action-link {
+      color: var(--accent-hover);
+      text-decoration: none;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .action-link:hover { text-decoration: underline; }
+
+    /* Text areas */
+    .sync-textarea {
+      width: 100%;
+      min-height: 140px;
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 12px 14px;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      margin-bottom: 12px;
+    }
+
+    .sync-textarea:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 1px var(--purple);
+    }
+
+    /* Modal / Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #238636;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+      display: none;
+      animation: fadeIn 0.2s ease;
+      z-index: 100;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(3px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      width: 100%;
+      max-width: 760px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .export-pre {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      padding: 14px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text);
+      white-space: pre-wrap;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span style="color:var(--accent);">●</span>
+      <span>Application Support Lead</span>
+    </div>
+    <div class="nav-tabs">
+      <a href="app_support_dashboard.html" class="nav-tab">
+        <span>📊 Application Portfolio (21)</span>
+      </a>
+      <a href="daily_standup_log.html" class="nav-tab">
+        <span>📝 Daily Accomplishments & Standup</span>
+      </a>
+      <a href="mindy_sync_briefing.html" class="nav-tab active">
+        <span>🟣 Briefing & Mindy Sync Notes</span>
+      </a>
+    </div>
+    <div>
+      <button class="btn btn-purple" onclick="generateExecutiveBriefing()">
+        Generate Executive Briefing Pack
+      </button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="header-main">
+    <div class="header-title">
+      <h1>
+        <span>Briefing & Mindy Sync Notes</span>
+        <span class="role-badge">Lead PM / PgM 1:1 Hub</span>
+      </h1>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:4px;">
+        Dedicated briefing sheet synthesizing portfolio items flagged for Mindy, meeting decisions, and next steps.
+      </p>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="refreshFromStorage()">↻ Reload Portfolio</button>
+      <button class="btn" onclick="saveMindyNotes(true)">Save Notes</button>
+    </div>
+  </div>
+
+  <div class="sync-layout">
+    <!-- Left Column: Applications flagged for Mindy & Follow-ups -->
+    <div>
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span style="color: var(--purple);">🟣</span>
+            <span>Items Tagged: Discuss with Mindy</span>
+            <span class="badge-pill" id="mindyCountBadge">0</span>
+          </div>
+          <a href="app_support_dashboard.html" class="action-link">Tag more in Portfolio →</a>
+        </div>
+
+        <div class="app-sync-list" id="mindyAppsList">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span style="color: var(--orange);">⚡</span>
+            <span>Active Follow-Up Items (Portfolio-wide)</span>
+            <span class="badge-pill" id="followUpCountBadge">0</span>
+          </div>
+        </div>
+
+        <div class="app-sync-list" id="followUpAppsList">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: 1:1 Agenda, Meeting Notes & Decisions -->
+    <div>
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>📋 Meeting Agenda with Mindy</span>
+          </div>
+          <span style="font-size:11px; color:var(--text-muted);" id="agendaSaveTime">Auto-saved</span>
+        </div>
+        <textarea
+          id="mindyAgendaText"
+          class="sync-textarea"
+          placeholder="Key topics to review with Mindy...&#10;• Strategic resource allocation / tier 2 capacity&#10;• Blockers on onboarding pipeline (Apple Ticketing Tool sign-off)&#10;• Stakeholder alignment updates&#10;• Upcoming maintenance windows"
+          oninput="autoSaveMindyNotes()"
+        ></textarea>
+
+        <div class="panel-header" style="margin-top:14px;">
+          <div class="panel-title">
+            <span>✍️ Notes, Decisions & Agreed Actions</span>
+          </div>
+        </div>
+        <textarea
+          id="mindyDecisionsText"
+          class="sync-textarea"
+          placeholder="Decisions made during the sync...&#10;• Mindy agreed to escalate architecture sign-off with Eng Director&#10;• Approved moving Go-Live checkpoint to next Thursday&#10;• Action Item: Lead PM to circulate revised onboarding timeline by EOD"
+          oninput="autoSaveMindyNotes()"
+        ></textarea>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; padding-top:6px;">
+          <button class="btn" style="font-size:12px;" onclick="loadRecentAccomplishments()">
+            📥 Import Today's Standup Notes
+          </button>
+          <button class="btn btn-purple" style="font-size:12px;" onclick="generateExecutiveBriefing()">
+            Export Full Briefing →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toastNotification" class="toast">Saved successfully!</div>
+
+  <!-- Modal -->
+  <div id="exportModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:16px;">Executive Briefing & Mindy Sync Pack (Markdown)</h3>
+        <button class="btn" style="padding: 2px 8px; font-size:14px;" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <pre id="exportContent" class="export-pre"></pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="copyBriefingToClipboard()">Copy to Clipboard</button>
+        <button class="btn btn-purple" onclick="closeModal()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let portfolioData = [];
+    let mindyNotesData = { agenda: "", decisions: "" };
+
+    function init() {
+      loadPortfolio();
+      loadMindyNotes();
+      renderSyncLists();
+    }
+
+    function normalizeYesNo(val) {
+      if (val === true || val === "Yes" || val === "YES" || val === "yes") return "Yes";
+      return "No";
+    }
+
+    function loadPortfolio() {
+      const saved = localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          portfolioData = parsed.map(a => ({
+            ...a,
+            followUp: normalizeYesNo(a.followUp),
+            discussWithMindy: normalizeYesNo(a.discussWithMindy)
+          }));
+        } catch (e) {
+          portfolioData = [];
+        }
+      }
+    }
+
+    function loadMindyNotes() {
+      const saved = localStorage.getItem("app_support_mindy_notes_v1");
+      if (saved) {
+        try {
+          mindyNotesData = JSON.parse(saved);
+          document.getElementById("mindyAgendaText").value = mindyNotesData.agenda || "";
+          document.getElementById("mindyDecisionsText").value = mindyNotesData.decisions || "";
+        } catch (e) {
+          mindyNotesData = { agenda: "", decisions: "" };
+        }
+      }
+    }
+
+    function autoSaveMindyNotes() {
+      mindyNotesData.agenda = document.getElementById("mindyAgendaText").value;
+      mindyNotesData.decisions = document.getElementById("mindyDecisionsText").value;
+      localStorage.setItem("app_support_mindy_notes_v1", JSON.stringify(mindyNotesData));
+      document.getElementById("agendaSaveTime").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    function saveMindyNotes(showToastMsg) {
+      autoSaveMindyNotes();
+      if (showToastMsg) showToast("Mindy sync notes saved!");
+    }
+
+    function refreshFromStorage() {
+      loadPortfolio();
+      renderSyncLists();
+      showToast("Reloaded latest portfolio data");
+    }
+
+    function renderSyncLists() {
+      const mindyListEl = document.getElementById("mindyAppsList");
+      const followUpListEl = document.getElementById("followUpAppsList");
+
+      const mindyApps = portfolioData.filter(a => a.discussWithMindy === "Yes");
+      const followUpApps = portfolioData.filter(a => a.followUp === "Yes");
+
+      document.getElementById("mindyCountBadge").textContent = mindyApps.length;
+      document.getElementById("followUpCountBadge").textContent = followUpApps.length;
+
+      // Render Mindy Apps
+      if (mindyApps.length === 0) {
+        mindyListEl.innerHTML = `
+          <div style="padding: 16px; background:#0d1117; border-radius:8px; border:1px solid var(--card-border); color:var(--text-muted); font-size:13px; text-align:center;">
+            No applications are currently flagged for discussion with Mindy.<br>
+            <a href="app_support_dashboard.html" style="color:var(--accent-hover); display:inline-block; margin-top:6px;">Go to Application Portfolio to tag apps →</a>
+          </div>
+        `;
+      } else {
+        mindyListEl.innerHTML = mindyApps.map(app => `
+          <div class="app-sync-item">
+            <div class="app-sync-header">
+              <div class="app-title-area">
+                <span class="app-sync-name">${app.name}</span>
+                <span class="stage-tag ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">${app.stage}</span>
+                ${app.followUp === 'Yes' ? '<span class="tag-followup">⚡ Follow Up</span>' : ''}
+              </div>
+              <button class="btn" style="padding:2px 8px; font-size:11px;" onclick="unflagMindy('${app.id}')">Remove Tag</button>
+            </div>
+            <div class="notes-box ${!app.activity || !app.activity.trim() ? 'empty' : ''}">
+              ${app.activity && app.activity.trim() ? escapeHtml(app.activity) : 'No activity or talking point notes entered on portfolio card.'}
+            </div>
+            <div class="app-sync-footer">
+              <span>Owner: ${app.owner || 'App Support'}</span>
+              <span>Target SLA: ${app.sla || '99.9%'}</span>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      // Render Follow-up Apps
+      if (followUpApps.length === 0) {
+        followUpListEl.innerHTML = `
+          <div style="padding: 14px; background:#0d1117; border-radius:8px; border:1px solid var(--card-border); color:var(--text-muted); font-size:13px; text-align:center;">
+            No active follow-ups flagged across the portfolio.
+          </div>
+        `;
+      } else {
+        followUpListEl.innerHTML = followUpApps.map(app => `
+          <div class="app-sync-item" style="border-left-color: var(--orange);">
+            <div class="app-sync-header">
+              <div class="app-title-area">
+                <span class="app-sync-name">${app.name}</span>
+                <span class="stage-tag ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">${app.stage}</span>
+                ${app.discussWithMindy === 'Yes' ? '<span style="font-size:10px; font-weight:600; padding:2px 6px; border-radius:4px; background:var(--purple-bg); color:#d2a8ff;">🟣 Mindy</span>' : ''}
+              </div>
+              <button class="btn" style="padding:2px 8px; font-size:11px;" onclick="unflagFollowUp('${app.id}')">Clear Follow Up</button>
+            </div>
+            <div class="notes-box ${!app.activity || !app.activity.trim() ? 'empty' : ''}">
+              ${app.activity && app.activity.trim() ? escapeHtml(app.activity) : 'No activity details recorded.'}
+            </div>
+            <div class="app-sync-footer">
+              <span>Owner: ${app.owner || 'App Support'}</span>
+              <span>Target SLA: ${app.sla || '99.9%'}</span>
+            </div>
+          </div>
+        `).join("");
+      }
+    }
+
+    function unflagMindy(appId) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (app) {
+        app.discussWithMindy = "No";
+        localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
+        renderSyncLists();
+        showToast(`Unflagged ${app.name} from Mindy list`);
+      }
+    }
+
+    function unflagFollowUp(appId) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (app) {
+        app.followUp = "No";
+        localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
+        renderSyncLists();
+        showToast(`Cleared follow-up for ${app.name}`);
+      }
+    }
+
+    function loadRecentAccomplishments() {
+      const today = new Date().toISOString().split("T")[0];
+      const savedAcc = localStorage.getItem("app_support_accomplishments_v1");
+      if (savedAcc) {
+        try {
+          const parsed = JSON.parse(savedAcc);
+          const todayText = parsed[today];
+          if (todayText && todayText.trim()) {
+            const agendaField = document.getElementById("mindyAgendaText");
+            const snippet = `\n\n### Today's Key Accomplishments (from Standup Log):\n${todayText.trim()}`;
+            agendaField.value += snippet;
+            autoSaveMindyNotes();
+            showToast("Imported today's standup accomplishments into Agenda!");
+            return;
+          }
+        } catch (e) {}
+      }
+      showToast("No standup log recorded for today yet.");
+    }
+
+    function generateExecutiveBriefing() {
+      const today = new Date().toISOString().split("T")[0];
+      const mindyApps = portfolioData.filter(a => a.discussWithMindy === "Yes");
+      const followUpApps = portfolioData.filter(a => a.followUp === "Yes");
+      const agenda = document.getElementById("mindyAgendaText").value.trim();
+      const decisions = document.getElementById("mindyDecisionsText").value.trim();
+
+      let md = `# Executive Briefing & Mindy Sync Pack\n`;
+      md += `**Date:** ${today} | **Author:** Lead Project/Program Manager | **Audience:** Mindy & Support Leadership\n\n`;
+
+      md += `## 1. Meeting Agenda & Strategic Topics\n`;
+      md += `${agenda || "No agenda items typed."}\n\n`;
+
+      md += `## 2. 🟣 Portfolio Items Flagged to Discuss with Mindy (${mindyApps.length})\n`;
+      if (mindyApps.length > 0) {
+        mindyApps.forEach(a => {
+          md += `### • ${a.name} (${a.stage}) [Owner: ${a.owner}]\n`;
+          md += `  - **Follow Up Required:** ${a.followUp}\n`;
+          md += `  - **Activity & Context:** ${a.activity ? a.activity.replace(/\n/g, ' ') : "No notes logged."}\n`;
+        });
+      } else {
+        md += `No portfolio items currently tagged for discussion.\n`;
+      }
+
+      md += `\n## 3. ⚡ Operational Follow-Up Action Items (${followUpApps.length})\n`;
+      if (followUpApps.length > 0) {
+        followUpApps.forEach(a => {
+          md += `- **${a.name}** (${a.stage}): ${a.activity ? a.activity.replace(/\n/g, ' ') : "Follow up required."}\n`;
+        });
+      } else {
+        md += `No active follow-up actions flagged.\n`;
+      }
+
+      md += `\n## 4. Agreed Decisions & Next Steps\n`;
+      md += `${decisions || "Pending meeting discussion."}\n\n`;
+
+      md += `---\n*Generated from Application Support Lead PM Dashboard*\n`;
+
+      document.getElementById("exportContent").textContent = md;
+      document.getElementById("exportModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("exportModal").style.display = "none";
+    }
+
+    function copyBriefingToClipboard() {
+      const text = document.getElementById("exportContent").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("Copied briefing pack to clipboard!");
+      });
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toastNotification");
+      toast.textContent = msg;
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 2500);
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

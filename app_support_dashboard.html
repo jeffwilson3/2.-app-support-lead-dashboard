@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Application Portfolio Tracker | App Support Lead</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --card-border: #30363d;
+      --card-hover: #1c2128;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #2f81f7;
+      --accent-hover: #58a6ff;
+      --green: #238636;
+      --orange: #f0883e;
+      --orange-dark: #bd561d;
+      --purple: #a371f7;
+      --purple-bg: rgba(163, 113, 247, 0.18);
+      --purple-border: rgba(163, 113, 247, 0.45);
+      --amber-bg: rgba(240, 136, 62, 0.18);
+      --amber-border: rgba(240, 136, 62, 0.45);
+      --border-radius: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", Menlo, Consolas, Monaco, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      padding: 24px;
+      max-width: 1540px;
+      margin: 0 auto;
+    }
+
+    /* Global Nav Bar */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--text);
+      background: var(--card-hover);
+    }
+
+    .nav-tab.active {
+      color: #fff;
+      background: rgba(47, 129, 247, 0.18);
+      border-color: rgba(47, 129, 247, 0.4);
+    }
+
+    .header-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .header-title h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .role-badge {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(47, 129, 247, 0.2);
+      color: var(--accent-hover);
+      border: 1px solid rgba(47, 129, 247, 0.4);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--card-hover);
+      border-color: #8b949e;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    /* KPI Summary Row */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .kpi-card:hover {
+      border-color: #58a6ff;
+      transform: translateY(-1px);
+    }
+
+    .kpi-card.active-filter {
+      border-color: var(--accent);
+      background: rgba(47, 129, 247, 0.12);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .kpi-card.active-filter-orange {
+      border-color: var(--orange);
+      background: rgba(240, 136, 62, 0.12);
+      box-shadow: 0 0 0 1px var(--orange);
+    }
+
+    .kpi-card.active-filter-purple {
+      border-color: var(--purple);
+      background: rgba(163, 113, 247, 0.12);
+      box-shadow: 0 0 0 1px var(--purple);
+    }
+
+    .kpi-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kpi-val {
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Active Filter Banner */
+    .filter-banner {
+      background: rgba(47, 129, 247, 0.1);
+      border: 1px solid rgba(47, 129, 247, 0.3);
+      padding: 8px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .filter-banner.banner-orange {
+      background: rgba(240, 136, 62, 0.12);
+      border-color: rgba(240, 136, 62, 0.35);
+      color: #ffb07c;
+    }
+
+    .filter-banner.banner-purple {
+      background: rgba(163, 113, 247, 0.12);
+      border-color: rgba(163, 113, 247, 0.35);
+      color: #d2a8ff;
+    }
+
+    /* Filter Toolbar */
+    .portfolio-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+
+    .search-filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      width: 250px;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--accent); }
+
+    .filter-select {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Section Headings */
+    .section-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 24px 0 14px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(48, 54, 61, 0.6);
+    }
+
+    .badge-count {
+      background: rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 999px;
+      color: var(--text-muted);
+    }
+
+    /* Apps Grid */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .app-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .app-card:hover {
+      border-color: #484f58;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .app-card.has-followup {
+      border-left: 4px solid var(--orange);
+    }
+    .app-card.has-mindy {
+      border-right: 4px solid var(--purple);
+    }
+    .app-card.has-both {
+      border-left: 4px solid var(--orange);
+      border-right: 4px solid var(--purple);
+    }
+
+    .app-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .app-name-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .app-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stage-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .stage-live {
+      background: rgba(35, 134, 54, 0.2);
+      color: #3fb950;
+      border: 1px solid rgba(46, 160, 67, 0.3);
+    }
+
+    .stage-onboarding {
+      background: rgba(56, 139, 253, 0.18);
+      color: #58a6ff;
+      border: 1px solid rgba(56, 139, 253, 0.3);
+    }
+
+    .flags-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      min-height: 22px;
+    }
+
+    .flag-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .flag-followup {
+      background: var(--amber-bg);
+      color: #ffb07c;
+      border: 1px solid var(--amber-border);
+    }
+
+    .flag-mindy {
+      background: var(--purple-bg);
+      color: #d2a8ff;
+      border: 1px solid var(--purple-border);
+    }
+
+    /* 1-Click Segmented Controls */
+    .app-meta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: rgba(13, 17, 23, 0.75);
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(48, 54, 61, 0.6);
+    }
+
+    .meta-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .meta-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .seg-group {
+      display: inline-flex;
+      background: #161b22;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 2px;
+      width: 100%;
+    }
+
+    .seg-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .seg-btn:hover {
+      color: var(--text);
+    }
+
+    .seg-btn.active-no {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+    }
+
+    .seg-btn.active-orange {
+      background: #bd561d;
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .seg-btn.active-purple {
+      background: #8957e5;
+      color: #fff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Activity area */
+    .activity-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .activity-input {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.45;
+      padding: 8px 10px;
+      min-height: 72px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .activity-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .app-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(48, 54, 61, 0.5);
+      padding-top: 8px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #238636;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+      display: none;
+      animation: fadeIn 0.2s ease;
+      z-index: 100;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span style="color:var(--accent);">●</span>
+      <span>Application Support Lead</span>
+    </div>
+    <div class="nav-tabs">
+      <a href="app_support_dashboard.html" class="nav-tab active">
+        <span>📊 Application Portfolio (21)</span>
+      </a>
+      <a href="daily_standup_log.html" class="nav-tab">
+        <span>📝 Daily Accomplishments & Standup</span>
+      </a>
+      <a href="mindy_sync_briefing.html" class="nav-tab">
+        <span>🟣 Briefing & Mindy Sync Notes</span>
+      </a>
+    </div>
+    <div>
+      <button class="btn btn-primary" onclick="saveAll(true)">Save Changes</button>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="header-main">
+    <div class="header-title">
+      <h1>
+        <span>Application Portfolio & Support Prioritization</span>
+        <span class="role-badge">Lead PM / PgM</span>
+      </h1>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:4px;">
+        Track active support activity, follow-up flags, and items designated for Mindy sync.
+      </p>
+    </div>
+    <div class="header-actions">
+      <a href="mindy_sync_briefing.html" class="btn" style="border-color: var(--purple-border); color: #d2a8ff;">
+        <span>Open Mindy Sync Notes →</span>
+      </a>
+      <button class="btn" onclick="resetDefaultsConfirm()">Reset Portfolio</button>
+    </div>
+  </div>
+
+  <!-- KPI Metrics Bar -->
+  <div class="kpi-row">
+    <div class="kpi-card" id="kpiCardAll" onclick="setQuickFilter('ALL')">
+      <div class="kpi-title">Total Portfolio</div>
+      <div class="kpi-val" id="kpiTotalApps">21 <span class="kpi-sub">Apps</span></div>
+      <div class="kpi-sub">15 Live · 6 Onboarding</div>
+    </div>
+    <div class="kpi-card" id="kpiCardFollowUp" onclick="setQuickFilter('FOLLOWUP')">
+      <div class="kpi-title" style="color: var(--orange);">⚡ Follow Up Needed</div>
+      <div class="kpi-val" style="color: var(--orange);" id="kpiFollowUpCount">0 <span class="kpi-sub" style="color:var(--text-muted)">apps</span></div>
+      <div class="kpi-sub" id="kpiFollowUpLabel">Click to filter follow-ups</div>
+    </div>
+    <div class="kpi-card" id="kpiCardMindy" onclick="setQuickFilter('MINDY')">
+      <div class="kpi-title" style="color: #d2a8ff;">🟣 Discuss with Mindy</div>
+      <div class="kpi-val" style="color: var(--purple);" id="kpiMindyCount">0 <span class="kpi-sub" style="color:var(--text-muted)">items</span></div>
+      <div class="kpi-sub" id="kpiMindyLabel">Click to filter Mindy items</div>
+    </div>
+    <div class="kpi-card" id="kpiCardLive" onclick="setQuickFilter('LIVE')">
+      <div class="kpi-title">Live Portfolio</div>
+      <div class="kpi-val" style="color: #3fb950;" id="kpiLiveCount">15</div>
+      <div class="kpi-sub">Production systems</div>
+    </div>
+    <div class="kpi-card" id="kpiCardOnboarding" onclick="setQuickFilter('ONBOARDING')">
+      <div class="kpi-title">Onboarding Pipeline</div>
+      <div class="kpi-val" style="color: #58a6ff;" id="kpiOnboardingCount">6</div>
+      <div class="kpi-sub">In-flight intake & readiness</div>
+    </div>
+  </div>
+
+  <!-- Active Filter Notification Banner -->
+  <div id="filterBanner" class="filter-banner" style="display:none;">
+    <span id="filterBannerText">Filtered view active</span>
+    <button class="btn" style="padding:3px 8px; font-size:11px;" onclick="setQuickFilter('ALL')">Reset Filter (Show All 21)</button>
+  </div>
+
+  <!-- Filter & Search Toolbar -->
+  <div class="portfolio-toolbar">
+    <div class="search-filter-group">
+      <input
+        type="text"
+        id="appSearchInput"
+        class="search-input"
+        placeholder="Filter apps by name or keywords..."
+        oninput="filterApps()"
+      />
+      <select id="followUpFilter" class="filter-select" onchange="onFilterDropdownChange()">
+        <option value="ALL">All Follow Up (Yes & No)</option>
+        <option value="YES">⚡ Follow Up: Yes only</option>
+        <option value="NO">Follow Up: No</option>
+      </select>
+      <select id="mindyFilter" class="filter-select" onchange="onFilterDropdownChange()">
+        <option value="ALL">Discuss with Mindy (All)</option>
+        <option value="YES">🟣 Discuss with Mindy: Yes only</option>
+        <option value="NO">Discuss with Mindy: No</option>
+      </select>
+      <select id="stageFilter" class="filter-select" onchange="onFilterDropdownChange()">
+        <option value="ALL">All Stages (Live & Onboarding)</option>
+        <option value="LIVE">Live Applications (15)</option>
+        <option value="ONBOARDING">Onboarding in Progress (6)</option>
+      </select>
+      <select id="notesFilter" class="filter-select" onchange="onFilterDropdownChange()">
+        <option value="ALL">All Apps</option>
+        <option value="WITH_NOTES">Has Activity Notes Only</option>
+      </select>
+    </div>
+
+    <div style="font-size: 12px; color: var(--text-muted);" id="filterCountDisplay">
+      Showing 21 of 21 applications
+    </div>
+  </div>
+
+  <!-- Live Applications Section -->
+  <div id="liveSectionWrapper">
+    <div class="section-title">
+      <span style="color: #3fb950;">●</span>
+      <span>Live Portfolio Applications</span>
+      <span class="badge-count" id="liveSectionCount">15</span>
+    </div>
+    <div class="apps-grid" id="liveAppsGrid"></div>
+  </div>
+
+  <!-- Onboarding Applications Section -->
+  <div id="onboardingSectionWrapper">
+    <div class="section-title">
+      <span style="color: #58a6ff;">●</span>
+      <span>Onboarding in Progress Applications</span>
+      <span class="badge-count" id="onboardingSectionCount">6</span>
+    </div>
+    <div class="apps-grid" id="onboardingAppsGrid"></div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toastNotification" class="toast">Saved successfully!</div>
+
+  <script>
+    const DEFAULT_PORTFOLIO = [
+      // 15 Live Apps
+      { id: "astrodocs", name: "AstroDocs", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "App Support Tier 2", sla: "99.9%", lastUpdate: "Today" },
+      { id: "atlas", name: "ATLAS", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Core Services", sla: "99.95%", lastUpdate: "Today" },
+      { id: "circa", name: "Circa", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Media Tools", sla: "99.9%", lastUpdate: "Today" },
+      { id: "columba", name: "Columba", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Communications", sla: "99.9%", lastUpdate: "Today" },
+      { id: "frameio", name: "Frame IO", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Creative Ops", sla: "99.95%", lastUpdate: "Today" },
+      { id: "givingtree", name: "Giving Tree", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "People & Community", sla: "99.8%", lastUpdate: "Today" },
+      { id: "iscript", name: "iScript", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Production Tech", sla: "99.9%", lastUpdate: "Today" },
+      { id: "juno", name: "Juno", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Workflow Automation", sla: "99.9%", lastUpdate: "Today" },
+      { id: "mycalls", name: "myCalls", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Call Services", sla: "99.9%", lastUpdate: "Today" },
+      { id: "polaris", name: "Polaris: Deal Tracker", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Finance & Legal", sla: "99.95%", lastUpdate: "Today" },
+      { id: "portalplus", name: "Portal+", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Enterprise Portals", sla: "99.9%", lastUpdate: "Today" },
+      { id: "scenechronize", name: "Scenechronize", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Studio Systems", sla: "99.9%", lastUpdate: "Today" },
+      { id: "screenbooker", name: "Screen Booker", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Facilities & Media", sla: "99.8%", lastUpdate: "Today" },
+      { id: "touchstone", name: "Touchstone", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Quality Platforms", sla: "99.9%", lastUpdate: "Today" },
+      { id: "vetter", name: "Vetter", stage: "LIVE", followUp: "No", discussWithMindy: "No", activity: "", owner: "Compliance & Review", sla: "99.9%", lastUpdate: "Today" },
+
+      // 6 Onboarding in Progress Apps
+      { id: "amity", name: "AMITY", stage: "ONBOARDING", followUp: "No", discussWithMindy: "No", activity: "", owner: "Onboarding Team", sla: "Target 99.9%", lastUpdate: "Today" },
+      { id: "appleticketing", name: "Apple Ticketing Tool", stage: "ONBOARDING", followUp: "Yes", discussWithMindy: "Yes", activity: "Follow up on QA sign-off and discuss onboarding milestone with Mindy", owner: "Service Desk Eng", sla: "Target 99.99%", lastUpdate: "Today" },
+      { id: "cudos", name: "Cudos", stage: "ONBOARDING", followUp: "No", discussWithMindy: "No", activity: "", owner: "Recognition Tech", sla: "Target 99.8%", lastUpdate: "Today" },
+      { id: "kroma", name: "Kroma", stage: "ONBOARDING", followUp: "No", discussWithMindy: "No", activity: "", owner: "Color & Imaging", sla: "Target 99.9%", lastUpdate: "Today" },
+      { id: "siriusplus", name: "Sirius+", stage: "ONBOARDING", followUp: "No", discussWithMindy: "No", activity: "", owner: "Platform Services", sla: "Target 99.95%", lastUpdate: "Today" },
+      { id: "watchlist", name: "Watchlist", stage: "ONBOARDING", followUp: "No", discussWithMindy: "No", activity: "", owner: "Content Security", sla: "Target 99.9%", lastUpdate: "Today" }
+    ];
+
+    let portfolioData = [];
+
+    function normalizeYesNo(val) {
+      if (val === true || val === "Yes" || val === "YES" || val === "yes") return "Yes";
+      return "No";
+    }
+
+    function init() {
+      const savedPortfolio = localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
+      if (savedPortfolio) {
+        try {
+          const parsed = JSON.parse(savedPortfolio);
+          portfolioData = DEFAULT_PORTFOLIO.map(defApp => {
+            const existing = parsed.find(a => a.id === defApp.id);
+            if (existing) {
+              return {
+                ...defApp,
+                followUp: normalizeYesNo(existing.followUp !== undefined ? existing.followUp : defApp.followUp),
+                discussWithMindy: normalizeYesNo(existing.discussWithMindy !== undefined ? existing.discussWithMindy : defApp.discussWithMindy),
+                activity: existing.activity !== undefined ? existing.activity : defApp.activity,
+                lastUpdate: existing.lastUpdate || "Today"
+              };
+            }
+            return defApp;
+          });
+        } catch (e) {
+          portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
+        }
+      } else {
+        portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
+      }
+
+      renderPortfolio();
+      updateMetrics();
+      highlightActiveKpi();
+    }
+
+    function renderPortfolio() {
+      const liveGrid = document.getElementById("liveAppsGrid");
+      const onboardingGrid = document.getElementById("onboardingAppsGrid");
+      liveGrid.innerHTML = "";
+      onboardingGrid.innerHTML = "";
+
+      portfolioData.forEach((app) => {
+        const card = createAppCard(app);
+        if (app.stage === "LIVE") {
+          liveGrid.appendChild(card);
+        } else {
+          onboardingGrid.appendChild(card);
+        }
+      });
+    }
+
+    function getCardClass(app) {
+      const isFollow = app.followUp === "Yes";
+      const isMindy = app.discussWithMindy === "Yes";
+      if (isFollow && isMindy) return "has-both";
+      if (isFollow) return "has-followup";
+      if (isMindy) return "has-mindy";
+      return "";
+    }
+
+    function createAppCard(app) {
+      const card = document.createElement("div");
+      card.className = "app-card " + getCardClass(app);
+      card.id = `card-${app.id}`;
+      card.dataset.id = app.id;
+      card.dataset.name = app.name.toLowerCase();
+      card.dataset.stage = app.stage;
+      card.dataset.followup = app.followUp;
+      card.dataset.mindy = app.discussWithMindy;
+
+      card.innerHTML = `
+        <div class="app-card-header">
+          <div class="app-name-wrap">
+            <span class="app-name">${app.name}</span>
+            <span class="stage-pill ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">
+              ${app.stage === 'LIVE' ? 'Live' : 'Onboarding'}
+            </span>
+          </div>
+        </div>
+
+        <div class="flags-row" id="flags-${app.id}">
+          ${app.followUp === "Yes" ? '<span class="flag-tag flag-followup">⚡ Follow Up Needed</span>' : ''}
+          ${app.discussWithMindy === "Yes" ? '<span class="flag-tag flag-mindy">🟣 Discuss with Mindy</span>' : ''}
+        </div>
+
+        <div class="app-meta-row">
+          <div class="meta-group">
+            <span class="meta-label">
+              <span>Follow Up</span>
+              <span id="followup-badge-${app.id}" style="color:${app.followUp === 'Yes' ? 'var(--orange)' : 'var(--text-muted)'}">${app.followUp}</span>
+            </span>
+            <div class="seg-group" id="followup-seg-${app.id}">
+              <button
+                type="button"
+                class="seg-btn ${app.followUp !== 'Yes' ? 'active-no' : ''}"
+                onclick="setAppFollowUp('${app.id}', 'No')"
+              >No</button>
+              <button
+                type="button"
+                class="seg-btn ${app.followUp === 'Yes' ? 'active-orange' : ''}"
+                onclick="setAppFollowUp('${app.id}', 'Yes')"
+              >⚡ Yes</button>
+            </div>
+          </div>
+
+          <div class="meta-group">
+            <span class="meta-label">
+              <span>Discuss with Mindy</span>
+              <span id="mindy-badge-${app.id}" style="color:${app.discussWithMindy === 'Yes' ? 'var(--purple)' : 'var(--text-muted)'}">${app.discussWithMindy}</span>
+            </span>
+            <div class="seg-group" id="mindy-seg-${app.id}">
+              <button
+                type="button"
+                class="seg-btn ${app.discussWithMindy !== 'Yes' ? 'active-no' : ''}"
+                onclick="setAppDiscussWithMindy('${app.id}', 'No')"
+              >No</button>
+              <button
+                type="button"
+                class="seg-btn ${app.discussWithMindy === 'Yes' ? 'active-purple' : ''}"
+                onclick="setAppDiscussWithMindy('${app.id}', 'Yes')"
+              >🟣 Yes</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="activity-section">
+          <label class="meta-label">
+            <span>Support Activity & Prioritization Notes</span>
+            <span style="font-weight:normal; text-transform:none;">${app.lastUpdate || ''}</span>
+          </label>
+          <textarea
+            class="activity-input"
+            placeholder="Document follow-up items, open tickets, talking points for Mindy, or priority actions..."
+            oninput="updateAppActivity('${app.id}', this.value)"
+          >${app.activity || ''}</textarea>
+        </div>
+
+        <div class="app-card-footer">
+          <span>Owner: <strong>${app.owner || 'App Support'}</strong></span>
+          <span>Target SLA: ${app.sla || '99.9%'}</span>
+        </div>
+      `;
+
+      return card;
+    }
+
+    function setAppFollowUp(appId, val) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (app) {
+        app.followUp = val;
+        app.lastUpdate = "Updated now";
+        saveAll(false);
+        refreshCardVisuals(appId);
+        updateMetrics();
+        filterApps(); // keep view in sync with active filter
+        showToast(`${app.name}: Follow Up set to ${val}`);
+      }
+    }
+
+    function setAppDiscussWithMindy(appId, val) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (app) {
+        app.discussWithMindy = val;
+        app.lastUpdate = "Updated now";
+        saveAll(false);
+        refreshCardVisuals(appId);
+        updateMetrics();
+        filterApps(); // keep view in sync with active filter
+        showToast(`${app.name}: Discuss with Mindy set to ${val}`);
+      }
+    }
+
+    function refreshCardVisuals(appId) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (!app) return;
+
+      const card = document.getElementById(`card-${appId}`);
+      if (card) {
+        card.className = "app-card " + getCardClass(app);
+        card.dataset.followup = app.followUp;
+        card.dataset.mindy = app.discussWithMindy;
+
+        // Flags row
+        const flagsRow = document.getElementById(`flags-${appId}`);
+        if (flagsRow) {
+          let flagsHtml = "";
+          if (app.followUp === "Yes") {
+            flagsHtml += '<span class="flag-tag flag-followup">⚡ Follow Up Needed</span>';
+          }
+          if (app.discussWithMindy === "Yes") {
+            flagsHtml += '<span class="flag-tag flag-mindy">🟣 Discuss with Mindy</span>';
+          }
+          flagsRow.innerHTML = flagsHtml;
+        }
+
+        // Follow up segmented control
+        const followSeg = document.getElementById(`followup-seg-${appId}`);
+        if (followSeg) {
+          const isYes = app.followUp === "Yes";
+          followSeg.innerHTML = `
+            <button type="button" class="seg-btn ${!isYes ? 'active-no' : ''}" onclick="setAppFollowUp('${app.id}', 'No')">No</button>
+            <button type="button" class="seg-btn ${isYes ? 'active-orange' : ''}" onclick="setAppFollowUp('${app.id}', 'Yes')">⚡ Yes</button>
+          `;
+        }
+        const followBadge = document.getElementById(`followup-badge-${appId}`);
+        if (followBadge) {
+          followBadge.textContent = app.followUp;
+          followBadge.style.color = app.followUp === 'Yes' ? 'var(--orange)' : 'var(--text-muted)';
+        }
+
+        // Mindy segmented control
+        const mindySeg = document.getElementById(`mindy-seg-${appId}`);
+        if (mindySeg) {
+          const isMindyYes = app.discussWithMindy === "Yes";
+          mindySeg.innerHTML = `
+            <button type="button" class="seg-btn ${!isMindyYes ? 'active-no' : ''}" onclick="setAppDiscussWithMindy('${app.id}', 'No')">No</button>
+            <button type="button" class="seg-btn ${isMindyYes ? 'active-purple' : ''}" onclick="setAppDiscussWithMindy('${app.id}', 'Yes')">🟣 Yes</button>
+          `;
+        }
+        const mindyBadge = document.getElementById(`mindy-badge-${appId}`);
+        if (mindyBadge) {
+          mindyBadge.textContent = app.discussWithMindy;
+          mindyBadge.style.color = app.discussWithMindy === 'Yes' ? 'var(--purple)' : 'var(--text-muted)';
+        }
+      }
+    }
+
+    function updateAppActivity(appId, newActivity) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (app) {
+        app.activity = newActivity;
+        app.lastUpdate = "Updated now";
+        saveAll(false);
+      }
+    }
+
+    function saveAll(showNotification) {
+      localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
+      if (showNotification) {
+        showToast("Portfolio changes saved!");
+      }
+    }
+
+    function resetDefaultsConfirm() {
+      if (confirm("Reset application portfolio back to default state? Custom notes will be reset.")) {
+        portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
+        saveAll(true);
+        renderPortfolio();
+        updateMetrics();
+        setQuickFilter('ALL');
+      }
+    }
+
+    function onFilterDropdownChange() {
+      highlightActiveKpi();
+      filterApps();
+    }
+
+    function setQuickFilter(mode) {
+      if (mode === 'ALL') {
+        document.getElementById("followUpFilter").value = "ALL";
+        document.getElementById("mindyFilter").value = "ALL";
+        document.getElementById("stageFilter").value = "ALL";
+      } else if (mode === 'FOLLOWUP') {
+        document.getElementById("followUpFilter").value = "YES";
+        document.getElementById("mindyFilter").value = "ALL";
+        document.getElementById("stageFilter").value = "ALL";
+      } else if (mode === 'MINDY') {
+        document.getElementById("mindyFilter").value = "YES";
+        document.getElementById("followUpFilter").value = "ALL";
+        document.getElementById("stageFilter").value = "ALL";
+      } else if (mode === 'LIVE') {
+        document.getElementById("stageFilter").value = "LIVE";
+        document.getElementById("followUpFilter").value = "ALL";
+        document.getElementById("mindyFilter").value = "ALL";
+      } else if (mode === 'ONBOARDING') {
+        document.getElementById("stageFilter").value = "ONBOARDING";
+        document.getElementById("followUpFilter").value = "ALL";
+        document.getElementById("mindyFilter").value = "ALL";
+      }
+
+      highlightActiveKpi();
+      filterApps();
+    }
+
+    function highlightActiveKpi() {
+      const followVal = document.getElementById("followUpFilter").value;
+      const mindyVal = document.getElementById("mindyFilter").value;
+      const stageVal = document.getElementById("stageFilter").value;
+
+      document.getElementById("kpiCardAll").className = "kpi-card";
+      document.getElementById("kpiCardFollowUp").className = "kpi-card";
+      document.getElementById("kpiCardMindy").className = "kpi-card";
+      document.getElementById("kpiCardLive").className = "kpi-card";
+      document.getElementById("kpiCardOnboarding").className = "kpi-card";
+
+      const banner = document.getElementById("filterBanner");
+      const bannerText = document.getElementById("filterBannerText");
+
+      if (followVal === "YES" && mindyVal === "ALL" && stageVal === "ALL") {
+        document.getElementById("kpiCardFollowUp").className = "kpi-card active-filter-orange";
+        banner.style.display = "flex";
+        banner.className = "filter-banner banner-orange";
+        bannerText.innerHTML = "⚡ Showing only applications where <strong>Follow Up = Yes</strong>";
+      } else if (mindyVal === "YES" && followVal === "ALL" && stageVal === "ALL") {
+        document.getElementById("kpiCardMindy").className = "kpi-card active-filter-purple";
+        banner.style.display = "flex";
+        banner.className = "filter-banner banner-purple";
+        bannerText.innerHTML = "🟣 Showing only applications tagged for <strong>Discuss with Mindy</strong>";
+      } else if (stageVal === "LIVE" && followVal === "ALL" && mindyVal === "ALL") {
+        document.getElementById("kpiCardLive").className = "kpi-card active-filter";
+        banner.style.display = "flex";
+        banner.className = "filter-banner";
+        bannerText.innerHTML = "Showing only <strong>Live Portfolio</strong> applications";
+      } else if (stageVal === "ONBOARDING" && followVal === "ALL" && mindyVal === "ALL") {
+        document.getElementById("kpiCardOnboarding").className = "kpi-card active-filter";
+        banner.style.display = "flex";
+        banner.className = "filter-banner";
+        bannerText.innerHTML = "Showing only <strong>Onboarding Pipeline</strong> applications";
+      } else if (followVal === "ALL" && mindyVal === "ALL" && stageVal === "ALL") {
+        document.getElementById("kpiCardAll").className = "kpi-card active-filter";
+        banner.style.display = "none";
+      } else {
+        banner.style.display = "flex";
+        banner.className = "filter-banner";
+        bannerText.innerHTML = "Active custom filter combination applied";
+      }
+    }
+
+    function filterApps() {
+      const searchQuery = (document.getElementById("appSearchInput").value || "").toLowerCase().trim();
+      const followUpVal = document.getElementById("followUpFilter").value.toUpperCase();
+      const mindyVal = document.getElementById("mindyFilter").value.toUpperCase();
+      const stageVal = document.getElementById("stageFilter").value.toUpperCase();
+      const notesVal = document.getElementById("notesFilter").value.toUpperCase();
+
+      let visibleCount = 0;
+      let visibleLive = 0;
+      let visibleOnboarding = 0;
+
+      const cards = document.querySelectorAll(".app-card");
+      cards.forEach(card => {
+        const id = card.dataset.id;
+        const app = portfolioData.find(a => a.id === id);
+        if (!app) return;
+
+        // Search check
+        let matchesSearch = true;
+        if (searchQuery.length > 0) {
+          matchesSearch = app.name.toLowerCase().includes(searchQuery) ||
+                          (app.activity && app.activity.toLowerCase().includes(searchQuery)) ||
+                          (app.owner && app.owner.toLowerCase().includes(searchQuery));
+        }
+
+        // Follow Up check (Bulletproof & Case-Insensitive)
+        const isFollowYes = (app.followUp === "Yes" || app.followUp === "YES" || app.followUp === true);
+        let matchesFollowUp = true;
+        if (followUpVal === "YES") {
+          matchesFollowUp = isFollowYes;
+        } else if (followUpVal === "NO") {
+          matchesFollowUp = !isFollowYes;
+        }
+
+        // Discuss with Mindy check (Bulletproof & Case-Insensitive)
+        const isMindyYes = (app.discussWithMindy === "Yes" || app.discussWithMindy === "YES" || app.discussWithMindy === true);
+        let matchesMindy = true;
+        if (mindyVal === "YES") {
+          matchesMindy = isMindyYes;
+        } else if (mindyVal === "NO") {
+          matchesMindy = !isMindyYes;
+        }
+
+        // Stage check
+        let matchesStage = true;
+        if (stageVal !== "ALL") {
+          matchesStage = app.stage.toUpperCase() === stageVal;
+        }
+
+        // Notes check
+        let matchesNotes = true;
+        if (notesVal === "WITH_NOTES") {
+          matchesNotes = Boolean(app.activity && app.activity.trim().length > 0);
+        }
+
+        if (matchesSearch && matchesFollowUp && matchesMindy && matchesStage && matchesNotes) {
+          card.style.display = "flex";
+          visibleCount++;
+          if (app.stage === "LIVE") visibleLive++;
+          else visibleOnboarding++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      document.getElementById("liveSectionCount").textContent = visibleLive;
+      document.getElementById("onboardingSectionCount").textContent = visibleOnboarding;
+      document.getElementById("liveSectionWrapper").style.display = (visibleLive === 0 && stageVal === "ONBOARDING") ? "none" : "block";
+      document.getElementById("onboardingSectionWrapper").style.display = (visibleOnboarding === 0 && stageVal === "LIVE") ? "none" : "block";
+      document.getElementById("filterCountDisplay").textContent = `Showing ${visibleCount} of ${portfolioData.length} applications`;
+    }
+
+    function updateMetrics() {
+      const total = portfolioData.length;
+      document.getElementById("kpiTotalApps").innerHTML = `${total} <span class="kpi-sub">Apps</span>`;
+
+      const followUpApps = portfolioData.filter(a => a.followUp === "Yes" || a.followUp === "YES");
+      const mindyApps = portfolioData.filter(a => a.discussWithMindy === "Yes" || a.discussWithMindy === "YES");
+
+      const followUpCountEl = document.getElementById("kpiFollowUpCount");
+      followUpCountEl.innerHTML = `${followUpApps.length} <span class="kpi-sub" style="color:var(--text-muted)">apps</span>`;
+      document.getElementById("kpiFollowUpLabel").textContent = followUpApps.length > 0
+        ? `${followUpApps.length} flagged · Click to view`
+        : "Click to filter follow-ups";
+
+      const mindyCountEl = document.getElementById("kpiMindyCount");
+      mindyCountEl.innerHTML = `${mindyApps.length} <span class="kpi-sub" style="color:var(--text-muted)">items</span>`;
+      document.getElementById("kpiMindyLabel").textContent = mindyApps.length > 0
+        ? `${mindyApps.length} flagged · Click to view`
+        : "Click to filter Mindy items";
+
+      const liveApps = portfolioData.filter(a => a.stage === "LIVE");
+      document.getElementById("kpiLiveCount").textContent = liveApps.length;
+
+      const onboardingApps = portfolioData.filter(a => a.stage === "ONBOARDING");
+      document.getElementById("kpiOnboardingCount").textContent = onboardingApps.length;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toastNotification");
+      toast.textContent = msg;
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 2500);
+    }
+
+    setInterval(() => { saveAll(false); }, 15000);
+    window.onload = init;
+  </script>
+</body>
+</html>

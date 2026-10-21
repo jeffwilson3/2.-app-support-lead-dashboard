@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Accomplishments & Standup Log | App Support Lead</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --card-border: #30363d;
+      --card-hover: #1c2128;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #2f81f7;
+      --accent-hover: #58a6ff;
+      --green: #238636;
+      --green-light: #2ea043;
+      --orange: #db6d28;
+      --purple: #a371f7;
+      --border-radius: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", Menlo, Consolas, Monaco, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      padding: 24px;
+      max-width: 1540px;
+      margin: 0 auto;
+    }
+
+    /* Top Navigation Bar */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--text);
+      background: var(--card-hover);
+    }
+
+    .nav-tab.active {
+      color: #fff;
+      background: rgba(47, 129, 247, 0.18);
+      border-color: rgba(47, 129, 247, 0.4);
+    }
+
+    .header-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .header-title h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .role-badge {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(47, 129, 247, 0.2);
+      color: var(--accent-hover);
+      border: 1px solid rgba(47, 129, 247, 0.4);
+    }
+
+    .btn {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--card-hover);
+      border-color: #8b949e;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Layout Columns */
+    .log-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .log-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Main Editor Card */
+    .editor-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .date-control-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 18px;
+    }
+
+    .date-nav-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .date-input {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .quick-chips-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .chip-btn {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .chip-btn:hover {
+      background: var(--card-hover);
+      border-color: #8b949e;
+      color: #fff;
+    }
+
+    .textarea-container {
+      position: relative;
+    }
+
+    .main-textarea {
+      width: 100%;
+      min-height: 380px;
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 16px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.7;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .main-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .editor-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* History Sidebar */
+    .sidebar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sidebar-title {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 480px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .history-item:hover {
+      border-color: var(--accent);
+      background: var(--card-hover);
+    }
+
+    .history-item.active {
+      border-color: var(--accent);
+      background: rgba(47, 129, 247, 0.12);
+    }
+
+    .history-item-date {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .history-item-snippet {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #238636;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+      display: none;
+      animation: fadeIn 0.2s ease;
+      z-index: 100;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span style="color:var(--accent);">●</span>
+      <span>Application Support Lead</span>
+    </div>
+    <div class="nav-tabs">
+      <a href="app_support_dashboard.html" class="nav-tab">
+        <span>📊 Application Portfolio (21)</span>
+      </a>
+      <a href="daily_standup_log.html" class="nav-tab active">
+        <span>📝 Daily Accomplishments & Standup</span>
+      </a>
+      <a href="mindy_sync_briefing.html" class="nav-tab">
+        <span>🟣 Briefing & Mindy Sync Notes</span>
+      </a>
+    </div>
+    <div>
+      <button class="btn btn-primary" onclick="copyTodayUpdate()">Copy for Standup</button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="header-main">
+    <div class="header-title">
+      <h1>
+        <span>Daily Accomplishments & Standup Log</span>
+        <span class="role-badge">Lead PM / PgM</span>
+      </h1>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:4px;">
+        Dedicated workspace to type, document, and track what you delivered each day.
+      </p>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="saveNow(true)">Save Log</button>
+      <button class="btn" onclick="clearDayConfirm()">Clear Entry</button>
+    </div>
+  </div>
+
+  <!-- Layout -->
+  <div class="log-layout">
+    <!-- Main Editor -->
+    <div class="editor-card">
+      <div class="date-control-bar">
+        <div class="date-nav-group">
+          <button class="btn" onclick="stepDate(-1)">← Previous Day</button>
+          <input type="date" id="datePicker" class="date-input" onchange="onDateChange()" />
+          <button class="btn" onclick="stepDate(1)">Next Day →</button>
+          <button class="btn" onclick="jumpToToday()">Today</button>
+        </div>
+        <div id="formattedDateLabel" style="font-size:13px; font-weight:600; color:var(--text-muted);">
+          Tuesday, Oct 20, 2026
+        </div>
+      </div>
+
+      <!-- Quick Template Chips -->
+      <div class="quick-chips-bar">
+        <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); align-self:center;">
+          Insert:
+        </span>
+        <button class="chip-btn" onclick="insertBullet('• [App/Project]: ')">
+          + Standup Item
+        </button>
+        <button class="chip-btn" onclick="insertBullet('• [Escalation Resolved]: ')">
+          + Escalation
+        </button>
+        <button class="chip-btn" onclick="insertBullet('• [Release / Sign-off]: ')">
+          + Milestone Sign-off
+        </button>
+        <button class="chip-btn" onclick="insertBullet('• [SLA / Incident Review]: ')">
+          + SLA / Incident
+        </button>
+        <button class="chip-btn" onclick="insertBullet('• [Mindy Sync Prep]: ')">
+          + Mindy Sync Note
+        </button>
+        <button class="chip-btn" onclick="insertTemplate()">
+          + Standard Daily Template
+        </button>
+      </div>
+
+      <div class="textarea-container">
+        <textarea
+          id="accomplishmentsText"
+          class="main-textarea"
+          placeholder="Type what you accomplished today...&#10;&#10;Examples:&#10;• Led morning App Support triage; resolved Apple Ticketing Tool onboarding bottleneck&#10;• Polaris Deal Tracker: Completed finance SLA review with stakeholders&#10;• Frame IO & Scenechronize: Signed off on production patch deployment&#10;• Prepared agenda for Mindy weekly sync on team capacity and Q4 roadmap"
+          oninput="onInputText()"
+        ></textarea>
+      </div>
+
+      <div class="editor-footer">
+        <span id="saveStatus">Auto-saved to local memory</span>
+        <span id="charCount">0 words · 0 chars</span>
+      </div>
+    </div>
+
+    <!-- History Sidebar -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">
+        <span>Log History by Date</span>
+        <span id="historyCountBadge" style="font-size:11px; color:var(--text-muted);">0 logged</span>
+      </div>
+      <div class="history-list" id="historyListContainer">
+        <!-- Rendered by JS -->
+      </div>
+      <div style="font-size: 11px; color: var(--text-muted); text-align: center; padding-top: 6px;">
+        Select any past date to view or edit accomplishments.
+      </div>
+    </div>
+  </div>
+
+  <div id="toastNotification" class="toast">Saved successfully!</div>
+
+  <script>
+    let accomplishmentsByDate = {};
+    let selectedDate = new Date().toISOString().split("T")[0];
+
+    function init() {
+      const saved = localStorage.getItem("app_support_accomplishments_v1");
+      if (saved) {
+        try {
+          accomplishmentsByDate = JSON.parse(saved);
+        } catch (e) {
+          accomplishmentsByDate = {};
+        }
+      }
+
+      document.getElementById("datePicker").value = selectedDate;
+      loadDateEntry(selectedDate);
+      renderHistoryList();
+    }
+
+    function onDateChange() {
+      const val = document.getElementById("datePicker").value;
+      if (val) {
+        selectedDate = val;
+        loadDateEntry(selectedDate);
+      }
+    }
+
+    function stepDate(days) {
+      const [y, m, d] = selectedDate.split("-").map(Number);
+      const curr = new Date(y, m - 1, d);
+      curr.setDate(curr.getDate() + days);
+      selectedDate = curr.toISOString().split("T")[0];
+      document.getElementById("datePicker").value = selectedDate;
+      loadDateEntry(selectedDate);
+    }
+
+    function jumpToToday() {
+      selectedDate = new Date().toISOString().split("T")[0];
+      document.getElementById("datePicker").value = selectedDate;
+      loadDateEntry(selectedDate);
+    }
+
+    function loadDateEntry(dateStr) {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      const dateObj = new Date(y, m - 1, d);
+      document.getElementById("formattedDateLabel").textContent = dateObj.toLocaleDateString(undefined, {
+        weekday: "long", year: "numeric", month: "short", day: "numeric"
+      });
+
+      const field = document.getElementById("accomplishmentsText");
+      field.value = accomplishmentsByDate[dateStr] || "";
+      updateCounters();
+      document.getElementById("saveStatus").textContent = `Viewing entry for ${dateStr}`;
+      highlightActiveHistoryItem();
+    }
+
+    function onInputText() {
+      const text = document.getElementById("accomplishmentsText").value;
+      accomplishmentsByDate[selectedDate] = text;
+      localStorage.setItem("app_support_accomplishments_v1", JSON.stringify(accomplishmentsByDate));
+      updateCounters();
+      document.getElementById("saveStatus").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      renderHistoryList();
+    }
+
+    function updateCounters() {
+      const text = document.getElementById("accomplishmentsText").value.trim();
+      const words = text ? text.split(/\s+/).length : 0;
+      document.getElementById("charCount").textContent = `${words} words · ${text.length} chars`;
+    }
+
+    function insertBullet(bullet) {
+      const field = document.getElementById("accomplishmentsText");
+      const text = field.value;
+      if (text.length > 0 && !text.endsWith("\n")) {
+        field.value += "\n" + bullet;
+      } else {
+        field.value += bullet;
+      }
+      field.focus();
+      onInputText();
+    }
+
+    function insertTemplate() {
+      const template =
+`### Today's Focus & Key Accomplishments
+• 
+
+### Escalations & Blockers Cleared
+• None
+
+### Team, Stakeholder & Vendor Syncs
+• 
+
+### Next Day Priorities
+• `;
+      const field = document.getElementById("accomplishmentsText");
+      if (field.value.trim().length > 0) {
+        if (!confirm("Add daily template to current notes?")) return;
+        field.value += "\n\n" + template;
+      } else {
+        field.value = template;
+      }
+      field.focus();
+      onInputText();
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById("historyListContainer");
+      container.innerHTML = "";
+
+      const keys = Object.keys(accomplishmentsByDate).filter(k => (accomplishmentsByDate[k] || "").trim().length > 0);
+      keys.sort((a, b) => b.localeCompare(a));
+
+      document.getElementById("historyCountBadge").textContent = `${keys.length} logged`;
+
+      if (keys.length === 0) {
+        container.innerHTML = `<div style="font-size:12px; color:var(--text-muted); padding:10px;">No historical logs yet. Type above to record today's accomplishments.</div>`;
+        return;
+      }
+
+      keys.forEach(k => {
+        const item = document.createElement("div");
+        item.className = "history-item " + (k === selectedDate ? "active" : "");
+        item.onclick = () => {
+          selectedDate = k;
+          document.getElementById("datePicker").value = k;
+          loadDateEntry(k);
+        };
+
+        const firstLine = (accomplishmentsByDate[k] || "").trim().split("\n")[0] || "Empty entry";
+
+        item.innerHTML = `
+          <div class="history-item-date">
+            <span>${k}</span>
+          </div>
+          <div class="history-item-snippet">${firstLine.replace(/[#*•]/g, '').trim()}</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function highlightActiveHistoryItem() {
+      document.querySelectorAll(".history-item").forEach(el => {
+        const dateText = el.querySelector(".history-item-date span")?.textContent;
+        if (dateText === selectedDate) {
+          el.classList.add("active");
+        } else {
+          el.classList.remove("active");
+        }
+      });
+    }
+
+    function copyTodayUpdate() {
+      const text = document.getElementById("accomplishmentsText").value;
+      if (!text.trim()) {
+        showToast("No accomplishments entered for today to copy!");
+        return;
+      }
+      const formatted = `*Application Support Lead Daily Accomplishments (${selectedDate}):*\n\n${text}`;
+      navigator.clipboard.writeText(formatted).then(() => {
+        showToast("Copied daily standup update to clipboard!");
+      });
+    }
+
+    function saveNow(showToastMsg) {
+      localStorage.setItem("app_support_accomplishments_v1", JSON.stringify(accomplishmentsByDate));
+      if (showToastMsg) showToast("Log saved successfully!");
+    }
+
+    function clearDayConfirm() {
+      if (confirm(`Clear all accomplishments logged for ${selectedDate}?`)) {
+        delete accomplishmentsByDate[selectedDate];
+        localStorage.setItem("app_support_accomplishments_v1", JSON.stringify(accomplishmentsByDate));
+        loadDateEntry(selectedDate);
+        renderHistoryList();
+        showToast("Cleared entry for this day");
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toastNotification");
+      toast.textContent = msg;
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 2500);
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
