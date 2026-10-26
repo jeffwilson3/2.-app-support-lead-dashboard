@@ -8,7 +8,8 @@ A personal and team dashboard suite designed for Application Support Lead Projec
 
 | Page | File | Purpose |
 | :--- | :--- | :--- |
-| **Portfolio Hub** | [`index.html`](index.html) / [`app_support_dashboard.html`](app_support_dashboard.html) | Interactive 21-application portfolio tracking, 1-click **Follow Up** and **Discuss with Mindy** toggles, Business Unit filtering, and work prioritization. |
+| **Portfolio Hub** | [`index.html`](index.html) / [`app_support_dashboard.html`](app_support_dashboard.html) | Interactive 21-application portfolio tracking, 1-click **Follow Up** and **Discuss with Mindy** toggles, Business Unit filtering, monthly stakeholder sync notes, and work prioritization. |
+| **Monthly Stakeholder Sync Hub** | [`monthly_stakeholder_sync.html`](monthly_stakeholder_sync.html) | Dedicated workspace to capture and archive meeting notes, launch dates, pain points, and action items from recurring stakeholder syncs across all 21 applications. |
 | **Daily Standup Log** | [`daily_standup_log.html`](daily_standup_log.html) | Dedicated workspace to document daily accomplishments, standups, and historical archives by date. |
 | **Mindy Sync Hub** | [`mindy_sync_briefing.html`](mindy_sync_briefing.html) | Auto-curated 1:1 meeting hub aggregating all apps flagged for Mindy, agenda items, decisions, and executive briefing export. |
 

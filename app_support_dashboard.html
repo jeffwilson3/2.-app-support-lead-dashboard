@@ -22,6 +22,9 @@
       --purple-border: rgba(163, 113, 247, 0.45);
       --amber-bg: rgba(240, 136, 62, 0.18);
       --amber-border: rgba(240, 136, 62, 0.45);
+      --cyan: #39c5cf;
+      --cyan-bg: rgba(57, 197, 207, 0.15);
+      --cyan-border: rgba(57, 197, 207, 0.4);
       --border-radius: 12px;
       --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       --font-mono: "SF Mono", Menlo, Consolas, Monaco, monospace;
@@ -65,6 +68,7 @@
       display: flex;
       gap: 8px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .nav-tab {
@@ -421,6 +425,12 @@
       border: 1px solid var(--purple-border);
     }
 
+    .flag-sync {
+      background: var(--cyan-bg);
+      color: #7ee787;
+      border: 1px solid var(--cyan-border);
+    }
+
     /* 1-Click Segmented Controls */
     .app-meta-row {
       display: grid;
@@ -508,7 +518,7 @@
       font-size: 13px;
       line-height: 1.45;
       padding: 8px 10px;
-      min-height: 72px;
+      min-height: 64px;
       resize: vertical;
       outline: none;
       transition: border-color 0.15s ease;
@@ -517,6 +527,461 @@
     .activity-input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    /* Structured Activity History Section */
+    .activity-history-section {
+      border-top: 1px dashed var(--card-border);
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .activity-history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .activity-history-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .activity-history-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .badge-history-count {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+    }
+
+    .btn-add-update {
+      background: rgba(47, 129, 247, 0.15);
+      border: 1px solid rgba(47, 129, 247, 0.35);
+      color: var(--accent-hover);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-add-update:hover {
+      background: rgba(47, 129, 247, 0.28);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Add Update Form Drawer */
+    .add-update-form {
+      background: #0d1117;
+      border: 1px solid rgba(47, 129, 247, 0.4);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.15s ease;
+    }
+
+    .update-form-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+    }
+
+    .update-form-title {
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .update-form-time {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .update-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .update-form-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .update-form-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .update-form-select, .update-form-input, .update-form-textarea {
+      background: #161b22;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      border-radius: 6px;
+      padding: 6px 8px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .update-form-select:focus, .update-form-input:focus, .update-form-textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .update-form-textarea {
+      min-height: 60px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .update-form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      padding-top: 4px;
+    }
+
+    .btn-cancel {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-cancel:hover {
+      background: var(--card-hover);
+      color: var(--text);
+    }
+
+    .btn-save-update {
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .btn-save-update:hover {
+      background: var(--accent-hover);
+    }
+
+    /* History Timeline Entries */
+    .activity-history-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .activity-history-empty {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 6px 8px;
+      background: rgba(13, 17, 23, 0.4);
+      border-radius: 6px;
+      border: 1px dashed rgba(48, 54, 61, 0.5);
+    }
+
+    .activity-entry {
+      background: #0d1117;
+      border: 1px solid rgba(48, 54, 61, 0.7);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      position: relative;
+      transition: border-color 0.15s ease;
+    }
+
+    .activity-entry.latest-entry {
+      border-left: 3px solid var(--accent);
+    }
+
+    .activity-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .activity-entry-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Category Badges */
+    .cat-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    .cat-accomplishment {
+      background: rgba(46, 160, 67, 0.2);
+      color: #3fb950;
+      border: 1px solid rgba(46, 160, 67, 0.4);
+    }
+
+    .cat-update {
+      background: rgba(56, 139, 253, 0.18);
+      color: #58a6ff;
+      border: 1px solid rgba(56, 139, 253, 0.35);
+    }
+
+    .cat-issue {
+      background: rgba(240, 136, 62, 0.18);
+      color: #ffb07c;
+      border: 1px solid rgba(240, 136, 62, 0.35);
+    }
+
+    .cat-enhancement {
+      background: rgba(163, 113, 247, 0.18);
+      color: #d2a8ff;
+      border: 1px solid rgba(163, 113, 247, 0.35);
+    }
+
+    .cat-follow-up {
+      background: rgba(210, 153, 34, 0.2);
+      color: #e3b341;
+      border: 1px solid rgba(210, 153, 34, 0.4);
+    }
+
+    .cat-blocker {
+      background: rgba(248, 81, 73, 0.2);
+      color: #ff7b72;
+      border: 1px solid rgba(248, 81, 73, 0.4);
+    }
+
+    .cat-decision {
+      background: rgba(57, 197, 207, 0.18);
+      color: #7ee787;
+      border: 1px solid rgba(57, 197, 207, 0.35);
+    }
+
+    /* Status Pills */
+    .status-pill-entry {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .status-in-progress {
+      background: rgba(56, 139, 253, 0.15);
+      color: #58a6ff;
+    }
+
+    .status-completed {
+      background: rgba(46, 160, 67, 0.18);
+      color: #3fb950;
+    }
+
+    .status-pending {
+      background: rgba(210, 153, 34, 0.18);
+      color: #d29922;
+    }
+
+    .status-blocked {
+      background: rgba(248, 81, 73, 0.18);
+      color: #f85149;
+    }
+
+    .activity-entry-time {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .activity-entry-desc {
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .activity-entry-next {
+      font-size: 11px;
+      color: #79c0ff;
+      background: rgba(56, 139, 253, 0.08);
+      border-left: 2px solid var(--accent);
+      padding: 3px 6px;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .history-expand-row {
+      display: flex;
+      justify-content: center;
+      padding-top: 2px;
+    }
+
+    .history-expand-btn {
+      background: transparent;
+      border: none;
+      color: var(--accent-hover);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .history-expand-btn:hover {
+      background: var(--card-hover);
+      color: #fff;
+    }
+
+    .older-history-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    /* Linked Daily Accomplishment entries (shared records) */
+    .activity-entry.linked-entry {
+      border-left: 3px solid var(--cyan);
+    }
+
+    .linked-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--cyan-bg);
+      color: #7ee787;
+      border: 1px solid var(--cyan-border);
+    }
+
+    .linked-status-select {
+      background: #161b22;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 4px;
+      padding: 1px 4px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .linked-also {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* Monthly Sync Section inside App Card */
+    .monthly-sync-card-section {
+      border-top: 1px dashed var(--card-border);
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .monthly-sync-toggle-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #79c0ff;
+      user-select: none;
+    }
+
+    .monthly-sync-toggle-header:hover {
+      color: #a5d6ff;
+    }
+
+    .sync-notes-box {
+      background: rgba(13, 17, 23, 0.85);
+      border: 1px solid rgba(57, 197, 207, 0.35);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sync-notes-input {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      border-radius: 4px;
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      line-height: 1.45;
+      padding: 6px 8px;
+      min-height: 58px;
+      resize: vertical;
+      outline: none;
+    }
+
+    .sync-notes-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 1px var(--cyan);
+    }
+
+    .sync-date-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      color: var(--text-muted);
     }
 
     .app-card-footer {
@@ -563,6 +1028,9 @@
       <a href="app_support_dashboard.html" class="nav-tab active">
         <span>📊 Application Portfolio (21)</span>
       </a>
+      <a href="monthly_stakeholder_sync.html" class="nav-tab">
+        <span>🤝 Monthly Stakeholder Sync Hub</span>
+      </a>
       <a href="daily_standup_log.html" class="nav-tab">
         <span>📝 Daily Accomplishments & Standup</span>
       </a>
@@ -583,10 +1051,13 @@
         <span class="role-badge">Lead PM / PgM</span>
       </h1>
       <p style="color:var(--text-muted); font-size:13px; margin-top:4px;">
-        Track active support activity, follow-up flags, and items designated for Mindy sync.
+        Track active support activity, follow-up flags, monthly stakeholder sync notes, and Mindy agenda items.
       </p>
     </div>
     <div class="header-actions">
+      <a href="monthly_stakeholder_sync.html" class="btn" style="border-color: var(--cyan-border); color: #7ee787;">
+        <span>Open Stakeholder Sync Hub →</span>
+      </a>
       <a href="mindy_sync_briefing.html" class="btn" style="border-color: var(--purple-border); color: #d2a8ff;">
         <span>Open Mindy Sync Notes →</span>
       </a>
@@ -610,6 +1081,11 @@
       <div class="kpi-title" style="color: #d2a8ff;">🟣 Discuss with Mindy</div>
       <div class="kpi-val" style="color: var(--purple);" id="kpiMindyCount">0 <span class="kpi-sub" style="color:var(--text-muted)">items</span></div>
       <div class="kpi-sub" id="kpiMindyLabel">Click to filter Mindy items</div>
+    </div>
+    <div class="kpi-card" id="kpiCardSync" onclick="setQuickFilter('SYNC')">
+      <div class="kpi-title" style="color: #7ee787;">🤝 Monthly Sync Logged</div>
+      <div class="kpi-val" style="color: #7ee787;" id="kpiSyncCount">0 <span class="kpi-sub" style="color:var(--text-muted)">apps</span></div>
+      <div class="kpi-sub" id="kpiSyncLabel">Click to filter sync notes</div>
     </div>
     <div class="kpi-card" id="kpiCardLive" onclick="setQuickFilter('LIVE')">
       <div class="kpi-title">Live Portfolio</div>
@@ -636,7 +1112,7 @@
         type="text"
         id="appSearchInput"
         class="search-input"
-        placeholder="Filter apps by name or keywords..."
+        placeholder="Filter apps by name, notes, or BU..."
         oninput="filterApps()"
       />
       <select id="followUpFilter" class="filter-select" onchange="onFilterDropdownChange()">
@@ -664,8 +1140,10 @@
         <option value="ONBOARDING">Onboarding in Progress (6)</option>
       </select>
       <select id="notesFilter" class="filter-select" onchange="onFilterDropdownChange()">
-        <option value="ALL">All Apps</option>
-        <option value="WITH_NOTES">Has Activity Notes Only</option>
+        <option value="ALL">All Applications</option>
+        <option value="WITH_NOTES">Has Summary Notes Only</option>
+        <option value="WITH_HISTORY">Has Activity History Only</option>
+        <option value="WITH_SYNC">Has Monthly Sync Notes Only</option>
       </select>
     </div>
 
@@ -700,32 +1178,55 @@
   <script>
     const DEFAULT_PORTFOLIO = [
       // 15 Live Apps
-      { id: "astrodocs", name: "AstroDocs", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "atlas", name: "ATLAS", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "circa", name: "Circa", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "columba", name: "Columba", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "frameio", name: "Frame IO", stage: "LIVE", businessUnit: "Marketing and Publicity Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "givingtree", name: "Giving Tree", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "iscript", name: "iScript", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "juno", name: "Juno", stage: "LIVE", businessUnit: "Studio and Production Finance", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "mycalls", name: "myCalls", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "polaris", name: "Polaris: Deal Tracker", stage: "LIVE", businessUnit: "Creative and Business Affairs", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "portalplus", name: "Portal+", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "scenechronize", name: "Scenechronize", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "screenbooker", name: "Screen Booker", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "touchstone", name: "Touchstone", stage: "LIVE", businessUnit: "Creative and Business Affairs", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "vetter", name: "Vetter", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
+      { id: "astrodocs", name: "AstroDocs", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "atlas", name: "ATLAS", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "circa", name: "Circa", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "columba", name: "Columba", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "frameio", name: "Frame IO", stage: "LIVE", businessUnit: "Marketing and Publicity Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "givingtree", name: "Giving Tree", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "iscript", name: "iScript", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "juno", name: "Juno", stage: "LIVE", businessUnit: "Studio and Production Finance", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "mycalls", name: "myCalls", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "polaris", name: "Polaris: Deal Tracker", stage: "LIVE", businessUnit: "Creative and Business Affairs", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "portalplus", name: "Portal+", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "scenechronize", name: "Scenechronize", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "screenbooker", name: "Screen Booker", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "touchstone", name: "Touchstone", stage: "LIVE", businessUnit: "Creative and Business Affairs", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "vetter", name: "Vetter", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
 
       // 6 Onboarding in Progress Apps
-      { id: "amity", name: "AMITY", stage: "ONBOARDING", businessUnit: "Enterprise Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "appleticketing", name: "Apple Ticketing Tool", stage: "ONBOARDING", businessUnit: "Enterprise Solutions", followUp: "Yes", discussWithMindy: "Yes", activity: "Follow up on QA sign-off and discuss onboarding milestone with Mindy", lastUpdate: "Today" },
-      { id: "cudos", name: "Cudos", stage: "ONBOARDING", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "kroma", name: "Kroma", stage: "ONBOARDING", businessUnit: "Marketing and Publicity Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "siriusplus", name: "Sirius+", stage: "ONBOARDING", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" },
-      { id: "watchlist", name: "Watchlist", stage: "ONBOARDING", businessUnit: "Studio and Production Finance", followUp: "No", discussWithMindy: "No", activity: "", lastUpdate: "Today" }
+      { id: "amity", name: "AMITY", stage: "ONBOARDING", businessUnit: "Enterprise Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "appleticketing", name: "Apple Ticketing Tool", stage: "ONBOARDING", businessUnit: "Enterprise Solutions", followUp: "Yes", discussWithMindy: "Yes", activity: "Follow up on QA sign-off and discuss onboarding milestone with Mindy", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "cudos", name: "Cudos", stage: "ONBOARDING", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "kroma", name: "Kroma", stage: "ONBOARDING", businessUnit: "Marketing and Publicity Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "siriusplus", name: "Sirius+", stage: "ONBOARDING", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+      { id: "watchlist", name: "Watchlist", stage: "ONBOARDING", businessUnit: "Studio and Production Finance", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" }
     ];
 
     let portfolioData = [];
+
+    /* Shared accomplishment records (single source of truth, also used by the Daily Accomplishments page) */
+    const RECORDS_KEY = "app_support_accomplishment_records_v1";
+    let sharedRecords = [];
+
+    function loadSharedRecords() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(RECORDS_KEY) || "[]");
+        sharedRecords = Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        sharedRecords = [];
+      }
+    }
+
+    function getLinkedRecords(appId) {
+      return sharedRecords.filter(r => Array.isArray(r.appIds) && r.appIds.includes(appId));
+    }
+
+    function getHistoryCount(appOrId) {
+      const app = typeof appOrId === "string" ? portfolioData.find(a => a.id === appOrId) : appOrId;
+      if (!app) return 0;
+      return (app.activityHistory || []).length + getLinkedRecords(app.id).length;
+    }
 
     function normalizeYesNo(val) {
       if (val === true || val === "Yes" || val === "YES" || val === "yes") return "Yes";
@@ -733,6 +1234,7 @@
     }
 
     function init() {
+      loadSharedRecords();
       const savedPortfolio = localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
       if (savedPortfolio) {
         try {
@@ -746,10 +1248,16 @@
                 followUp: normalizeYesNo(existing.followUp !== undefined ? existing.followUp : defApp.followUp),
                 discussWithMindy: normalizeYesNo(existing.discussWithMindy !== undefined ? existing.discussWithMindy : defApp.discussWithMindy),
                 activity: existing.activity !== undefined ? existing.activity : defApp.activity,
+                activityHistory: Array.isArray(existing.activityHistory) ? existing.activityHistory : [],
+                monthlySyncNotes: existing.monthlySyncNotes !== undefined ? existing.monthlySyncNotes : "",
+                lastSyncDate: existing.lastSyncDate !== undefined ? existing.lastSyncDate : "",
                 lastUpdate: existing.lastUpdate || "Today"
               };
             }
-            return defApp;
+            return {
+              ...defApp,
+              activityHistory: []
+            };
           });
         } catch (e) {
           portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
@@ -798,6 +1306,8 @@
       card.dataset.followup = app.followUp;
       card.dataset.mindy = app.discussWithMindy;
 
+      const hasSync = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
+
       card.innerHTML = `
         <div class="app-card-header">
           <div class="app-name-wrap">
@@ -811,6 +1321,7 @@
         <div class="flags-row" id="flags-${app.id}">
           ${app.followUp === "Yes" ? '<span class="flag-tag flag-followup">⚡ Follow Up Needed</span>' : ''}
           ${app.discussWithMindy === "Yes" ? '<span class="flag-tag flag-mindy">🟣 Discuss with Mindy</span>' : ''}
+          ${hasSync ? '<span class="flag-tag flag-sync">🤝 Monthly Sync Captured</span>' : ''}
         </div>
 
         <div class="app-meta-row">
@@ -865,12 +1376,416 @@
           >${app.activity || ''}</textarea>
         </div>
 
+        <!-- Structured Chronological Activity History Section -->
+        <div class="activity-history-section">
+          <div class="activity-history-header">
+            <div class="activity-history-title-wrap">
+              <span class="activity-history-title">🕒 Activity History</span>
+              <span class="badge-history-count" id="hist-count-${app.id}">${getHistoryCount(app)}</span>
+            </div>
+            <button type="button" class="btn-add-update" onclick="toggleAddUpdateForm('${app.id}')">
+              + Add Update
+            </button>
+          </div>
+
+          <!-- Add Update Form Drawer -->
+          <div class="add-update-form" id="update-form-${app.id}" style="display: none;">
+            <div class="update-form-top">
+              <span class="update-form-title">📝 Add Activity Update</span>
+              <span class="update-form-time" id="update-time-preview-${app.id}"></span>
+            </div>
+            <div class="update-form-grid">
+              <div class="update-form-col">
+                <label class="update-form-label">Category</label>
+                <select class="update-form-select" id="update-cat-${app.id}">
+                  <option value="Update">Update</option>
+                  <option value="Accomplishment">Accomplishment</option>
+                  <option value="Issue">Issue</option>
+                  <option value="Enhancement">Enhancement</option>
+                  <option value="Follow-Up">Follow-Up</option>
+                  <option value="Blocker">Blocker</option>
+                  <option value="Decision">Decision</option>
+                </select>
+              </div>
+              <div class="update-form-col">
+                <label class="update-form-label">Status</label>
+                <select class="update-form-select" id="update-status-${app.id}">
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Blocked">Blocked</option>
+                </select>
+              </div>
+            </div>
+            <div class="update-form-col">
+              <label class="update-form-label">Activity Description</label>
+              <textarea class="update-form-textarea" id="update-desc-${app.id}" placeholder="Describe progress, resolution, blocker, or update..."></textarea>
+            </div>
+            <div class="update-form-col">
+              <label class="update-form-label">Next Steps (Optional)</label>
+              <input type="text" class="update-form-input" id="update-next-${app.id}" placeholder="e.g. Awaiting stakeholder confirmation on Friday..." />
+            </div>
+            <div class="update-form-actions">
+              <button type="button" class="btn-cancel" onclick="toggleAddUpdateForm('${app.id}', false)">Cancel</button>
+              <button type="button" class="btn-save-update" onclick="submitAppUpdate('${app.id}')">Save Update</button>
+            </div>
+          </div>
+
+          <!-- Chronological History Container -->
+          <div class="activity-history-container" id="history-container-${app.id}">
+            ${renderAppHistoryHtml(app)}
+          </div>
+        </div>
+
+        <!-- Separate Monthly Stakeholder Sync Notes Area -->
+        <div class="monthly-sync-card-section">
+          <div class="monthly-sync-toggle-header" onclick="toggleSyncBox('${app.id}')">
+            <span>🤝 Monthly Stakeholder Sync Notes</span>
+            <span id="sync-arrow-${app.id}" style="font-size:12px;">${hasSync ? '▼ Notes Saved' : '▶ Add Notes'}</span>
+          </div>
+          <div class="sync-notes-box" id="sync-box-${app.id}" style="${hasSync ? 'display:flex;' : 'display:none;'}">
+            <div class="sync-date-row">
+              <span>Sync Date:</span>
+              <input
+                type="date"
+                value="${app.lastSyncDate || ''}"
+                style="background:#161b22; border:1px solid var(--card-border); color:var(--text); font-size:11px; padding:2px 6px; border-radius:4px;"
+                onchange="updateAppSyncDate('${app.id}', this.value)"
+              />
+            </div>
+            <textarea
+              class="sync-notes-input"
+              placeholder="Capture takeaways from monthly sync with ${app.name} stakeholders (feedback, upcoming launches, concerns, roadmap requests)..."
+              oninput="updateAppSyncNotes('${app.id}', this.value)"
+            >${app.monthlySyncNotes || ''}</textarea>
+          </div>
+        </div>
+
         <div class="app-card-footer">
           <span>Business Unit: <strong style="color:#fff;">${app.businessUnit || 'Enterprise Solutions'}</strong></span>
         </div>
       `;
 
       return card;
+    }
+
+    function toggleSyncBox(appId) {
+      const box = document.getElementById(`sync-box-${appId}`);
+      const arrow = document.getElementById(`sync-arrow-${appId}`);
+      if (!box) return;
+      if (box.style.display === "none" || box.style.display === "") {
+        box.style.display = "flex";
+        arrow.textContent = "▼ Notes";
+      } else {
+        box.style.display = "none";
+        arrow.textContent = "▶ Add Notes";
+      }
+    }
+
+    /* Structured Activity History Helper Functions */
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function formatCurrentDateTime() {
+      const now = new Date();
+      return now.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' +
+             now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function getCategoryClass(category) {
+      const cat = (category || "Update").toLowerCase().replace(/[^a-z0-9]/g, '-');
+      return `cat-${cat}`;
+    }
+
+    function getStatusClass(status) {
+      const st = (status || "In Progress").toLowerCase().replace(/[^a-z0-9]/g, '-');
+      return `status-${st}`;
+    }
+
+    function renderSingleHistoryEntry(entry, isLatest) {
+      const catClass = getCategoryClass(entry.category);
+      const stClass = getStatusClass(entry.status);
+      return `
+        <div class="activity-entry ${isLatest ? 'latest-entry' : ''}">
+          <div class="activity-entry-header">
+            <div class="activity-entry-badges">
+              <span class="cat-badge ${catClass}">${escapeHtml(entry.category || 'Update')}</span>
+              <span class="status-pill-entry ${stClass}">● ${escapeHtml(entry.status || 'In Progress')}</span>
+            </div>
+            <span class="activity-entry-time">${escapeHtml(entry.timestamp || '')}</span>
+          </div>
+          <div class="activity-entry-desc">${escapeHtml(entry.description || '')}</div>
+          ${entry.nextSteps && entry.nextSteps.trim() ? `
+            <div class="activity-entry-next"><strong>↳ Next Steps:</strong> ${escapeHtml(entry.nextSteps)}</div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function formatIsoTimestamp(iso) {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return "";
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' +
+             d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function renderLinkedHistoryEntry(rec, isLatest, currentAppId) {
+      const isMindy = rec.source === "mindy-sync";
+      const kindLabels = { note: "Meeting Note", decision: "Decision", action: "Action Item", question: "Open Question" };
+      const catClass = getCategoryClass(rec.category);
+      const statuses = ["In Progress", "Completed", "Pending", "Blocked"];
+      const statusOptions = statuses.map(s =>
+        `<option value="${s}" ${rec.status === s ? "selected" : ""}>${s}</option>`
+      ).join("");
+      const otherApps = (rec.appIds || []).filter(id => id !== currentAppId).map(id => {
+        const a = portfolioData.find(x => x.id === id);
+        return a ? a.name : id;
+      });
+      const tag = isMindy
+        ? `<span class="linked-tag" style="background:var(--purple-bg);color:#d2a8ff;border-color:var(--purple-border);">🟣 Mindy Sync${rec.kind && kindLabels[rec.kind] ? " · " + kindLabels[rec.kind] : ""}</span>`
+        : `<span class="linked-tag">🔗 Daily Accomplishment</span>`;
+      const meetingDay = isMindy && rec.entryDate ? (() => {
+        const [y, m, d] = rec.entryDate.split("-").map(Number);
+        return new Date(y, m - 1, d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+      })() : "";
+      return `
+        <div class="activity-entry linked-entry ${isLatest ? 'latest-entry' : ''}" ${isMindy ? 'style="border-left-color: var(--purple);"' : ''}>
+          <div class="activity-entry-header">
+            <div class="activity-entry-badges">
+              <span class="cat-badge ${catClass}">${escapeHtml(rec.category || 'Accomplishment')}</span>
+              <select class="linked-status-select" onchange="updateLinkedStatus('${rec.id}', this.value)" title="Status (synced across views)">${statusOptions}</select>
+              ${tag}
+            </div>
+            <span class="activity-entry-time">${meetingDay ? "Meeting " + escapeHtml(meetingDay) + " · logged " : ""}${escapeHtml(formatIsoTimestamp(rec.createdAt))}</span>
+          </div>
+          <div class="activity-entry-desc">${escapeHtml(rec.description || '')}</div>
+          ${rec.nextSteps && rec.nextSteps.trim() ? `
+            <div class="activity-entry-next"><strong>↳ Next Steps:</strong> ${escapeHtml(rec.nextSteps)}</div>
+          ` : ''}
+          ${otherApps.length ? `<div class="linked-also">Also linked to: ${escapeHtml(otherApps.join(", "))}</div>` : ''}
+        </div>
+      `;
+    }
+
+    function getMergedHistory(app) {
+      const items = [];
+      (app.activityHistory || []).forEach(e => {
+        items.push({ kind: "native", ts: Date.parse(e.isoDate) || 0, entry: e });
+      });
+      getLinkedRecords(app.id).forEach(r => {
+        items.push({ kind: "linked", ts: Date.parse(r.createdAt) || 0, entry: r });
+      });
+      // Most recent first (stable sort keeps native insertion order for ties)
+      items.sort((a, b) => b.ts - a.ts);
+      return items;
+    }
+
+    function renderHistoryItem(item, isLatest, appId) {
+      return item.kind === "linked"
+        ? renderLinkedHistoryEntry(item.entry, isLatest, appId)
+        : renderSingleHistoryEntry(item.entry, isLatest);
+    }
+
+    function renderAppHistoryHtml(app, isExpanded = false) {
+      const history = getMergedHistory(app);
+      if (history.length === 0) {
+        return `<div class="activity-history-empty">No updates recorded yet. Click <strong>+ Add Update</strong> to log an entry.</div>`;
+      }
+
+      // Display most recent update first
+      let html = renderHistoryItem(history[0], true, app.id);
+
+      if (history.length > 1) {
+        const olderEntries = history.slice(1);
+        const olderDisplay = isExpanded ? 'flex' : 'none';
+        html += `
+          <div class="older-history-wrap" id="older-history-${app.id}" style="display:${olderDisplay};">
+            ${olderEntries.map(i => renderHistoryItem(i, false, app.id)).join("")}
+          </div>
+          <div class="history-expand-row">
+            <button type="button" class="history-expand-btn" id="expand-btn-${app.id}" onclick="toggleHistoryExpand('${app.id}')">
+              ${isExpanded ? '▲ Hide older updates' : `▼ View full history (${history.length} total)`}
+            </button>
+          </div>
+        `;
+      }
+
+      return html;
+    }
+
+    function refreshAppHistory(appId) {
+      const app = portfolioData.find(a => a.id === appId);
+      const container = document.getElementById(`history-container-${appId}`);
+      if (!app || !container) return;
+      const older = document.getElementById(`older-history-${appId}`);
+      const wasExpanded = Boolean(older && older.style.display === "flex");
+      container.innerHTML = renderAppHistoryHtml(app, wasExpanded);
+      const badge = document.getElementById(`hist-count-${appId}`);
+      if (badge) badge.textContent = getHistoryCount(app);
+    }
+
+    function refreshAllHistories() {
+      portfolioData.forEach(a => refreshAppHistory(a.id));
+    }
+
+    function updateLinkedStatus(recId, newStatus) {
+      loadSharedRecords();
+      const rec = sharedRecords.find(r => r.id === recId);
+      if (!rec) return;
+      rec.status = newStatus;
+      rec.updatedAt = new Date().toISOString();
+      if (newStatus === "Completed") {
+        if (!rec.completedAt) rec.completedAt = rec.updatedAt;
+      } else {
+        rec.completedAt = null;
+      }
+      localStorage.setItem(RECORDS_KEY, JSON.stringify(sharedRecords));
+      (rec.appIds || []).forEach(refreshAppHistory);
+      showToast("Status updated (synced with Daily Accomplishments)");
+    }
+
+    // Keep views synchronized when records change in another tab/page
+    window.addEventListener("storage", (e) => {
+      if (e.key === RECORDS_KEY) {
+        loadSharedRecords();
+        refreshAllHistories();
+        filterApps();
+      }
+      if (e.key === "app_support_portfolio_v3" || e.key === "app_support_portfolio_v2") {
+        syncFlagsFromStorage();
+      }
+    });
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        loadSharedRecords();
+        refreshAllHistories();
+        syncFlagsFromStorage();
+        filterApps();
+      }
+    });
+
+    // Pull flag changes made on another page (e.g. "Mark Discussion Resolved" on the Mindy page)
+    // into memory WITHOUT re-rendering the whole board, so nothing being typed is lost and the
+    // 15s auto-save can never write a stale flag back over a newer one.
+    function syncFlagsFromStorage() {
+      let stored = null;
+      try {
+        stored = JSON.parse(localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || "null");
+      } catch (err) { stored = null; }
+      if (!Array.isArray(stored)) return;
+      let changed = false;
+      stored.forEach(s => {
+        const app = portfolioData.find(a => a.id === s.id);
+        if (!app) return;
+        const fu = normalizeYesNo(s.followUp);
+        const dm = normalizeYesNo(s.discussWithMindy);
+        if (app.followUp !== fu || app.discussWithMindy !== dm) {
+          app.followUp = fu;
+          app.discussWithMindy = dm;
+          refreshCardVisuals(app.id);
+          changed = true;
+        }
+      });
+      if (changed) {
+        updateMetrics();
+        highlightActiveKpi();
+        filterApps();
+      }
+    }
+
+    function toggleAddUpdateForm(appId, explicitState) {
+      const form = document.getElementById(`update-form-${appId}`);
+      if (!form) return;
+      const willShow = explicitState !== undefined ? explicitState : (form.style.display === "none" || form.style.display === "");
+      if (willShow) {
+        form.style.display = "flex";
+        const timePreview = document.getElementById(`update-time-preview-${appId}`);
+        if (timePreview) timePreview.textContent = `Auto Date: ${formatCurrentDateTime()}`;
+        const descField = document.getElementById(`update-desc-${appId}`);
+        if (descField) descField.focus();
+      } else {
+        form.style.display = "none";
+      }
+    }
+
+    function toggleHistoryExpand(appId) {
+      const olderWrap = document.getElementById(`older-history-${appId}`);
+      const btn = document.getElementById(`expand-btn-${appId}`);
+      if (!olderWrap || !btn) return;
+
+      const app = portfolioData.find(a => a.id === appId);
+      const totalCount = app ? getHistoryCount(app) : 0;
+
+      if (olderWrap.style.display === "none" || olderWrap.style.display === "") {
+        olderWrap.style.display = "flex";
+        btn.textContent = "▲ Hide older updates";
+      } else {
+        olderWrap.style.display = "none";
+        btn.textContent = `▼ View full history (${totalCount} total)`;
+      }
+    }
+
+    function submitAppUpdate(appId) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (!app) return;
+
+      const descField = document.getElementById(`update-desc-${appId}`);
+      const catField = document.getElementById(`update-cat-${appId}`);
+      const statusField = document.getElementById(`update-status-${appId}`);
+      const nextField = document.getElementById(`update-next-${appId}`);
+
+      const description = descField ? descField.value.trim() : "";
+      if (!description) {
+        alert("Please enter an activity description before saving.");
+        if (descField) descField.focus();
+        return;
+      }
+
+      const category = catField ? catField.value : "Update";
+      const status = statusField ? statusField.value : "In Progress";
+      const nextSteps = nextField ? nextField.value.trim() : "";
+
+      const newEntry = {
+        id: "act_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+        timestamp: formatCurrentDateTime(),
+        isoDate: new Date().toISOString(),
+        category: category,
+        status: status,
+        description: description,
+        nextSteps: nextSteps
+      };
+
+      if (!Array.isArray(app.activityHistory)) {
+        app.activityHistory = [];
+      }
+      // Prepend newest update
+      app.activityHistory.unshift(newEntry);
+      app.lastUpdate = "Updated now";
+
+      saveAll(false);
+
+      // Re-render history container
+      const container = document.getElementById(`history-container-${appId}`);
+      if (container) {
+        container.innerHTML = renderAppHistoryHtml(app, false);
+      }
+      const countBadge = document.getElementById(`hist-count-${appId}`);
+      if (countBadge) {
+        countBadge.textContent = getHistoryCount(app);
+      }
+
+      // Reset & close form
+      if (descField) descField.value = "";
+      if (nextField) nextField.value = "";
+      toggleAddUpdateForm(appId, false);
+
+      showToast(`Activity logged for ${app.name}`);
     }
 
     function setAppFollowUp(appId, val) {
@@ -881,7 +1796,7 @@
         saveAll(false);
         refreshCardVisuals(appId);
         updateMetrics();
-        filterApps(); // keep view in sync with active filter
+        filterApps();
         showToast(`${app.name}: Follow Up set to ${val}`);
       }
     }
@@ -894,8 +1809,36 @@
         saveAll(false);
         refreshCardVisuals(appId);
         updateMetrics();
-        filterApps(); // keep view in sync with active filter
+        filterApps();
         showToast(`${app.name}: Discuss with Mindy set to ${val}`);
+      }
+    }
+
+    function updateAppActivity(appId, newActivity) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (app) {
+        app.activity = newActivity;
+        app.lastUpdate = "Updated now";
+        saveAll(false);
+      }
+    }
+
+    function updateAppSyncNotes(appId, val) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (app) {
+        app.monthlySyncNotes = val;
+        app.lastUpdate = "Updated now";
+        saveAll(false);
+        refreshCardVisuals(appId);
+        updateMetrics();
+      }
+    }
+
+    function updateAppSyncDate(appId, val) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (app) {
+        app.lastSyncDate = val;
+        saveAll(false);
       }
     }
 
@@ -909,6 +1852,8 @@
         card.dataset.followup = app.followUp;
         card.dataset.mindy = app.discussWithMindy;
 
+        const hasSync = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
+
         // Flags row
         const flagsRow = document.getElementById(`flags-${appId}`);
         if (flagsRow) {
@@ -918,6 +1863,9 @@
           }
           if (app.discussWithMindy === "Yes") {
             flagsHtml += '<span class="flag-tag flag-mindy">🟣 Discuss with Mindy</span>';
+          }
+          if (hasSync) {
+            flagsHtml += '<span class="flag-tag flag-sync">🤝 Monthly Sync Captured</span>';
           }
           flagsRow.innerHTML = flagsHtml;
         }
@@ -954,15 +1902,6 @@
       }
     }
 
-    function updateAppActivity(appId, newActivity) {
-      const app = portfolioData.find(a => a.id === appId);
-      if (app) {
-        app.activity = newActivity;
-        app.lastUpdate = "Updated now";
-        saveAll(false);
-      }
-    }
-
     function saveAll(showNotification) {
       localStorage.setItem("app_support_portfolio_v3", JSON.stringify(portfolioData));
       localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
@@ -991,23 +1930,33 @@
         document.getElementById("followUpFilter").value = "ALL";
         document.getElementById("mindyFilter").value = "ALL";
         document.getElementById("stageFilter").value = "ALL";
+        document.getElementById("notesFilter").value = "ALL";
         if (document.getElementById("buFilter")) document.getElementById("buFilter").value = "ALL";
       } else if (mode === 'FOLLOWUP') {
         document.getElementById("followUpFilter").value = "YES";
         document.getElementById("mindyFilter").value = "ALL";
         document.getElementById("stageFilter").value = "ALL";
+        document.getElementById("notesFilter").value = "ALL";
       } else if (mode === 'MINDY') {
         document.getElementById("mindyFilter").value = "YES";
         document.getElementById("followUpFilter").value = "ALL";
+        document.getElementById("stageFilter").value = "ALL";
+        document.getElementById("notesFilter").value = "ALL";
+      } else if (mode === 'SYNC') {
+        document.getElementById("notesFilter").value = "WITH_SYNC";
+        document.getElementById("followUpFilter").value = "ALL";
+        document.getElementById("mindyFilter").value = "ALL";
         document.getElementById("stageFilter").value = "ALL";
       } else if (mode === 'LIVE') {
         document.getElementById("stageFilter").value = "LIVE";
         document.getElementById("followUpFilter").value = "ALL";
         document.getElementById("mindyFilter").value = "ALL";
+        document.getElementById("notesFilter").value = "ALL";
       } else if (mode === 'ONBOARDING') {
         document.getElementById("stageFilter").value = "ONBOARDING";
         document.getElementById("followUpFilter").value = "ALL";
         document.getElementById("mindyFilter").value = "ALL";
+        document.getElementById("notesFilter").value = "ALL";
       }
 
       highlightActiveKpi();
@@ -1018,17 +1967,24 @@
       const followVal = document.getElementById("followUpFilter").value;
       const mindyVal = document.getElementById("mindyFilter").value;
       const stageVal = document.getElementById("stageFilter").value;
+      const notesVal = document.getElementById("notesFilter").value;
 
       document.getElementById("kpiCardAll").className = "kpi-card";
       document.getElementById("kpiCardFollowUp").className = "kpi-card";
       document.getElementById("kpiCardMindy").className = "kpi-card";
+      document.getElementById("kpiCardSync").className = "kpi-card";
       document.getElementById("kpiCardLive").className = "kpi-card";
       document.getElementById("kpiCardOnboarding").className = "kpi-card";
 
       const banner = document.getElementById("filterBanner");
       const bannerText = document.getElementById("filterBannerText");
 
-      if (followVal === "YES" && mindyVal === "ALL" && stageVal === "ALL") {
+      if (notesVal === "WITH_SYNC") {
+        document.getElementById("kpiCardSync").className = "kpi-card active-filter";
+        banner.style.display = "flex";
+        banner.className = "filter-banner";
+        bannerText.innerHTML = "🤝 Showing only applications with <strong>Monthly Stakeholder Sync Notes</strong>";
+      } else if (followVal === "YES" && mindyVal === "ALL" && stageVal === "ALL") {
         document.getElementById("kpiCardFollowUp").className = "kpi-card active-filter-orange";
         banner.style.display = "flex";
         banner.className = "filter-banner banner-orange";
@@ -1048,7 +2004,7 @@
         banner.style.display = "flex";
         banner.className = "filter-banner";
         bannerText.innerHTML = "Showing only <strong>Onboarding Pipeline</strong> applications";
-      } else if (followVal === "ALL" && mindyVal === "ALL" && stageVal === "ALL") {
+      } else if (followVal === "ALL" && mindyVal === "ALL" && stageVal === "ALL" && notesVal === "ALL") {
         document.getElementById("kpiCardAll").className = "kpi-card active-filter";
         banner.style.display = "none";
       } else {
@@ -1079,15 +2035,23 @@
         // Search check
         let matchesSearch = true;
         if (searchQuery.length > 0) {
+          const inHistory = [...(app.activityHistory || []), ...getLinkedRecords(app.id)].some(h =>
+            (h.description && h.description.toLowerCase().includes(searchQuery)) ||
+            (h.category && h.category.toLowerCase().includes(searchQuery)) ||
+            (h.status && h.status.toLowerCase().includes(searchQuery)) ||
+            (h.nextSteps && h.nextSteps.toLowerCase().includes(searchQuery))
+          );
           matchesSearch = app.name.toLowerCase().includes(searchQuery) ||
                           (app.activity && app.activity.toLowerCase().includes(searchQuery)) ||
-                          (app.businessUnit && app.businessUnit.toLowerCase().includes(searchQuery));
+                          (app.monthlySyncNotes && app.monthlySyncNotes.toLowerCase().includes(searchQuery)) ||
+                          (app.businessUnit && app.businessUnit.toLowerCase().includes(searchQuery)) ||
+                          Boolean(inHistory);
         }
 
         // Business Unit check
         let matchesBU = (buVal === "ALL") || (app.businessUnit === buVal);
 
-        // Follow Up check (Bulletproof & Case-Insensitive)
+        // Follow Up check
         const isFollowYes = (app.followUp === "Yes" || app.followUp === "YES" || app.followUp === true);
         let matchesFollowUp = true;
         if (followUpVal === "YES") {
@@ -1096,7 +2060,7 @@
           matchesFollowUp = !isFollowYes;
         }
 
-        // Discuss with Mindy check (Bulletproof & Case-Insensitive)
+        // Discuss with Mindy check
         const isMindyYes = (app.discussWithMindy === "Yes" || app.discussWithMindy === "YES" || app.discussWithMindy === true);
         let matchesMindy = true;
         if (mindyVal === "YES") {
@@ -1115,6 +2079,10 @@
         let matchesNotes = true;
         if (notesVal === "WITH_NOTES") {
           matchesNotes = Boolean(app.activity && app.activity.trim().length > 0);
+        } else if (notesVal === "WITH_HISTORY") {
+          matchesNotes = getHistoryCount(app) > 0;
+        } else if (notesVal === "WITH_SYNC") {
+          matchesNotes = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
         }
 
         if (matchesSearch && matchesBU && matchesFollowUp && matchesMindy && matchesStage && matchesNotes) {
@@ -1140,6 +2108,7 @@
 
       const followUpApps = portfolioData.filter(a => a.followUp === "Yes" || a.followUp === "YES");
       const mindyApps = portfolioData.filter(a => a.discussWithMindy === "Yes" || a.discussWithMindy === "YES");
+      const syncApps = portfolioData.filter(a => a.monthlySyncNotes && a.monthlySyncNotes.trim().length > 0);
 
       const followUpCountEl = document.getElementById("kpiFollowUpCount");
       followUpCountEl.innerHTML = `${followUpApps.length} <span class="kpi-sub" style="color:var(--text-muted)">apps</span>`;
@@ -1152,6 +2121,12 @@
       document.getElementById("kpiMindyLabel").textContent = mindyApps.length > 0
         ? `${mindyApps.length} flagged · Click to view`
         : "Click to filter Mindy items";
+
+      const syncCountEl = document.getElementById("kpiSyncCount");
+      syncCountEl.innerHTML = `${syncApps.length} <span class="kpi-sub" style="color:var(--text-muted)">apps</span>`;
+      document.getElementById("kpiSyncLabel").textContent = syncApps.length > 0
+        ? `${syncApps.length} logged · Click to view`
+        : "Click to filter sync notes";
 
       const liveApps = portfolioData.filter(a => a.stage === "LIVE");
       document.getElementById("kpiLiveCount").textContent = liveApps.length;

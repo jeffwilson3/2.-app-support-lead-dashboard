@@ -64,6 +64,7 @@
       display: flex;
       gap: 8px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .nav-tab {
@@ -281,6 +282,61 @@
       padding-top: 4px;
     }
 
+    /* ---- Per-application briefing cards ---- */
+    .brief-section { display: flex; flex-direction: column; gap: 5px; }
+    .brief-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--text-muted);
+    }
+    .brief-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+    .brief-row {
+      font-size: 12px; background: #161b22; border: 1px solid rgba(48, 54, 61, 0.6);
+      border-radius: 6px; padding: 6px 8px; display: flex; flex-direction: column; gap: 3px;
+      line-height: 1.45; white-space: pre-wrap;
+    }
+    .brief-row.purple-edge { border-left: 3px solid var(--purple); }
+    .brief-row-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; white-space: normal; }
+    .brief-meta { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
+    .brief-next {
+      font-size: 11px; color: #79c0ff; border-left: 2px solid var(--accent);
+      padding: 2px 6px; background: rgba(56, 139, 253, 0.08); border-radius: 0 4px 4px 0;
+    }
+    .brief-none { font-size: 11px; color: var(--text-muted); font-style: italic; }
+    .mini-badge {
+      font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px;
+      background: rgba(56, 139, 253, 0.18); color: #58a6ff;
+    }
+    .mini-badge.bad { background: rgba(248, 81, 73, 0.2); color: #ff7b72; }
+    .mini-badge.warn { background: rgba(210, 153, 34, 0.2); color: #e3b341; }
+    .mini-badge.ok { background: rgba(46, 160, 67, 0.2); color: #3fb950; }
+    .mini-badge.purple { background: var(--purple-bg); color: #d2a8ff; }
+    .mini-select {
+      background: #0d1117; border: 1px solid var(--card-border); color: var(--text);
+      font-size: 10px; font-weight: 600; border-radius: 4px; padding: 1px 4px; outline: none; cursor: pointer;
+    }
+    .link-btn {
+      background: transparent; border: none; color: var(--accent-hover);
+      font-size: 11px; cursor: pointer; padding: 1px 6px; border-radius: 4px;
+    }
+    .link-btn:hover { background: var(--card-hover); color: #fff; }
+    .link-btn.danger { color: #ff7b72; }
+    .btn-resolve {
+      padding: 3px 9px; font-size: 11px; border-color: rgba(46, 160, 67, 0.5); color: #3fb950;
+    }
+    .btn-resolve:hover { background: rgba(46, 160, 67, 0.15); border-color: #3fb950; }
+    .mf-form {
+      display: none; flex-direction: column; gap: 8px; background: #161b22;
+      border: 1px solid var(--purple-border); border-radius: 8px; padding: 10px; margin-top: 6px;
+    }
+    .mf-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+    .mf-col { display: flex; flex-direction: column; gap: 3px; }
+    .mf-input {
+      background: #0d1117; border: 1px solid var(--card-border); color: var(--text);
+      font-family: var(--font-sans); font-size: 12px; border-radius: 6px; padding: 5px 8px; outline: none;
+    }
+    .mf-input:focus { border-color: var(--purple); box-shadow: 0 0 0 1px var(--purple); }
+    textarea.mf-input { min-height: 58px; resize: vertical; line-height: 1.45; }
+
     .action-link {
       color: var(--accent-hover);
       text-decoration: none;
@@ -404,6 +460,9 @@
     <div class="nav-tabs">
       <a href="app_support_dashboard.html" class="nav-tab">
         <span>📊 Application Portfolio (21)</span>
+      </a>
+      <a href="monthly_stakeholder_sync.html" class="nav-tab">
+        <span>🤝 Monthly Stakeholder Sync Hub</span>
       </a>
       <a href="daily_standup_log.html" class="nav-tab">
         <span>📝 Daily Accomplishments & Standup</span>
@@ -533,10 +592,128 @@
     let portfolioData = [];
     let mindyNotesData = { agenda: "", decisions: "" };
 
+    /* ---- Shared record store (same store used by the Portfolio and Daily pages) ----
+       Meeting notes, decisions and action items are saved here ONCE, linked to the
+       application by id. The Portfolio page merges them into Activity History. */
+    const RECORDS_KEY = "app_support_accomplishment_records_v1";
+    const PORTFOLIO_KEYS = ["app_support_portfolio_v3", "app_support_portfolio_v2", "app_support_portfolio_v1"];
+    const KIND_META = {
+      note:     { label: "Meeting Note",  category: "Update",    status: "Completed" },
+      decision: { label: "Decision",      category: "Decision",  status: "Completed" },
+      action:   { label: "Action Item",   category: "Follow-Up", status: "Pending" },
+      question: { label: "Open Question", category: "Follow-Up", status: "Pending" }
+    };
+    let records = [];
+    let openForms = new Set();
+    let expandedLogs = new Set();
+    let drafts = {};
+    let pendingRender = false;
+
     function init() {
+      loadRecords();
       loadPortfolio();
       loadMindyNotes();
       renderSyncLists();
+    }
+
+    function esc(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function localToday() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function fmtStamp(iso) {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return "";
+      return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) + " at " +
+             d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
+
+    function fmtDay(ymd) {
+      if (!ymd) return "";
+      const [y, m, d] = ymd.split("-").map(Number);
+      const dt = new Date(y, m - 1, d);
+      return isNaN(dt.getTime()) ? ymd : dt.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+    }
+
+    function loadRecords() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(RECORDS_KEY) || "[]");
+        records = Array.isArray(parsed) ? parsed : [];
+      } catch (e) { records = []; }
+    }
+
+    function persistRecords() {
+      localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
+    }
+
+    // Patch ONE field of ONE application using the latest stored data, so changes made
+    // on the Portfolio page in the meantime are never overwritten by this page.
+    function patchApp(appId, patch) {
+      for (const key of PORTFOLIO_KEYS) {
+        const raw = localStorage.getItem(key);
+        if (!raw) continue;
+        try {
+          const arr = JSON.parse(raw);
+          if (!Array.isArray(arr)) continue;
+          const app = arr.find(a => a.id === appId);
+          if (!app) return false;
+          Object.assign(app, patch);
+          const out = JSON.stringify(arr);
+          localStorage.setItem(PORTFOLIO_KEYS[0], out);
+          localStorage.setItem(PORTFOLIO_KEYS[1], out);
+          loadPortfolio();
+          return true;
+        } catch (e) { /* try next key */ }
+      }
+      return false;
+    }
+
+    function kindLabel(kind) {
+      return (KIND_META[kind] || KIND_META.note).label;
+    }
+
+    // Native Portfolio updates + every shared record linked to this app, newest first
+    function getAppHistory(app) {
+      const items = [];
+      (app.activityHistory || []).forEach(e => items.push({
+        id: e.id, ts: Date.parse(e.isoDate) || 0, when: e.timestamp || "",
+        category: e.category || "Update", status: e.status || "In Progress",
+        description: e.description || "", nextSteps: e.nextSteps || "",
+        source: "portfolio", kind: null, meetingDate: ""
+      }));
+      records.filter(r => Array.isArray(r.appIds) && r.appIds.includes(app.id)).forEach(r => items.push({
+        id: r.id, ts: Date.parse(r.createdAt) || 0, when: fmtStamp(r.createdAt),
+        category: r.category || "Update", status: r.status || "Completed",
+        description: r.description || "", nextSteps: r.nextSteps || "",
+        source: r.source || "daily", kind: r.kind || null, meetingDate: r.entryDate || ""
+      }));
+      items.sort((a, b) => b.ts - a.ts);
+      return items;
+    }
+
+    function computeBrief(app) {
+      const hist = getAppHistory(app);
+      const open = hist.filter(h => h.status !== "Completed");
+      const seen = new Set();
+      const nextSteps = [];
+      open.forEach(h => {
+        const t = (h.nextSteps || "").trim();
+        if (t && !seen.has(t.toLowerCase())) { seen.add(t.toLowerCase()); nextSteps.push({ text: t, when: h.when }); }
+      });
+      return {
+        hist,
+        recent: hist.slice(0, 3),
+        blockers: open.filter(h => h.category === "Blocker" || h.status === "Blocked" || h.category === "Issue"),
+        questions: open.filter(h => h.kind === "question"),
+        actions: open.filter(h => h.kind === "action"),
+        nextSteps: nextSteps.slice(0, 4),
+        log: hist.filter(h => h.source === "mindy-sync")
+      };
     }
 
     function normalizeYesNo(val) {
@@ -587,9 +764,154 @@
     }
 
     function refreshFromStorage() {
+      loadRecords();
       loadPortfolio();
       renderSyncLists();
       showToast("Reloaded latest portfolio data");
+    }
+
+    function renderBriefRow(h, opts = {}) {
+      const stCls = h.status === "Completed" ? "ok" : (h.status === "Blocked" ? "bad" : "warn");
+      const linked = h.source === "mindy-sync" ? '<span class="mini-badge purple">🟣 Mindy Sync</span>' : '';
+      const kind = h.kind ? `<span class="mini-badge">${esc(kindLabel(h.kind))}</span>` : `<span class="mini-badge">${esc(h.category)}</span>`;
+      const date = h.meetingDate ? `Meeting ${esc(fmtDay(h.meetingDate))}` : esc(h.when);
+      return `
+        <div class="brief-row ${h.source === "mindy-sync" ? "purple-edge" : ""}">
+          <div class="brief-row-top">
+            ${kind}
+            <span class="mini-badge ${stCls}">${esc(h.status)}</span>
+            ${linked}
+            <span class="brief-meta">${date}</span>
+          </div>
+          <div>${esc(h.description)}</div>
+          ${h.nextSteps ? `<div class="brief-next"><strong>↳ Next:</strong> ${esc(h.nextSteps)}</div>` : ""}
+        </div>`;
+    }
+
+    function renderLogRow(h) {
+      const statuses = ["Pending", "In Progress", "Completed", "Blocked"];
+      const opts = statuses.map(s => `<option ${h.status === s ? "selected" : ""}>${s}</option>`).join("");
+      const stCls = h.status === "Completed" ? "ok" : (h.status === "Blocked" ? "bad" : "warn");
+      return `
+        <div class="brief-row purple-edge">
+          <div class="brief-row-top">
+            <span class="mini-badge">${esc(kindLabel(h.kind))}</span>
+            <select class="mini-select" onchange="setRecordStatus('${h.id}', this.value)">${opts}</select>
+            <span class="brief-meta">Meeting ${esc(fmtDay(h.meetingDate))} · logged ${esc(h.when)}</span>
+            <span style="margin-left:auto;">
+              <button class="link-btn" onclick="editMeetingRecord('${h.id}')">Edit</button>
+              <button class="link-btn danger" onclick="deleteMeetingRecord('${h.id}')">Delete</button>
+            </span>
+          </div>
+          <div>${esc(h.description)}</div>
+          ${h.nextSteps ? `<div class="brief-next"><strong>↳ Next:</strong> ${esc(h.nextSteps)}</div>` : ""}
+        </div>`;
+    }
+
+    function renderMindyCard(app) {
+      const b = computeBrief(app);
+      const none = txt => `<div class="brief-none">${txt}</div>`;
+      const open = openForms.has(app.id);
+      const showAll = expandedLogs.has(app.id);
+      const logShown = showAll ? b.log : b.log.slice(0, 3);
+      const d = drafts[app.id] || {};
+
+      const blockerHtml = b.blockers.length
+        ? b.blockers.slice(0, 3).map(h => renderBriefRow(h)).join("")
+        : none("No open blockers or issues documented.");
+
+      const questionHtml = b.questions.length
+        ? b.questions.map(h => renderBriefRow(h)).join("")
+        : none("No open questions logged.");
+
+      const nextHtml = b.nextSteps.length
+        ? b.nextSteps.map(n => `<div class="brief-row"><div class="brief-next" style="border:0;background:none;padding:0;">↳ ${esc(n.text)}</div><div class="brief-meta">from ${esc(n.when)}</div></div>`).join("")
+        : none("No next steps documented yet.");
+
+      const recentHtml = b.recent.length
+        ? b.recent.map(h => renderBriefRow(h)).join("")
+        : none("No activity updates recorded yet.");
+
+      const logHtml = b.log.length
+        ? logShown.map(renderLogRow).join("") +
+          (b.log.length > 3 ? `<button class="link-btn" onclick="toggleLog('${app.id}')">${showAll ? "▲ Show fewer" : `▼ Show all ${b.log.length} meeting records`}</button>` : "")
+        : none("No meeting notes, decisions or action items recorded yet.");
+
+      const kindOpts = Object.keys(KIND_META).map(k =>
+        `<option value="${k}" ${(d.kind || "note") === k ? "selected" : ""}>${esc(KIND_META[k].label)}</option>`).join("");
+
+      return `
+        <div class="app-sync-item" id="mcard-${app.id}">
+          <div class="app-sync-header">
+            <div class="app-title-area">
+              <span class="app-sync-name">${esc(app.name)}</span>
+              <span class="stage-tag ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">${esc(app.stage)}</span>
+              ${app.followUp === 'Yes' ? '<span class="tag-followup">⚡ Follow Up</span>' : ''}
+            </div>
+            <button class="btn btn-resolve" title="Clears the Discuss with Mindy flag on the Portfolio too. Notes and history are kept." onclick="resolveMindy('${app.id}')">✓ Mark Discussion Resolved</button>
+          </div>
+
+          <div class="brief-section">
+            <div class="brief-label">Support & Prioritization Notes</div>
+            <div class="notes-box ${!app.activity || !app.activity.trim() ? 'empty' : ''}">${app.activity && app.activity.trim() ? esc(app.activity) : 'No support or prioritization notes entered on the portfolio card.'}</div>
+          </div>
+
+          <div class="brief-grid">
+            <div class="brief-section">
+              <div class="brief-label">Most Recent Activity (${b.hist.length} total)</div>
+              ${recentHtml}
+            </div>
+            <div class="brief-section">
+              <div class="brief-label">🚧 Outstanding Blockers / Issues</div>
+              ${blockerHtml}
+              <div class="brief-label" style="margin-top:6px;">❓ Open Questions</div>
+              ${questionHtml}
+            </div>
+            <div class="brief-section">
+              <div class="brief-label">➡️ Recommended Next Steps</div>
+              ${nextHtml}
+            </div>
+          </div>
+
+          <div class="brief-section">
+            <div class="brief-label" style="display:flex;justify-content:space-between;align-items:center;">
+              <span>📝 Meeting Notes, Decisions & Action Items</span>
+              <button class="btn" style="padding:2px 8px;font-size:11px;" onclick="toggleMeetingForm('${app.id}')">+ Record</button>
+            </div>
+
+            <div class="mf-form" id="mf-${app.id}" style="display:${open ? "flex" : "none"};">
+              <div class="mf-grid">
+                <div class="mf-col">
+                  <label class="brief-label">Type</label>
+                  <select class="mf-input" id="mf-kind-${app.id}" onchange="saveDraft('${app.id}')">${kindOpts}</select>
+                </div>
+                <div class="mf-col">
+                  <label class="brief-label">Meeting Date</label>
+                  <input class="mf-input" type="date" id="mf-date-${app.id}" value="${esc(d.date || localToday())}" oninput="saveDraft('${app.id}')" />
+                </div>
+              </div>
+              <div class="mf-col">
+                <label class="brief-label">Note / Decision / Action</label>
+                <textarea class="mf-input" id="mf-desc-${app.id}" placeholder="What was discussed, decided, or assigned?" oninput="saveDraft('${app.id}')">${esc(d.desc || "")}</textarea>
+              </div>
+              <div class="mf-col">
+                <label class="brief-label">Next Steps / Owner / Due (optional)</label>
+                <input class="mf-input" type="text" id="mf-next-${app.id}" value="${esc(d.next || "")}" placeholder="e.g. Lead PM to circulate timeline by Fri" oninput="saveDraft('${app.id}')" />
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:6px;">
+                <button class="btn" style="padding:3px 10px;font-size:11px;" onclick="toggleMeetingForm('${app.id}', false)">Cancel</button>
+                <button class="btn btn-purple" style="padding:3px 12px;font-size:11px;" onclick="saveMeetingRecord('${app.id}')">Save to Activity History</button>
+              </div>
+            </div>
+
+            ${logHtml}
+          </div>
+
+          <div class="app-sync-footer">
+            <span>Business Unit: <strong style="color:#fff;">${esc(app.businessUnit || 'Enterprise Solutions')}</strong></span>
+            <span>Saved items also appear in this app's Activity History on the Portfolio.</span>
+          </div>
+        </div>`;
     }
 
     function renderSyncLists() {
@@ -602,7 +924,7 @@
       document.getElementById("mindyCountBadge").textContent = mindyApps.length;
       document.getElementById("followUpCountBadge").textContent = followUpApps.length;
 
-      // Render Mindy Apps
+      // Render Mindy Apps (full per-application briefing cards)
       if (mindyApps.length === 0) {
         mindyListEl.innerHTML = `
           <div style="padding: 16px; background:#0d1117; border-radius:8px; border:1px solid var(--card-border); color:var(--text-muted); font-size:13px; text-align:center;">
@@ -611,24 +933,7 @@
           </div>
         `;
       } else {
-        mindyListEl.innerHTML = mindyApps.map(app => `
-          <div class="app-sync-item">
-            <div class="app-sync-header">
-              <div class="app-title-area">
-                <span class="app-sync-name">${app.name}</span>
-                <span class="stage-tag ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">${app.stage}</span>
-                ${app.followUp === 'Yes' ? '<span class="tag-followup">⚡ Follow Up</span>' : ''}
-              </div>
-              <button class="btn" style="padding:2px 8px; font-size:11px;" onclick="unflagMindy('${app.id}')">Remove Tag</button>
-            </div>
-            <div class="notes-box ${!app.activity || !app.activity.trim() ? 'empty' : ''}">
-              ${app.activity && app.activity.trim() ? escapeHtml(app.activity) : 'No activity or talking point notes entered on portfolio card.'}
-            </div>
-            <div class="app-sync-footer">
-              <span>Business Unit: <strong style="color:#fff;">${app.businessUnit || 'Enterprise Solutions'}</strong></span>
-            </div>
-          </div>
-        `).join("");
+        mindyListEl.innerHTML = mindyApps.map(renderMindyCard).join("");
       }
 
       // Render Follow-up Apps
@@ -643,47 +948,180 @@
           <div class="app-sync-item" style="border-left-color: var(--orange);">
             <div class="app-sync-header">
               <div class="app-title-area">
-                <span class="app-sync-name">${app.name}</span>
-                <span class="stage-tag ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">${app.stage}</span>
+                <span class="app-sync-name">${esc(app.name)}</span>
+                <span class="stage-tag ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">${esc(app.stage)}</span>
                 ${app.discussWithMindy === 'Yes' ? '<span style="font-size:10px; font-weight:600; padding:2px 6px; border-radius:4px; background:var(--purple-bg); color:#d2a8ff;">🟣 Mindy</span>' : ''}
               </div>
               <button class="btn" style="padding:2px 8px; font-size:11px;" onclick="unflagFollowUp('${app.id}')">Clear Follow Up</button>
             </div>
             <div class="notes-box ${!app.activity || !app.activity.trim() ? 'empty' : ''}">
-              ${app.activity && app.activity.trim() ? escapeHtml(app.activity) : 'No activity details recorded.'}
+              ${app.activity && app.activity.trim() ? esc(app.activity) : 'No activity details recorded.'}
             </div>
             <div class="app-sync-footer">
-              <span>Business Unit: <strong style="color:#fff;">${app.businessUnit || 'Enterprise Solutions'}</strong></span>
+              <span>Business Unit: <strong style="color:#fff;">${esc(app.businessUnit || 'Enterprise Solutions')}</strong></span>
             </div>
           </div>
         `).join("");
       }
     }
 
-    function unflagMindy(appId) {
-      const app = portfolioData.find(a => a.id === appId);
-      if (app) {
-        app.discussWithMindy = "No";
-        localStorage.setItem("app_support_portfolio_v3", JSON.stringify(portfolioData));
-        localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
-        renderSyncLists();
-        showToast(`Unflagged ${app.name} from Mindy list`);
+    /* ---- Meeting notes / decisions / action items (stored once, in the shared store) ---- */
+    function toggleMeetingForm(appId, explicit) {
+      const willOpen = explicit !== undefined ? explicit : !openForms.has(appId);
+      if (willOpen) openForms.add(appId); else openForms.delete(appId);
+      const form = document.getElementById(`mf-${appId}`);
+      if (form) form.style.display = willOpen ? "flex" : "none";
+      if (willOpen) {
+        const t = document.getElementById(`mf-desc-${appId}`);
+        if (t) t.focus();
+      } else {
+        delete drafts[appId];
+        editingMeetingId = null; // cancelling an edit must not leak into the next new record
       }
     }
+
+    // Keep typed-but-unsaved text if the list re-renders (e.g. a change from another tab)
+    function saveDraft(appId) {
+      const g = id => document.getElementById(`${id}-${appId}`);
+      drafts[appId] = {
+        kind: g("mf-kind") ? g("mf-kind").value : "note",
+        date: g("mf-date") ? g("mf-date").value : "",
+        desc: g("mf-desc") ? g("mf-desc").value : "",
+        next: g("mf-next") ? g("mf-next").value : ""
+      };
+    }
+
+    let editingMeetingId = null;
+
+    function saveMeetingRecord(appId) {
+      const g = id => document.getElementById(`${id}-${appId}`);
+      const desc = g("mf-desc").value.trim();
+      if (!desc) { showToast("Please enter the note, decision or action first."); return; }
+      const kind = g("mf-kind").value;
+      const meetingDate = g("mf-date").value || localToday();
+      const nextSteps = g("mf-next").value.trim();
+      const meta = KIND_META[kind] || KIND_META.note;
+
+      loadRecords(); // always merge into the latest stored records
+      const nowIso = new Date().toISOString();
+
+      if (editingMeetingId) {
+        const rec = records.find(r => r.id === editingMeetingId);
+        if (rec) {
+          // createdAt is preserved; only the editable fields change
+          rec.description = desc;
+          rec.kind = kind;
+          rec.category = meta.category;
+          rec.nextSteps = nextSteps;
+          rec.entryDate = meetingDate;
+          rec.updatedAt = nowIso;
+        }
+        editingMeetingId = null;
+      } else {
+        records.push({
+          id: "rec_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+          description: desc,
+          category: meta.category,
+          status: meta.status,
+          nextSteps,
+          appIds: [appId],
+          entryDate: meetingDate,      // the meeting's date
+          createdAt: nowIso,           // when it was logged
+          completedAt: meta.status === "Completed" ? nowIso : null,
+          updatedAt: nowIso,
+          source: "mindy-sync",
+          kind
+        });
+      }
+      persistRecords();
+      delete drafts[appId];
+      openForms.delete(appId);
+      renderSyncLists();
+      showToast("Saved to " + (portfolioData.find(a => a.id === appId) || {}).name + " Activity History");
+    }
+
+    function findMeetingApp(recId) {
+      const rec = records.find(r => r.id === recId);
+      return rec && rec.appIds ? rec.appIds[0] : null;
+    }
+
+    function editMeetingRecord(recId) {
+      loadRecords();
+      const rec = records.find(r => r.id === recId);
+      const appId = rec && rec.appIds && rec.appIds[0];
+      if (!rec || !appId) return;
+      editingMeetingId = recId;
+      drafts[appId] = { kind: rec.kind || "note", date: rec.entryDate, desc: rec.description, next: rec.nextSteps || "" };
+      openForms.add(appId);
+      renderSyncLists();
+      const t = document.getElementById(`mf-desc-${appId}`);
+      if (t) t.focus();
+    }
+
+    function setRecordStatus(recId, status) {
+      loadRecords();
+      const rec = records.find(r => r.id === recId);
+      if (!rec) return;
+      rec.status = status;
+      rec.completedAt = status === "Completed" ? (rec.completedAt || new Date().toISOString()) : null;
+      rec.updatedAt = new Date().toISOString();
+      persistRecords();
+      renderSyncLists();
+    }
+
+    function deleteMeetingRecord(recId) {
+      if (!confirm("Delete this record? It will also be removed from the application's Activity History.")) return;
+      loadRecords();
+      records = records.filter(r => r.id !== recId);
+      persistRecords();
+      renderSyncLists();
+      showToast("Record deleted");
+    }
+
+    function toggleLog(appId) {
+      if (expandedLogs.has(appId)) expandedLogs.delete(appId); else expandedLogs.add(appId);
+      renderSyncLists();
+    }
+
+    // The flag is only ever cleared by an explicit user action, never automatically.
+    function resolveMindy(appId) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (!app) return;
+      if (!confirm(`Mark the discussion for ${app.name} as resolved?\n\nThis clears the "Discuss with Mindy" flag on the Portfolio too. All notes, decisions and history are kept.`)) return;
+      patchApp(appId, { discussWithMindy: "No", lastUpdate: "Updated now" });
+      renderSyncLists();
+      showToast(`${app.name} marked resolved. History kept.`);
+    }
+
+    // Keep this view consistent when the Portfolio or Daily page changes data
+    function resync() {
+      // Don't clobber a form the user is typing in
+      const typing = document.activeElement && document.activeElement.closest && document.activeElement.closest(".mf-form");
+      loadRecords();
+      loadPortfolio();
+      if (typing) { pendingRender = true; return; }
+      renderSyncLists();
+    }
+    window.addEventListener("storage", (e) => {
+      if (e.key === RECORDS_KEY || PORTFOLIO_KEYS.includes(e.key)) resync();
+    });
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) resync(); });
+    document.addEventListener("focusout", () => {
+      if (pendingRender) { pendingRender = false; setTimeout(() => { loadRecords(); loadPortfolio(); renderSyncLists(); }, 0); }
+    });
 
     function unflagFollowUp(appId) {
       const app = portfolioData.find(a => a.id === appId);
       if (app) {
-        app.followUp = "No";
-        localStorage.setItem("app_support_portfolio_v3", JSON.stringify(portfolioData));
-        localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
+        // Patch only this field against the latest stored data (never overwrite other pages' changes)
+        patchApp(appId, { followUp: "No", lastUpdate: "Updated now" });
         renderSyncLists();
         showToast(`Cleared follow-up for ${app.name}`);
       }
     }
 
     function loadRecentAccomplishments() {
-      const today = new Date().toISOString().split("T")[0];
+      const today = localToday();
       const savedAcc = localStorage.getItem("app_support_accomplishments_v1");
       if (savedAcc) {
         try {
@@ -703,11 +1141,14 @@
     }
 
     function generateExecutiveBriefing() {
-      const today = new Date().toISOString().split("T")[0];
+      loadRecords();
+      loadPortfolio();
+      const today = localToday();
       const mindyApps = portfolioData.filter(a => a.discussWithMindy === "Yes");
       const followUpApps = portfolioData.filter(a => a.followUp === "Yes");
       const agenda = document.getElementById("mindyAgendaText").value.trim();
       const decisions = document.getElementById("mindyDecisionsText").value.trim();
+      const flat = s => String(s || "").replace(/\n/g, " ").trim();
 
       let md = `# Executive Briefing & Mindy Sync Pack\n`;
       md += `**Date:** ${today} | **Author:** Lead Project/Program Manager | **Audience:** Mindy & Support Leadership\n\n`;
@@ -718,9 +1159,19 @@
       md += `## 2. 🟣 Portfolio Items Flagged to Discuss with Mindy (${mindyApps.length})\n`;
       if (mindyApps.length > 0) {
         mindyApps.forEach(a => {
-          md += `### • ${a.name} (${a.stage}) [Business Unit: ${a.businessUnit || 'Enterprise Solutions'}]\n`;
-          md += `  - **Follow Up Required:** ${a.followUp}\n`;
-          md += `  - **Activity & Context:** ${a.activity ? a.activity.replace(/\n/g, ' ') : "No notes logged."}\n`;
+          const b = computeBrief(a);
+          md += `\n### ${a.name} (${a.stage}) [Business Unit: ${a.businessUnit || 'Enterprise Solutions'}]\n`;
+          md += `- **Follow Up Required:** ${a.followUp}\n`;
+          md += `- **Support & Prioritization Notes:** ${a.activity ? flat(a.activity) : "None logged."}\n`;
+          md += `- **Recent Activity:**\n`;
+          md += b.recent.length
+            ? b.recent.map(h => `  - ${h.meetingDate ? "Meeting " + fmtDay(h.meetingDate) : h.when} · ${h.kind ? kindLabel(h.kind) : h.category} [${h.status}]: ${flat(h.description)}`).join("\n") + "\n"
+            : `  - None recorded.\n`;
+          md += `- **Blockers / Issues:** ` + (b.blockers.length ? "\n" + b.blockers.slice(0, 3).map(h => `  - ${flat(h.description)} [${h.status}]`).join("\n") + "\n" : "None documented.\n");
+          md += `- **Open Questions:** ` + (b.questions.length ? "\n" + b.questions.map(h => `  - ${flat(h.description)}`).join("\n") + "\n" : "None logged.\n");
+          md += `- **Recommended Next Steps:** ` + (b.nextSteps.length ? "\n" + b.nextSteps.map(n => `  - ${n.text}`).join("\n") + "\n" : "None documented.\n");
+          const mtg = b.log;
+          md += `- **Meeting Notes / Decisions / Action Items:** ` + (mtg.length ? "\n" + mtg.map(h => `  - ${fmtDay(h.meetingDate)} · ${kindLabel(h.kind)} [${h.status}]: ${flat(h.description)}${h.nextSteps ? " (Next: " + flat(h.nextSteps) + ")" : ""}`).join("\n") + "\n" : "None recorded.\n");
         });
       } else {
         md += `No portfolio items currently tagged for discussion.\n`;
@@ -729,7 +1180,7 @@
       md += `\n## 3. ⚡ Operational Follow-Up Action Items (${followUpApps.length})\n`;
       if (followUpApps.length > 0) {
         followUpApps.forEach(a => {
-          md += `- **${a.name}** (${a.stage}): ${a.activity ? a.activity.replace(/\n/g, ' ') : "Follow up required."}\n`;
+          md += `- **${a.name}** (${a.stage}): ${a.activity ? flat(a.activity) : "Follow up required."}\n`;
         });
       } else {
         md += `No active follow-up actions flagged.\n`;

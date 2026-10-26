@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monthly Stakeholder Sync Hub | App Support Lead</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card-bg: #161b22;
+      --card-border: #30363d;
+      --card-hover: #1c2128;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #2f81f7;
+      --accent-hover: #58a6ff;
+      --green: #238636;
+      --cyan: #39c5cf;
+      --cyan-bg: rgba(57, 197, 207, 0.15);
+      --cyan-border: rgba(57, 197, 207, 0.4);
+      --orange: #f0883e;
+      --purple: #a371f7;
+      --border-radius: 12px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SF Mono", Menlo, Consolas, Monaco, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      padding: 24px;
+      max-width: 1540px;
+      margin: 0 auto;
+    }
+
+    /* Top Navigation Bar */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--text);
+      background: var(--card-hover);
+    }
+
+    .nav-tab.active {
+      color: #fff;
+      background: var(--cyan-bg);
+      border-color: var(--cyan-border);
+    }
+
+    .header-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .header-title h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .role-badge {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--cyan-bg);
+      color: var(--cyan);
+      border: 1px solid var(--cyan-border);
+    }
+
+    .btn {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--card-border);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--card-hover);
+      border-color: #8b949e;
+    }
+
+    .btn-cyan {
+      background: #1f6feb;
+      border-color: #1f6feb;
+      color: #fff;
+    }
+
+    .btn-cyan:hover {
+      background: #388bfd;
+    }
+
+    /* Layout */
+    .sync-hub-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .sync-hub-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* App Picker Sidebar */
+    .sidebar-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sidebar-search {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      outline: none;
+    }
+    .sidebar-search:focus {
+      border-color: var(--cyan);
+    }
+
+    .bu-filter-select {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .app-sync-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .app-sync-item {
+      padding: 10px 12px;
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .app-sync-item:hover {
+      border-color: var(--cyan);
+      background: var(--card-hover);
+    }
+
+    .app-sync-item.active {
+      border-color: var(--cyan);
+      background: var(--cyan-bg);
+    }
+
+    .app-sync-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .app-sync-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .app-sync-bu {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .has-notes-badge {
+      font-size: 9px;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(35, 134, 54, 0.25);
+      color: #3fb950;
+      border: 1px solid rgba(46, 160, 67, 0.4);
+    }
+
+    /* Main Editor Card */
+    .editor-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .editor-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .app-meta-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 6px;
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+    }
+
+    .sync-date-picker {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .sync-textarea {
+      width: 100%;
+      min-height: 380px;
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 16px;
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.65;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .sync-textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 1px var(--cyan);
+    }
+
+    .template-chips-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip-btn {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chip-btn:hover {
+      border-color: #8b949e;
+      background: var(--card-hover);
+      color: #fff;
+    }
+
+    /* Modal / Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #238636;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+      display: none;
+      animation: fadeIn 0.2s ease;
+      z-index: 100;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(3px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--border-radius);
+      width: 100%;
+      max-width: 780px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .export-pre {
+      background: #0d1117;
+      border: 1px solid var(--card-border);
+      padding: 14px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text);
+      white-space: pre-wrap;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span style="color:var(--accent);">●</span>
+      <span>Application Support Lead</span>
+    </div>
+    <div class="nav-tabs">
+      <a href="app_support_dashboard.html" class="nav-tab">
+        <span>📊 Application Portfolio (21)</span>
+      </a>
+      <a href="monthly_stakeholder_sync.html" class="nav-tab active">
+        <span>🤝 Monthly Stakeholder Sync Hub</span>
+      </a>
+      <a href="daily_standup_log.html" class="nav-tab">
+        <span>📝 Daily Accomplishments & Standup</span>
+      </a>
+      <a href="mindy_sync_briefing.html" class="nav-tab">
+        <span>🟣 Briefing & Mindy Sync Notes</span>
+      </a>
+    </div>
+    <div>
+      <button class="btn btn-cyan" onclick="exportAllMonthlySyncs()">Export All Sync Notes</button>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="header-main">
+    <div class="header-title">
+      <h1>
+        <span>Monthly Stakeholder Sync Hub</span>
+        <span class="role-badge">Stakeholder Alignment</span>
+      </h1>
+      <p style="color:var(--text-muted); font-size:13px; margin-top:4px;">
+        Dedicated area to capture and maintain notes from your recurring monthly syncs with business unit stakeholders across all 21 applications.
+      </p>
+    </div>
+    <div class="header-actions">
+      <a href="app_support_dashboard.html" class="btn">← Back to Portfolio</a>
+      <button class="btn" onclick="saveCurrentSync(true)">Save Notes</button>
+    </div>
+  </div>
+
+  <div class="sync-hub-layout">
+    <!-- Left Sidebar: App Selector -->
+    <div class="sidebar-panel">
+      <input
+        type="text"
+        id="sidebarSearch"
+        class="sidebar-search"
+        placeholder="Filter application..."
+        oninput="renderSidebarList()"
+      />
+      <select id="sidebarBuFilter" class="bu-filter-select" onchange="renderSidebarList()">
+        <option value="ALL">All Business Units</option>
+        <option value="Legal Solutions">Legal Solutions</option>
+        <option value="Production and Post Production">Production and Post Production</option>
+        <option value="Marketing and Publicity Solutions">Marketing and Publicity Solutions</option>
+        <option value="Creative and Business Affairs">Creative and Business Affairs</option>
+        <option value="Studio and Production Finance">Studio and Production Finance</option>
+        <option value="Enterprise Solutions">Enterprise Solutions</option>
+      </select>
+      <div style="font-size:11px; color:var(--text-muted); padding:2px 4px;" id="sidebarCountLabel">
+        Select an application (21 total):
+      </div>
+      <div class="app-sync-list" id="sidebarAppList"></div>
+    </div>
+
+    <!-- Right Side: Sync Notes Editor -->
+    <div class="editor-card">
+      <div class="editor-header-bar">
+        <div>
+          <h2 id="activeAppName" style="font-size:20px; font-weight:700; color:#fff;">Select Application</h2>
+          <div style="display:flex; gap:8px; align-items:center; margin-top:4px;">
+            <span class="app-meta-badge" id="activeAppBU">Business Unit</span>
+            <span class="app-meta-badge" id="activeAppStage">Stage</span>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <label style="font-size:12px; color:var(--text-muted); font-weight:600;">Last Sync Date:</label>
+          <input
+            type="date"
+            id="activeSyncDate"
+            class="sync-date-picker"
+            onchange="onSyncDateChange()"
+          />
+        </div>
+      </div>
+
+      <!-- Quick Section Templates -->
+      <div class="template-chips-bar">
+        <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); align-self:center;">
+          Insert:
+        </span>
+        <button class="chip-btn" onclick="insertSyncTemplate()">+ Monthly Sync Template</button>
+        <button class="chip-btn" onclick="insertBullet('• [Stakeholder Feedback]: ')">+ Feedback</button>
+        <button class="chip-btn" onclick="insertBullet('• [Upcoming Release / Launch]: ')">+ Upcoming Launch</button>
+        <button class="chip-btn" onclick="insertBullet('• [Pain Point / Backlog Request]: ')">+ Pain Point</button>
+        <button class="chip-btn" onclick="insertBullet('• [Action Item - App Support]: ')">+ Action Item</button>
+      </div>
+
+      <textarea
+        id="syncNotesEditor"
+        class="sync-textarea"
+        placeholder="Select an application on the left to view or edit monthly sync notes with stakeholders...&#10;&#10;Capture:&#10;• Key stakeholder attendees & meeting date&#10;• Operational feedback & pain points&#10;• Upcoming business initiatives & launch dependencies&#10;• Backlog / feature requests for engineering&#10;• Agreed follow-up action items"
+        oninput="onSyncNotesInput()"
+      ></textarea>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--text-muted);">
+        <span id="syncSaveStatus">Auto-saved to portfolio storage</span>
+        <span id="syncCharCount">0 characters</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toastNotification" class="toast">Saved successfully!</div>
+
+  <!-- Export Modal -->
+  <div id="exportModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:16px;">Monthly Stakeholder Sync Roll-up (Markdown)</h3>
+        <button class="btn" style="padding: 2px 8px; font-size:14px;" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <pre id="exportContent" class="export-pre"></pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="copyBriefingToClipboard()">Copy to Clipboard</button>
+        <button class="btn btn-cyan" onclick="closeModal()">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let portfolioData = [];
+    let selectedAppId = "astrodocs";
+
+    function normalizeYesNo(val) {
+      if (val === true || val === "Yes" || val === "YES" || val === "yes") return "Yes";
+      return "No";
+    }
+
+    function init() {
+      loadPortfolio();
+      renderSidebarList();
+      selectApp(selectedAppId);
+    }
+
+    function loadPortfolio() {
+      const saved = localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
+      if (saved) {
+        try {
+          portfolioData = JSON.parse(saved);
+        } catch (e) {
+          portfolioData = [];
+        }
+      }
+    }
+
+    function renderSidebarList() {
+      const container = document.getElementById("sidebarAppList");
+      const searchQuery = (document.getElementById("sidebarSearch").value || "").toLowerCase().trim();
+      const buVal = document.getElementById("sidebarBuFilter").value;
+
+      container.innerHTML = "";
+      let count = 0;
+
+      portfolioData.forEach(app => {
+        const matchesSearch = app.name.toLowerCase().includes(searchQuery) ||
+                              (app.businessUnit && app.businessUnit.toLowerCase().includes(searchQuery));
+        const matchesBU = (buVal === "ALL") || (app.businessUnit === buVal);
+
+        if (matchesSearch && matchesBU) {
+          count++;
+          const item = document.createElement("div");
+          const hasNotes = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
+          item.className = "app-sync-item " + (app.id === selectedAppId ? "active" : "");
+          item.onclick = () => selectApp(app.id);
+
+          item.innerHTML = `
+            <div class="app-sync-item-top">
+              <span class="app-sync-name">${app.name}</span>
+              ${hasNotes ? '<span class="has-notes-badge">✓ Notes</span>' : ''}
+            </div>
+            <div class="app-sync-bu">${app.businessUnit || 'Enterprise Solutions'} · ${app.stage}</div>
+          `;
+          container.appendChild(item);
+        }
+      });
+
+      document.getElementById("sidebarCountLabel").textContent = `Showing ${count} of ${portfolioData.length} applications:`;
+    }
+
+    function selectApp(appId) {
+      selectedAppId = appId;
+      const app = portfolioData.find(a => a.id === appId);
+      if (!app) return;
+
+      document.getElementById("activeAppName").textContent = app.name;
+      document.getElementById("activeAppBU").textContent = app.businessUnit || "Enterprise Solutions";
+      document.getElementById("activeAppStage").textContent = app.stage === "LIVE" ? "🟢 Live" : "🔵 Onboarding";
+      document.getElementById("activeSyncDate").value = app.lastSyncDate || "";
+      document.getElementById("syncNotesEditor").value = app.monthlySyncNotes || "";
+
+      updateCharCount();
+      document.getElementById("syncSaveStatus").textContent = `Viewing notes for ${app.name}`;
+
+      // Update sidebar active highlights
+      document.querySelectorAll(".app-sync-item").forEach(el => {
+        const nameText = el.querySelector(".app-sync-name")?.textContent;
+        if (nameText === app.name) {
+          el.classList.add("active");
+        } else {
+          el.classList.remove("active");
+        }
+      });
+    }
+
+    function onSyncNotesInput() {
+      const app = portfolioData.find(a => a.id === selectedAppId);
+      if (app) {
+        app.monthlySyncNotes = document.getElementById("syncNotesEditor").value;
+        app.lastUpdate = "Updated now";
+        savePortfolioData();
+        updateCharCount();
+        document.getElementById("syncSaveStatus").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        renderSidebarList();
+      }
+    }
+
+    function onSyncDateChange() {
+      const app = portfolioData.find(a => a.id === selectedAppId);
+      if (app) {
+        app.lastSyncDate = document.getElementById("activeSyncDate").value;
+        savePortfolioData();
+        showToast(`Updated sync date for ${app.name}`);
+      }
+    }
+
+    function updateCharCount() {
+      const val = document.getElementById("syncNotesEditor").value.trim();
+      document.getElementById("syncCharCount").textContent = `${val.length} characters`;
+    }
+
+    function insertBullet(bullet) {
+      const field = document.getElementById("syncNotesEditor");
+      const text = field.value;
+      if (text.length > 0 && !text.endsWith("\n")) {
+        field.value += "\n" + bullet;
+      } else {
+        field.value += bullet;
+      }
+      field.focus();
+      onSyncNotesInput();
+    }
+
+    function insertSyncTemplate() {
+      const app = portfolioData.find(a => a.id === selectedAppId);
+      const appName = app ? app.name : "Application";
+      const template =
+`### Monthly Stakeholder Sync: ${appName}
+• Stakeholders / Attendees: 
+• Discussion Date: ${new Date().toISOString().split("T")[0]}
+
+#### 1. Stakeholder Feedback & Sentiment
+• 
+
+#### 2. Upcoming Business Initiatives & Launches
+• 
+
+#### 3. Operational Pain Points / Open Tickets
+• 
+
+#### 4. Agreed Action Items & Next Steps
+• `;
+
+      const field = document.getElementById("syncNotesEditor");
+      if (field.value.trim().length > 0) {
+        if (!confirm("Add template to current notes?")) return;
+        field.value += "\n\n" + template;
+      } else {
+        field.value = template;
+      }
+      field.focus();
+      onSyncNotesInput();
+    }
+
+    function savePortfolioData() {
+      localStorage.setItem("app_support_portfolio_v3", JSON.stringify(portfolioData));
+      localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
+    }
+
+    function saveCurrentSync(showToastMsg) {
+      savePortfolioData();
+      if (showToastMsg) showToast("Stakeholder sync notes saved!");
+    }
+
+    function exportAllMonthlySyncs() {
+      const appsWithSync = portfolioData.filter(a => a.monthlySyncNotes && a.monthlySyncNotes.trim().length > 0);
+      let md = `# Application Support: Monthly Stakeholder Sync Digest\n`;
+      md += `**Generated:** ${new Date().toLocaleDateString()} | **Author:** Lead PM / PgM\n\n`;
+
+      if (appsWithSync.length === 0) {
+        md += `No monthly stakeholder sync notes logged yet.\n`;
+      } else {
+        appsWithSync.forEach(a => {
+          md += `## 🤝 ${a.name} (${a.stage}) — ${a.businessUnit || 'Enterprise Solutions'}\n`;
+          if (a.lastSyncDate) md += `*Last Sync Date:* ${a.lastSyncDate}\n\n`;
+          md += `${a.monthlySyncNotes.trim()}\n\n---\n\n`;
+        });
+      }
+
+      document.getElementById("exportContent").textContent = md;
+      document.getElementById("exportModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("exportModal").style.display = "none";
+    }
+
+    function copyBriefingToClipboard() {
+      const text = document.getElementById("exportContent").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("Copied digest to clipboard!");
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toastNotification");
+      toast.textContent = msg;
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 2500);
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
