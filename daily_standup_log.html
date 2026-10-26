@@ -725,6 +725,7 @@
     </div>
   </div>
 
+  <script src="dashboard_data.js"></script>
   <script>
     function localYmd(d) {
       return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -1043,8 +1044,10 @@
           rec.nextSteps = nextSteps;
           rec.appIds = appIds;
           if (rec.status !== status) {
+            const prevStatus = rec.status;
             rec.status = status;
             rec.completedAt = status === "Completed" ? (rec.completedAt || nowIso) : null;
+            if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: status, label: rec.description });
           }
           rec.updatedAt = nowIso;
         }
@@ -1072,10 +1075,12 @@
       loadRecords();
       const rec = records.find(r => r.id === id);
       if (!rec) return;
+      const prevStatus = rec.status;
       rec.status = status;
       rec.completedAt = status === "Completed" ? (rec.completedAt || new Date().toISOString()) : null;
       rec.updatedAt = new Date().toISOString();
       persistRecords();
+      if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: status, label: rec.description });
       renderRecords();
     }
 
@@ -1132,6 +1137,7 @@
             <div class="rec-desc">${esc(r.description)}</div>
             ${r.nextSteps ? `<div class="rec-next"><strong>↳ Next Steps:</strong> ${esc(r.nextSteps)}</div>` : ""}
             <div class="rec-meta">Created ${esc(fmtStamp(r.createdAt))}${r.completedAt ? " · Completed " + esc(fmtStamp(r.completedAt)) : ""}</div>
+            ${window.DashData ? DashData.trailHtml(DashData.eventsForEntity("record", r.id), { id: "rtrail-" + r.id }) : ""}
           </div>`;
       }).join("");
     }

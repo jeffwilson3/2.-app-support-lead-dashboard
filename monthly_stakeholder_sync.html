@@ -558,6 +558,7 @@
     </div>
   </div>
 
+  <script src="dashboard_data.js"></script>
   <script>
     let portfolioData = [];
     let selectedAppId = "astrodocs";
@@ -648,7 +649,7 @@
       if (app) {
         app.monthlySyncNotes = document.getElementById("syncNotesEditor").value;
         app.lastUpdate = "Updated now";
-        savePortfolioData();
+        savePortfolioData(app.id);
         updateCharCount();
         document.getElementById("syncSaveStatus").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         renderSidebarList();
@@ -659,7 +660,7 @@
       const app = portfolioData.find(a => a.id === selectedAppId);
       if (app) {
         app.lastSyncDate = document.getElementById("activeSyncDate").value;
-        savePortfolioData();
+        savePortfolioData(app.id);
         showToast(`Updated sync date for ${app.name}`);
       }
     }
@@ -712,13 +713,42 @@
       onSyncNotesInput();
     }
 
-    function savePortfolioData() {
-      localStorage.setItem("app_support_portfolio_v3", JSON.stringify(portfolioData));
-      localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
+    // Merge ONLY this app's sync fields into the latest stored data. Writing this page's whole
+    // (possibly stale) copy would silently undo flag changes made on the other pages.
+    function savePortfolioData(appId) {
+      let latest = null;
+      try {
+        latest = JSON.parse(localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || "null");
+      } catch (e) { latest = null; }
+      if (!Array.isArray(latest)) {
+        latest = portfolioData;                 // nothing stored yet
+      } else if (appId) {
+        const mine = portfolioData.find(a => a.id === appId);
+        const target = latest.find(a => a.id === appId);
+        if (mine && target) {
+          target.monthlySyncNotes = mine.monthlySyncNotes;
+          target.lastSyncDate = mine.lastSyncDate;
+          target.lastUpdate = mine.lastUpdate;
+        }
+        portfolioData = latest;                 // keep this page's copy current for everything else
+      }
+      const out = JSON.stringify(latest);
+      localStorage.setItem("app_support_portfolio_v3", out);
+      localStorage.setItem("app_support_portfolio_v2", out);
     }
 
+    // Pick up changes made on the other pages (flags, notes) without disturbing what is being typed here
+    window.addEventListener("storage", (e) => {
+      if (e.key === "app_support_portfolio_v3" || e.key === "app_support_portfolio_v2") {
+        loadPortfolio();
+        const ed = document.getElementById("syncNotesEditor");
+        if (ed && document.activeElement === ed) renderSidebarList(); else selectApp(selectedAppId);
+        renderSidebarList();
+      }
+    });
+
     function saveCurrentSync(showToastMsg) {
-      savePortfolioData();
+      savePortfolioData(selectedAppId);
       if (showToastMsg) showToast("Stakeholder sync notes saved!");
     }
 

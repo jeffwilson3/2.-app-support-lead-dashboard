@@ -588,6 +588,7 @@
     </div>
   </div>
 
+  <script src="dashboard_data.js"></script>
   <script>
     let portfolioData = [];
     let mindyNotesData = { agenda: "", decisions: "" };
@@ -805,6 +806,7 @@
           </div>
           <div>${esc(h.description)}</div>
           ${h.nextSteps ? `<div class="brief-next"><strong>↳ Next:</strong> ${esc(h.nextSteps)}</div>` : ""}
+          ${window.DashData ? DashData.trailHtml(DashData.eventsForEntity("record", h.id), { id: "mtrail-" + h.id }) : ""}
         </div>`;
     }
 
@@ -906,6 +908,8 @@
 
             ${logHtml}
           </div>
+
+          ${window.DashData ? DashData.trailHtml(DashData.eventsForEntity("flag", app.id).filter(e => e.field === "discussWithMindy"), { id: "mflag-" + app.id }) : ""}
 
           <div class="app-sync-footer">
             <span>Business Unit: <strong style="color:#fff;">${esc(app.businessUnit || 'Enterprise Solutions')}</strong></span>
@@ -1062,10 +1066,12 @@
       loadRecords();
       const rec = records.find(r => r.id === recId);
       if (!rec) return;
+      const prevStatus = rec.status;
       rec.status = status;
       rec.completedAt = status === "Completed" ? (rec.completedAt || new Date().toISOString()) : null;
       rec.updatedAt = new Date().toISOString();
       persistRecords();
+      if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: status, label: rec.description });
       renderSyncLists();
     }
 
@@ -1088,7 +1094,10 @@
       const app = portfolioData.find(a => a.id === appId);
       if (!app) return;
       if (!confirm(`Mark the discussion for ${app.name} as resolved?\n\nThis clears the "Discuss with Mindy" flag on the Portfolio too. All notes, decisions and history are kept.`)) return;
-      patchApp(appId, { discussWithMindy: "No", lastUpdate: "Updated now" });
+      const prevFlag = app.discussWithMindy;
+      if (patchApp(appId, { discussWithMindy: "No", lastUpdate: "Updated now" }) && window.DashData) {
+        DashData.logChange({ type: "flag", entityId: appId, appIds: [appId], field: "discussWithMindy", from: prevFlag, to: "No", label: app.name });
+      }
       renderSyncLists();
       showToast(`${app.name} marked resolved. History kept.`);
     }
@@ -1114,7 +1123,10 @@
       const app = portfolioData.find(a => a.id === appId);
       if (app) {
         // Patch only this field against the latest stored data (never overwrite other pages' changes)
-        patchApp(appId, { followUp: "No", lastUpdate: "Updated now" });
+        const prevFlag = app.followUp;
+        if (patchApp(appId, { followUp: "No", lastUpdate: "Updated now" }) && window.DashData) {
+          DashData.logChange({ type: "flag", entityId: appId, appIds: [appId], field: "followUp", from: prevFlag, to: "No", label: app.name });
+        }
         renderSyncLists();
         showToast(`Cleared follow-up for ${app.name}`);
       }

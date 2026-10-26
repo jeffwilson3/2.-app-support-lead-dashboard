@@ -323,9 +323,9 @@
 
     /* Apps Grid */
     .apps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-      gap: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       margin-bottom: 24px;
     }
 
@@ -333,12 +333,98 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: var(--border-radius);
-      padding: 16px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+
+    .app-card.open {
+      border-color: rgba(47, 129, 247, 0.55);          /* blue = the currently highlighted application */
+      box-shadow: 0 0 0 1px rgba(47, 129, 247, 0.18);
+    }
+    .app-card.has-followup .app-row { background: linear-gradient(90deg, rgba(240, 136, 62, 0.09), transparent 38%); }
+    .app-card.has-mindy .app-row    { background: linear-gradient(270deg, rgba(163, 113, 247, 0.09), transparent 38%); }
+    .app-card.has-both .app-row     { background: linear-gradient(90deg, rgba(240, 136, 62, 0.09), transparent 30%, transparent 70%, rgba(163, 113, 247, 0.09)); }
+
+    /* ---- Accordion: compact row (always visible) ---- */
+    .app-row {
+      all: unset;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+      width: 100%;
+      min-height: 44px;
+      padding: 9px 14px;
+      cursor: pointer;
+      border-radius: var(--border-radius);
+    }
+    .app-row { transition: background-color 0.15s ease; }
+    .app-card:hover { box-shadow: none; }
+    .app-card.open:hover { box-shadow: 0 0 0 1px rgba(47, 129, 247, 0.18); }
+    .app-row:hover { background-color: rgba(255, 255, 255, 0.045); }
+    .app-card.has-followup .app-row:hover,
+    .app-card.has-mindy .app-row:hover,
+    .app-card.has-both .app-row:hover { background-color: rgba(255, 255, 255, 0.035); }
+    .app-row:hover .row-chevron { color: var(--accent-hover); }
+    .app-row:active { background-color: rgba(255, 255, 255, 0.07); }
+    .app-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .app-card.open .app-row { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid rgba(48, 54, 61, 0.7); }
+    .app-row .app-name { font-size: 15px; }
+    .row-name { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 0 1 auto; }
+    .row-bu {
+      font-size: 12px; color: var(--text-muted);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+    }
+    .row-spacer { flex: 1 1 8px; }
+    .row-flags { display: inline-flex; align-items: center; gap: 6px; }
+    .row-flag {
+      font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; white-space: nowrap;
+    }
+    .row-flag.fu { background: var(--amber-bg); color: #ffb07c; border: 1px solid var(--amber-border); }
+    .row-flag.dm { background: var(--purple-bg); color: #d2a8ff; border: 1px solid var(--purple-border); }
+    .row-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; font-family: var(--font-mono); }
+    .row-chevron { display: inline-flex; color: var(--text-muted); transition: transform 0.15s ease; transform: rotate(-90deg); }
+    .app-card.open .row-chevron { transform: rotate(0deg); color: var(--accent-hover); }
+
+    /* ---- Accordion: expanded body (all original controls live here) ---- */
+    /* Collapsed content stays in the DOM (so unsaved typing is never lost); it is only clipped to 0 height. */
+    .app-collapse {
+      display: grid;
+      grid-template-rows: 0fr;
+      visibility: hidden;
+      transition: grid-template-rows 0.2s ease, visibility 0s linear 0.2s;
+    }
+    .app-card.open .app-collapse {
+      grid-template-rows: 1fr;
+      visibility: visible;
+      transition: grid-template-rows 0.2s ease, visibility 0s linear 0s;
+    }
+    .app-clip { min-height: 0; overflow: hidden; }
+    .app-body {
       display: flex;
       flex-direction: column;
       gap: 12px;
-      transition: all 0.15s ease;
-      position: relative;
+      padding: 14px 16px 16px;
+    }
+
+    .row-draft {
+      font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; white-space: nowrap;
+      background: rgba(210, 153, 34, 0.14); color: #e3b341; border: 1px solid rgba(210, 153, 34, 0.4);
+    }
+    .unsaved-indicator { font-size: 12px; font-weight: 600; color: #e3b341; white-space: nowrap; }
+    .unsaved-indicator.error { color: #ff7b72; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .row-chevron, .app-card, .app-collapse { transition: none !important; }
+    }
+    @media (max-width: 640px) {
+      .row-bu { flex-basis: 100%; order: 5; }
+      .row-spacer { display: none; }
     }
 
     .app-card:hover {
@@ -1038,7 +1124,8 @@
         <span>🟣 Briefing & Mindy Sync Notes</span>
       </a>
     </div>
-    <div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span id="unsavedIndicator" class="unsaved-indicator" role="status" aria-live="polite" style="display:none;"></span>
       <button class="btn btn-primary" onclick="saveAll(true)">Save Changes</button>
     </div>
   </nav>
@@ -1175,6 +1262,7 @@
   <!-- Toast -->
   <div id="toastNotification" class="toast">Saved successfully!</div>
 
+  <script src="dashboard_data.js"></script>
   <script>
     const DEFAULT_PORTFOLIO = [
       // 15 Live Apps
@@ -1220,6 +1308,11 @@
 
     function getLinkedRecords(appId) {
       return sharedRecords.filter(r => Array.isArray(r.appIds) && r.appIds.includes(appId));
+    }
+
+    function flagTrailHtml(appId) {
+      if (!window.DashData) return "";
+      return DashData.trailHtml(DashData.eventsForEntity("flag", appId), { id: "flagtrail-" + appId });
     }
 
     function getHistoryCount(appOrId) {
@@ -1298,7 +1391,7 @@
 
     function createAppCard(app) {
       const card = document.createElement("div");
-      card.className = "app-card " + getCardClass(app);
+      card.className = cardClassName(app);
       card.id = `card-${app.id}`;
       card.dataset.id = app.id;
       card.dataset.name = app.name.toLowerCase();
@@ -1308,16 +1401,27 @@
 
       const hasSync = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
 
+      const isOpen = openId === app.id;
       card.innerHTML = `
-        <div class="app-card-header">
-          <div class="app-name-wrap">
+        <button type="button" class="app-row" id="row-${app.id}" aria-expanded="${isOpen}" aria-controls="body-${app.id}" onclick="toggleCard('${app.id}')">
+          <span class="row-name">
             <span class="app-name">${app.name}</span>
             <span class="stage-pill ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">
               ${app.stage === 'LIVE' ? 'Live' : 'Onboarding'}
             </span>
-          </div>
-        </div>
+          </span>
+          <span class="row-bu" title="Business Unit">${escapeHtml(app.businessUnit || 'Enterprise Solutions')}</span>
+          <span class="row-spacer"></span>
+          <span class="row-draft" id="rowdraft-${app.id}" style="display:none;" title="You typed an activity update that has not been added yet. Open the row and click Save Update.">✎ Unsaved draft</span>
+          <span class="row-flags" id="rowflags-${app.id}">${rowFlagsHtml(app)}</span>
+          <span class="row-date" id="rowdate-${app.id}">${rowDateHtml(app)}</span>
+          <span class="row-chevron" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+          </span>
+        </button>
 
+        <div class="app-collapse" id="body-${app.id}" role="region" aria-labelledby="row-${app.id}" ${isOpen ? "" : "inert"}>
+        <div class="app-clip"><div class="app-body">
         <div class="flags-row" id="flags-${app.id}">
           ${app.followUp === "Yes" ? '<span class="flag-tag flag-followup">⚡ Follow Up Needed</span>' : ''}
           ${app.discussWithMindy === "Yes" ? '<span class="flag-tag flag-mindy">🟣 Discuss with Mindy</span>' : ''}
@@ -1419,14 +1523,14 @@
             </div>
             <div class="update-form-col">
               <label class="update-form-label">Activity Description</label>
-              <textarea class="update-form-textarea" id="update-desc-${app.id}" placeholder="Describe progress, resolution, blocker, or update..."></textarea>
+              <textarea class="update-form-textarea" id="update-desc-${app.id}" oninput="updateUnsavedUI('${app.id}')" placeholder="Describe progress, resolution, blocker, or update..."></textarea>
             </div>
             <div class="update-form-col">
               <label class="update-form-label">Next Steps (Optional)</label>
-              <input type="text" class="update-form-input" id="update-next-${app.id}" placeholder="e.g. Awaiting stakeholder confirmation on Friday..." />
+              <input type="text" class="update-form-input" id="update-next-${app.id}" oninput="updateUnsavedUI('${app.id}')" placeholder="e.g. Awaiting stakeholder confirmation on Friday..." />
             </div>
             <div class="update-form-actions">
-              <button type="button" class="btn-cancel" onclick="toggleAddUpdateForm('${app.id}', false)">Cancel</button>
+              <button type="button" class="btn-cancel" onclick="cancelAddUpdate('${app.id}')">Cancel</button>
               <button type="button" class="btn-save-update" onclick="submitAppUpdate('${app.id}')">Save Update</button>
             </div>
           </div>
@@ -1461,12 +1565,98 @@
           </div>
         </div>
 
+        <div id="flagtrail-${app.id}">${flagTrailHtml(app.id)}</div>
+
         <div class="app-card-footer">
           <span>Business Unit: <strong style="color:#fff;">${app.businessUnit || 'Enterprise Solutions'}</strong></span>
         </div>
+        </div></div></div>
       `;
 
       return card;
+    }
+
+    /* ---- Accordion helpers ---- */
+    // Exactly one application can be open. Nothing is restored on load: every row starts collapsed.
+    let openId = null;
+
+    function cardClassName(app) {
+      return "app-card " + getCardClass(app) + (openId === app.id ? " open" : "");
+    }
+
+    // Only toggles a class / attributes. It never rebuilds the card, so typed-but-unsaved text,
+    // an open "Add Update" form and scroll positions inside the card all survive collapse and re-open.
+    function applyCardState(appId, open) {
+      const card = document.getElementById(`card-${appId}`);
+      const body = document.getElementById(`body-${appId}`);
+      const row = document.getElementById(`row-${appId}`);
+      if (card) card.classList.toggle("open", open);
+      if (body) body.inert = !open;                 // collapsed content can't be tabbed into
+      if (row) row.setAttribute("aria-expanded", String(open));
+    }
+
+    function toggleCard(appId) {
+      const previous = openId;
+      if (previous === appId) {                      // clicking the open row closes it
+        openId = null;
+        applyCardState(appId, false);
+        return;
+      }
+      if (previous) applyCardState(previous, false); // opening another closes the previous one
+      openId = appId;
+      applyCardState(appId, true);
+      keepRowInView(appId);
+    }
+
+    // When the previously open card sits above the new one, its collapse shifts the page up.
+    // After the 0.2s transition, bring the clicked row back into view only if it ended up off-screen.
+    function keepRowInView(appId) {
+      setTimeout(() => {
+        if (openId !== appId) return;
+        const row = document.getElementById(`row-${appId}`);
+        if (!row || !row.getBoundingClientRect) return;
+        const top = row.getBoundingClientRect().top;
+        if (top < 0 || top > window.innerHeight - 80) {
+          const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          row.scrollIntoView({ block: "start", behavior: calm ? "auto" : "smooth" });
+        }
+      }, 230);
+    }
+
+    function rowFlagsHtml(app) {
+      return (app.followUp === "Yes" ? '<span class="row-flag fu">⚡ Follow Up</span>' : "") +
+             (app.discussWithMindy === "Yes" ? '<span class="row-flag dm">🟣 Mindy</span>' : "");
+    }
+
+    // Most recent dated activity: this app's Activity History plus linked shared records.
+    // (Edits to the notes box are not timestamped by the dashboard, so they are not counted.)
+    function latestActivityTs(app) {
+      let t = 0;
+      (app.activityHistory || []).forEach(e => { const v = Date.parse(e.isoDate); if (v > t) t = v; });
+      getLinkedRecords(app.id).forEach(r => {
+        [r.createdAt, r.updatedAt].forEach(x => { const v = Date.parse(x); if (v > t) t = v; });
+      });
+      return t;
+    }
+
+    function rowDateHtml(app) {
+      const t = latestActivityTs(app);
+      if (!t) return "";
+      const d = new Date(t);
+      const sameYear = d.getFullYear() === new Date().getFullYear();
+      const short = d.toLocaleDateString(undefined, sameYear ? { month: "short", day: "numeric" } : { month: "short", day: "numeric", year: "numeric" });
+      const full = d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" }) + " at " +
+                   d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+      return `<span title="Most recent activity: ${escapeHtml(full)}">Updated ${escapeHtml(short)}</span>`;
+    }
+
+    function updateRowMeta(appId) {
+      const app = portfolioData.find(a => a.id === appId);
+      if (!app) return;
+      const f = document.getElementById(`rowflags-${appId}`);
+      const d = document.getElementById(`rowdate-${appId}`);
+      if (f) f.innerHTML = rowFlagsHtml(app);
+      if (d) d.innerHTML = rowDateHtml(app);
     }
 
     function toggleSyncBox(appId) {
@@ -1569,6 +1759,7 @@
             <div class="activity-entry-next"><strong>↳ Next Steps:</strong> ${escapeHtml(rec.nextSteps)}</div>
           ` : ''}
           ${otherApps.length ? `<div class="linked-also">Also linked to: ${escapeHtml(otherApps.join(", "))}</div>` : ''}
+          ${window.DashData ? DashData.trailHtml(DashData.eventsForEntity("record", rec.id), { id: "trail-" + currentAppId + "-" + rec.id }) : ''}
         </div>
       `;
     }
@@ -1628,6 +1819,7 @@
       container.innerHTML = renderAppHistoryHtml(app, wasExpanded);
       const badge = document.getElementById(`hist-count-${appId}`);
       if (badge) badge.textContent = getHistoryCount(app);
+      updateRowMeta(appId);
     }
 
     function refreshAllHistories() {
@@ -1638,6 +1830,7 @@
       loadSharedRecords();
       const rec = sharedRecords.find(r => r.id === recId);
       if (!rec) return;
+      const prevStatus = rec.status;
       rec.status = newStatus;
       rec.updatedAt = new Date().toISOString();
       if (newStatus === "Completed") {
@@ -1646,6 +1839,7 @@
         rec.completedAt = null;
       }
       localStorage.setItem(RECORDS_KEY, JSON.stringify(sharedRecords));
+      if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: newStatus, label: rec.description });
       (rec.appIds || []).forEach(refreshAppHistory);
       showToast("Status updated (synced with Daily Accomplishments)");
     }
@@ -1685,9 +1879,29 @@
         if (!app) return;
         const fu = normalizeYesNo(s.followUp);
         const dm = normalizeYesNo(s.discussWithMindy);
+        let touched = false;
         if (app.followUp !== fu || app.discussWithMindy !== dm) {
           app.followUp = fu;
           app.discussWithMindy = dm;
+          touched = true;
+        }
+        // Stakeholder-sync fields are edited on the Monthly Sync Hub page. Pull them in too, otherwise
+        // this page's 15-second autosave would write its older copy back over the newer notes.
+        const notes = s.monthlySyncNotes !== undefined ? s.monthlySyncNotes : app.monthlySyncNotes;
+        const sdate = s.lastSyncDate !== undefined ? s.lastSyncDate : app.lastSyncDate;
+        if (notes !== app.monthlySyncNotes || sdate !== app.lastSyncDate) {
+          app.monthlySyncNotes = notes;
+          app.lastSyncDate = sdate;
+          const card = document.getElementById(`card-${app.id}`);
+          if (card) {
+            const ta = card.querySelector(".sync-notes-input");
+            const di = card.querySelector(".sync-date-row input[type=date]");
+            if (ta && document.activeElement !== ta) ta.value = notes || "";
+            if (di && document.activeElement !== di) di.value = sdate || "";
+          }
+          touched = true;
+        }
+        if (touched) {
           refreshCardVisuals(app.id);
           changed = true;
         }
@@ -1779,11 +1993,13 @@
       if (countBadge) {
         countBadge.textContent = getHistoryCount(app);
       }
+      updateRowMeta(appId);
 
       // Reset & close form
       if (descField) descField.value = "";
       if (nextField) nextField.value = "";
       toggleAddUpdateForm(appId, false);
+      updateUnsavedUI(appId);
 
       showToast(`Activity logged for ${app.name}`);
     }
@@ -1791,7 +2007,9 @@
     function setAppFollowUp(appId, val) {
       const app = portfolioData.find(a => a.id === appId);
       if (app) {
+        const prev = app.followUp;
         app.followUp = val;
+        if (window.DashData) DashData.logChange({ type: "flag", entityId: app.id, appIds: [app.id], field: "followUp", from: prev, to: val, label: app.name });
         app.lastUpdate = "Updated now";
         saveAll(false);
         refreshCardVisuals(appId);
@@ -1804,7 +2022,9 @@
     function setAppDiscussWithMindy(appId, val) {
       const app = portfolioData.find(a => a.id === appId);
       if (app) {
+        const prev = app.discussWithMindy;
         app.discussWithMindy = val;
+        if (window.DashData) DashData.logChange({ type: "flag", entityId: app.id, appIds: [app.id], field: "discussWithMindy", from: prev, to: val, label: app.name });
         app.lastUpdate = "Updated now";
         saveAll(false);
         refreshCardVisuals(appId);
@@ -1848,11 +2068,15 @@
 
       const card = document.getElementById(`card-${appId}`);
       if (card) {
-        card.className = "app-card " + getCardClass(app);
+        card.className = cardClassName(app);
         card.dataset.followup = app.followUp;
         card.dataset.mindy = app.discussWithMindy;
 
         const hasSync = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
+
+        const ftEl = document.getElementById(`flagtrail-${appId}`);
+        if (ftEl) ftEl.innerHTML = flagTrailHtml(appId);
+        updateRowMeta(appId);
 
         // Flags row
         const flagsRow = document.getElementById(`flags-${appId}`);
@@ -1902,21 +2126,112 @@
       }
     }
 
-    function saveAll(showNotification) {
-      localStorage.setItem("app_support_portfolio_v3", JSON.stringify(portfolioData));
-      localStorage.setItem("app_support_portfolio_v2", JSON.stringify(portfolioData));
-      if (showNotification) {
-        showToast("Portfolio changes saved!");
+    // ---- Unsaved-state tracking ----
+    // Notes, toggles and sync notes are written to storage on every keystroke/click (see the handlers),
+    // so they are never "pending". The only things that can be unsaved are:
+    //   1) Add Update drafts (text typed into an update form but not yet saved with "Save Update"), and
+    //   2) a failed storage write (e.g. browser storage full), where edits exist only on screen.
+    let saveFailed = false;
+
+    function draftHasText(appId) {
+      const d = document.getElementById(`update-desc-${appId}`);
+      const n = document.getElementById(`update-next-${appId}`);
+      return Boolean((d && String(d.value).trim()) || (n && String(n.value).trim()));
+    }
+
+    function draftApps() {
+      return portfolioData.filter(a => draftHasText(a.id));
+    }
+
+    function hasUnsavedChanges() {
+      return saveFailed || draftApps().length > 0;
+    }
+
+    // Updates the "✎ Unsaved draft" chip on a row (when appId is given) and the indicator next to Save Changes
+    function updateUnsavedUI(appId) {
+      const ids = appId ? [appId] : portfolioData.map(a => a.id);
+      ids.forEach(id => {
+        const chip = document.getElementById(`rowdraft-${id}`);
+        if (chip) chip.style.display = draftHasText(id) ? "inline-flex" : "none";
+      });
+      const ind = document.getElementById("unsavedIndicator");
+      if (!ind) return;
+      const n = draftApps().length;
+      if (saveFailed) {
+        ind.className = "unsaved-indicator error";
+        ind.textContent = "⚠ Not saved to this browser";
+        ind.style.display = "inline";
+      } else if (n) {
+        ind.className = "unsaved-indicator";
+        ind.textContent = `✎ ${n} unsaved update draft${n > 1 ? "s" : ""}`;
+        ind.style.display = "inline";
+      } else {
+        ind.style.display = "none";
+        ind.textContent = "";
       }
     }
 
+    // Cancel is an explicit choice to discard, so it asks first when there is text to lose.
+    function cancelAddUpdate(appId) {
+      if (draftHasText(appId) && !confirm("Discard this update draft? The text you typed will be lost.")) return;
+      const d = document.getElementById(`update-desc-${appId}`);
+      const n = document.getElementById(`update-next-${appId}`);
+      if (d) d.value = "";
+      if (n) n.value = "";
+      toggleAddUpdateForm(appId, false);
+      updateUnsavedUI(appId);
+    }
+
+    function resetDraftNote() {
+      const n = draftApps().length;
+      return n ? `⚠ ${n} unsaved update draft${n > 1 ? "s" : ""} will also be discarded.\n\n` : "";
+    }
+
+    // Writes the whole portfolio (every application, expanded or collapsed) and verifies it by reading it back.
+    function saveAll(showNotification) {
+      let ok = true;
+      try {
+        const out = JSON.stringify(portfolioData);
+        localStorage.setItem("app_support_portfolio_v3", out);
+        localStorage.setItem("app_support_portfolio_v2", out);
+        ok = localStorage.getItem("app_support_portfolio_v3") === out && localStorage.getItem("app_support_portfolio_v2") === out;
+      } catch (e) {
+        ok = false;
+      }
+      saveFailed = !ok;
+      updateUnsavedUI();
+      if (showNotification) {
+        if (!ok) {
+          alert("Your changes could NOT be saved to this browser (storage may be full or blocked).\n\nThey are still on screen. Use 💾 Data to export a backup, or free some browser storage, then click Save Changes again.");
+        } else {
+          const n = draftApps().length;
+          showToast(n
+            ? `Saved. ${n} update draft${n > 1 ? "s" : ""} not added yet. Click Save Update on each to keep ${n > 1 ? "them" : "it"}.`
+            : "Portfolio changes saved!");
+        }
+      }
+      return ok;
+    }
+
+    // Warn before leaving (closing the tab, refreshing, or following a link) while something is unsaved.
+    // Browsers show their own generic wording; custom text is not allowed.
+    window.addEventListener("beforeunload", (e) => {
+      if (!hasUnsavedChanges()) return;
+      e.preventDefault();
+      e.returnValue = "";
+    });
+
     function resetDefaultsConfirm() {
-      if (confirm("Reset application portfolio back to default state? Custom notes will be reset.")) {
+      if (confirm(resetDraftNote() + "Reset application portfolio back to default state?\n\nCustom notes and activity history on the cards will be cleared. A backup file is downloaded and a restore point is saved first, so this can be undone from 💾 Data.")) {
+        if (window.DashData && !DashData.safeguard("Before Reset Portfolio")) {
+          alert("Reset cancelled: a restore point could not be saved (browser storage may be full). Your data was not changed.");
+          return;
+        }
         portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
-        saveAll(true);
         renderPortfolio();
         updateMetrics();
         setQuickFilter('ALL');
+        saveAll(true);
       }
     }
 
