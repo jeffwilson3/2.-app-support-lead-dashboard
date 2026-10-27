@@ -1269,14 +1269,55 @@ function wrCollect(apps, start, end) {
         activityDate: day, completionDate: e.status === "Completed" ? day : ""
       });
     });
-    if (a.monthlySyncNotes && String(a.monthlySyncNotes).trim() && a.lastSyncDate && a.lastSyncDate >= start && a.lastSyncDate <= end) {
-      items.push({
-        key: "s:" + a.id + ":" + a.lastSyncDate, origin: "sync", appIds: [a.id], kind: null,
-        category: "Stakeholder sync", status: "Logged",
-        description: "Monthly stakeholder sync held; notes captured in the dashboard",
-        nextSteps: "", activityDate: a.lastSyncDate, completionDate: ""
+    let meetStore = {};
+    try {
+      meetStore = JSON.parse(localStorage.getItem("app_support_stakeholder_meetings_v1") || "{}");
+    } catch (e) {}
+
+    if (meetStore[a.id] && Array.isArray(meetStore[a.id].meetings)) {
+      meetStore[a.id].meetings.forEach(m => {
+        const act = m.date || wrIsoToYmd(m.createdAt);
+        if (!act) return;
+        
+        (m.feedback || []).forEach(f => {
+          if (!String(f.text).trim()) return;
+          items.push({
+            key: "mf:" + f.id, origin: "meeting-sync", appIds: [a.id], kind: "note",
+            category: "Stakeholder Feedback", status: "In Progress",
+            description: f.text, nextSteps: "", activityDate: act, completionDate: ""
+          });
+        });
+        (m.initiatives || []).forEach(i => {
+          if (!String(i.text).trim()) return;
+          items.push({
+            key: "mi:" + i.id, origin: "meeting-sync", appIds: [a.id], kind: null,
+            category: "Initiative", status: "In Progress",
+            description: i.text, nextSteps: "", activityDate: act, completionDate: ""
+          });
+        });
+        (m.issues || []).forEach(i => {
+          if (!String(i.text).trim()) return;
+          items.push({
+            key: "ms:" + i.id, origin: "meeting-sync", appIds: [a.id], kind: null,
+            category: "Issue", status: "Pending",
+            description: i.text, nextSteps: "", activityDate: act, completionDate: ""
+          });
+        });
+        (m.actions || []).forEach(actItem => {
+          if (!String(actItem.action).trim() && !String(actItem.owner).trim() && !actItem.due) return;
+          let ns = [];
+          if (String(actItem.owner).trim()) ns.push("Owner: " + actItem.owner.trim());
+          if (actItem.due) ns.push("Due: " + actItem.due);
+          items.push({
+            key: "ma:" + actItem.id, origin: "meeting-sync", appIds: [a.id], kind: "action",
+            category: "Action Item", status: actItem.status || "Pending",
+            description: String(actItem.action).trim() || "Action item (no description provided)", 
+            nextSteps: ns.join(" · "), activityDate: act, completionDate: actItem.status === "Completed" ? act : ""
+          });
+        });
       });
     }
+
   });
 
   (records || []).forEach(r => {
@@ -1302,7 +1343,7 @@ function wrCollect(apps, start, end) {
 
 // Each documented activity is reported once, even if it exists in more than one section
 function wrDedupe(items) {
-  const rank = { daily: 0, mindy: 0, portfolio: 1, sync: 1, dailylog: 2, "dailylog-priority": 2 };
+  const rank = { daily: 0, mindy: 0, "meeting-sync": 1, portfolio: 2, sync: 2, dailylog: 3, "dailylog-priority": 3 };
   const sorted = items.slice().sort((a, b) => (rank[a.origin] ?? 3) - (rank[b.origin] ?? 3));
   const out = [], byKey = new Map();
   const isFree = it => it.origin === "dailylog" || it.origin === "dailylog-priority";
