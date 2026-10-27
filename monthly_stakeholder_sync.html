@@ -350,7 +350,7 @@
     .mn-meeting-tools .btn { padding: 5px 10px; font-size: 12px; }
     .mn-meeting-tools select { max-width: 220px; }
     .mn-danger { color: #ff7b72; }
-    .mn-meta-grid { display: grid; grid-template-columns: 170px minmax(0, 1fr) 210px; gap: 12px; }
+    .mn-meta-grid { display: grid; grid-template-columns: 210px 150px minmax(0, 1fr) 210px; gap: 12px; }
     .mn-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
     .mn-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
     .mn-input {
@@ -711,6 +711,13 @@
         </div>
         <div class="mn-meta-grid">
           <label class="mn-field">
+            <span class="mn-label">Meeting type</span>
+            <select id="mnMeetingType" class="mn-input" onchange="onMetaInput('type', this.value)">
+              <option value="Monthly Stakeholder Sync">Monthly Stakeholder Sync</option>
+              <option value="Ticket Cleanup Sync">Ticket Cleanup Sync</option>
+            </select>
+          </label>
+          <label class="mn-field">
             <span class="mn-label">Meeting date</span>
             <input type="date" id="activeSyncDate" class="mn-input" oninput="onMetaInput('date', this.value)" />
           </label>
@@ -908,7 +915,7 @@
     }
 
     function emptyMeeting(date) {
-      return { id: uid("m"), date: date || localYmd(new Date()), attendees: "",
+      return { id: uid("m"), date: date || localYmd(new Date()), type: "Monthly Stakeholder Sync", attendees: "",
                feedback: [], initiatives: [], issues: [], actions: [], notes: "",
                createdAt: new Date().toISOString(), updatedAt: null };
     }
@@ -966,7 +973,7 @@
     function meetingToText(m) {
       if (!meetingHasContent(m)) return "";
       const L = [];
-      L.push("Monthly stakeholder sync — " + (m.date ? fmtDay(m.date) : "date not set"));
+      L.push((m.type || "Monthly Stakeholder Sync") + " — " + (m.date ? fmtDay(m.date) : "date not set"));
       if (String(m.attendees || "").trim()) L.push("Attendees: " + m.attendees.trim());
       SECTIONS.forEach(s => {
         const items = (m[s.key] || []).map(e => String(e.text || "").trim()).filter(Boolean);
@@ -1131,6 +1138,7 @@
       const rec = getRec(selectedAppId);
       const m = currentMeeting();
       renderMeetingSelect(rec);
+      document.getElementById("mnMeetingType").value = m.type || "Monthly Stakeholder Sync";
       document.getElementById("activeSyncDate").value = m.date || "";
       document.getElementById("mnAttendees").value = m.attendees || "";
       updateSavedLabel();
@@ -1478,7 +1486,7 @@
     function exportAllMonthlySyncs() {
       flushSave();
       const lines = [];
-      lines.push("Application Support — Monthly Stakeholder Sync Digest");
+      lines.push("Application Support — Stakeholder Sync Digest");
       lines.push("Generated " + new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" }));
       let n = 0;
       portfolioData.forEach(a => {
@@ -1520,7 +1528,10 @@ var ER_MONTHS = ["January", "February", "March", "April", "May", "June", "July",
   "August", "September", "October", "November", "December"];
 var ER_MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 var ER_GREETING = "Hi team,";
-var ER_INTRO = "Thank you for joining our monthly stakeholder sync. Below is a summary of our discussion and agreed next steps.";
+var getIntro = function(type) {
+  var t = (type || "Monthly Stakeholder Sync").toLowerCase();
+  return "Thank you for joining our " + t + ". Below is a summary of our discussion and agreed next steps.";
+};
 var ER_CLOSING = "Please let me know if anything was missed or requires clarification.";
 
 function erEsc(s) {
@@ -1604,8 +1615,9 @@ function erActionItems(arr) {
 function buildEmailRecap(app, meeting) {
   app = app || {};
   meeting = meeting || {};
+  var type = String(meeting.type || "Monthly Stakeholder Sync").trim();
   var subject = String(app.name == null ? "" : app.name).trim() +
-    " | Monthly Stakeholder Sync Recap \u2013 " + (erLongDate(meeting.date) || "Date Not Set");
+    " | " + type + " Recap \u2013 " + (erLongDate(meeting.date) || "Date Not Set");
 
   var sections = [
     { key: "feedback", title: "Stakeholder Feedback", items: erTextItems(meeting.feedback) },
@@ -1616,8 +1628,8 @@ function buildEmailRecap(app, meeting) {
 
   var p = function (t) { return "<p style=\"margin:0 0 12px 0;\">" + t + "</p>"; };
   var html = "<div style=\"font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;\">" +
-    p(erEsc(ER_GREETING)) + p(erEsc(ER_INTRO));
-  var text = [ER_GREETING, ER_INTRO];
+    p(erEsc(ER_GREETING)) + p(erEsc(getIntro(meeting.type)));
+  var text = [ER_GREETING, getIntro(meeting.type)];
   sections.forEach(function (s) {
     html += p("<strong>" + erEsc(s.title) + "</strong>") +
       "<ul style=\"margin:0 0 12px 0;padding-left:20px;\">" +
