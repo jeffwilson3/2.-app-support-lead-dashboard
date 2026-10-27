@@ -351,6 +351,50 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+
+    /* Structured Editor CSS */
+    .mn-sections { display: flex; flex-direction: column; gap: 14px; }
+    .mn-sec {
+      background: #0d1117; border: 1px solid var(--card-border); border-radius: 10px;
+      padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .mn-sec-head { display: flex; align-items: center; gap: 8px; }
+    .mn-sec-head h3 { font-size: 14px; font-weight: 700; color: #fff; margin: 0; }
+    .mn-sec-icon { font-size: 15px; }
+    .mn-count { font-size: 11px; color: var(--text-muted); background: rgba(255, 255, 255, 0.08); border-radius: 999px; padding: 1px 7px; }
+    .mn-count:empty { display: none; }
+    .mn-entries { display: flex; flex-direction: column; gap: 6px; }
+    .mn-entry { display: flex; align-items: flex-start; gap: 8px; }
+    .mn-entry::before {
+      content: ""; flex: none; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--text-muted); opacity: 0.6; margin-top: 15px;
+    }
+    .mn-entry-text {
+      flex: 1; resize: none; overflow: hidden; box-sizing: border-box;
+      background: var(--card-bg); border: 1px solid transparent; color: var(--text);
+      font-family: var(--font-sans); font-size: 13px; line-height: 1.5; border-radius: 6px;
+      padding: 7px 10px; outline: none; min-height: 34px; width: 100%;
+      transition: border-color 0.15s ease;
+    }
+    .mn-entry-text:hover { border-color: var(--card-border); }
+    .mn-entry-text:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+    .mn-remove {
+      flex: none; width: 28px; height: 28px; margin-top: 3px; border-radius: 6px;
+      border: 1px solid transparent; background: transparent; color: var(--text-muted);
+      font-size: 16px; line-height: 1; cursor: pointer; opacity: 0.5; transition: all 0.15s ease;
+    }
+    .mn-entry:hover .mn-remove, .mn-remove:focus-visible { opacity: 1; }
+    .mn-remove:hover { color: #ff7b72; border-color: rgba(248, 81, 73, 0.4); background: rgba(248, 81, 73, 0.1); }
+    .mn-add {
+      align-self: flex-start; background: transparent; border: 1px dashed var(--card-border);
+      color: var(--accent-hover); font-size: 12px; font-weight: 600; padding: 5px 12px;
+      border-radius: 6px; cursor: pointer; transition: all 0.15s ease;
+    }
+    .mn-add:hover { border-color: var(--accent); background: rgba(47, 129, 247, 0.08); }
+    .mn-empty { font-size: 12px; color: var(--text-muted); font-style: italic; padding: 2px 0 2px 13px; }
+    .mn-notes { min-height: 70px; resize: vertical; overflow: auto; border-color: var(--card-border); }
+    .mn-hint { font-size: 11px; color: var(--text-muted); }
+
     /* Structured (linkable) accomplishments */
     .rec-section {
       margin-top: 22px;
@@ -508,6 +552,112 @@
     .wr-ref-label { font-size: 12px; font-weight: 600; }
     .wr-ref-text { font-size: 11px; color: var(--text-muted); }
     .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+/* ================= Email Recap tab (er-*) ================= */
+.er-tablist { display: flex; gap: 4px; border-bottom: 1px solid var(--card-border); margin: -8px 0 0; flex-wrap: wrap; }
+.er-tab {
+  background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  color: var(--text-muted); font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+  padding: 8px 14px; cursor: pointer; border-radius: 6px 6px 0 0; transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.er-tab:hover { color: var(--text); background: var(--card-hover); }
+.er-tab[aria-selected="true"] { color: #fff; border-bottom-color: var(--accent); }
+.er-tab:focus { outline: none; }
+.er-tab:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: -2px; }
+.er-panel { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.er-panel[hidden], .er-panel [hidden] { display: none !important; }
+.er-panel:focus { outline: none; }
+.er-panel:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: 4px; border-radius: 6px; }
+
+.er-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-bottom: 16px; border-bottom: 1px solid var(--card-border); }
+.er-title { font-size: 20px; font-weight: 700; color: #fff; margin: 0; }
+.er-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+.er-head .btn, .er-stale .btn, .er-subject-row .btn { padding: 5px 10px; font-size: 12px; }
+
+.er-stale {
+  background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.35); border-radius: 8px;
+  padding: 10px 14px; font-size: 12px; line-height: 1.5; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+}
+
+.er-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.er-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+.er-subject-row { display: flex; gap: 8px; align-items: center; min-width: 0; }
+.er-subject {
+  flex: 1; min-width: 0; box-sizing: border-box; background: #0d1117; border: 1px solid var(--card-border); color: var(--text);
+  font-family: var(--font-sans); font-size: 13px; border-radius: 6px; padding: 7px 10px; outline: none;
+}
+.er-subject:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+/* Light "paper" compose card: roughly what the recipient sees, inside the dark page. */
+.er-compose {
+  max-width: 720px; width: 100%; box-sizing: border-box; background: #ffffff; color: #1f2328;
+  border: 1px solid #d0d7de; border-radius: 8px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); overflow: hidden;
+}
+.er-compose-row { display: flex; align-items: center; gap: 10px; padding: 8px 16px; border-bottom: 1px solid #d8dee4; min-width: 0; }
+.er-compose-label { font-size: 13px; font-weight: 600; color: #57606a; min-width: 56px; }
+.er-compose .er-subject { background: #ffffff; color: #1f2328; border: 1px solid transparent; font-size: 14px; font-weight: 600; }
+.er-compose .er-subject:hover { border-color: #d0d7de; }
+.er-compose .er-subject:focus { border-color: #2f81f7; box-shadow: 0 0 0 1px #2f81f7; }
+.er-toolbar { display: flex; gap: 2px; flex-wrap: wrap; align-items: center; padding: 6px 12px; background: #f6f8fa; border-bottom: 1px solid #d8dee4; }
+.er-tool {
+  min-width: 30px; height: 28px; padding: 0 8px; border: 1px solid transparent; border-radius: 4px; background: transparent;
+  color: #1f2328; font-family: var(--font-sans); font-size: 13px; cursor: pointer; transition: background 0.15s;
+}
+.er-tool:hover { background: #eaeef2; border-color: #d0d7de; }
+.er-tool:focus { outline: none; }
+.er-tool:focus-visible { outline: 2px solid #2f81f7; outline-offset: 1px; }
+.er-tool-sep { width: 1px; height: 18px; background: #d0d7de; margin: 0 4px; }
+.er-preview {
+  width: 100%; box-sizing: border-box; min-height: 260px; background: #ffffff; color: #1f2328; padding: 24px 28px;
+  font-family: Calibri, Carlito, "Segoe UI", -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+  font-size: 15px; line-height: 1.6; overflow-wrap: anywhere; outline: none; cursor: text;
+}
+.er-preview:focus { box-shadow: inset 0 0 0 2px #2f81f7; }
+.er-preview p { margin: 0 0 12px; }
+.er-preview strong, .er-preview b { color: inherit; font-weight: 700; }
+.er-preview ul { margin: 0 0 14px; padding-left: 24px; list-style: disc; }
+.er-preview ol { margin: 0 0 14px; padding-left: 24px; list-style: decimal; }
+.er-preview li { margin: 0 0 4px; }
+.er-preview > :last-child { margin-bottom: 0; }
+
+.er-statusline { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; font-size: 12px; color: var(--text-muted); }
+.er-badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; border: 1px solid var(--card-border); color: var(--text-muted); }
+.er-badge.er-badge-edited { color: #e3b341; border-color: rgba(227, 179, 65, 0.5); background: rgba(227, 179, 65, 0.1); }
+.er-versions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.er-versions select {
+  background: #0d1117; color: var(--text); border: 1px solid var(--card-border); border-radius: 6px; padding: 5px 8px;
+  font-family: var(--font-sans); font-size: 12px; max-width: 100%;
+}
+.er-versions select:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: 1px; }
+.er-versions .btn { padding: 5px 10px; font-size: 12px; }
+.er-decision {
+  border: 1px solid var(--accent); background: rgba(47, 129, 247, 0.1); border-radius: 8px; padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--text); max-width: 720px; box-sizing: border-box;
+}
+.er-decision strong { color: #fff; font-size: 14px; }
+.er-decision-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.er-decision-actions .btn { padding: 5px 12px; font-size: 12px; }
+
+.er-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.er-note { font-size: 12px; color: var(--text-muted); }
+
+.er-empty {
+  border: 1px dashed var(--card-border); border-radius: 8px; padding: 32px 20px; text-align: center;
+  color: var(--text-muted); font-size: 13px; line-height: 1.6; display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.er-empty strong { color: var(--text); font-size: 14px; }
+
+.er-copy-buffer { position: fixed; left: -9999px; top: 0; width: 1px; height: 1px; overflow: hidden; opacity: 0; color: #000; background: #fff; }
+
+@media (max-width: 900px) {
+  .er-preview { padding: 16px; min-height: 200px; }
+  .er-compose-row { flex-wrap: wrap; padding: 8px 12px; }
+  .er-toolbar { padding: 6px 8px; }
+  .er-subject-row { flex-wrap: wrap; }
+  .er-subject { flex-basis: 100%; }
+  .er-tab { padding: 8px 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .er-tab, .er-tool { transition: none; }
   </style>
 </head>
 <body>
@@ -557,9 +707,11 @@
 
   <!-- Layout -->
   <div class="log-layout">
-    <!-- Main Editor -->
-    <div class="editor-card">
-      <div class="date-control-bar">
+    <!-- Compact Daily Activity Dashboard -->
+    <div class="editor-card" id="activityDashboard">
+      
+      <!-- Top Summary & Navigation -->
+      <div class="date-control-bar" style="margin-bottom: 0;">
         <div class="date-nav-group">
           <button class="btn" onclick="stepDate(-1)">← Previous Day</button>
           <input type="date" id="datePicker" class="date-input" onchange="onDateChange()" />
@@ -570,100 +722,142 @@
           Tuesday, Oct 20, 2026
         </div>
       </div>
-
-      <!-- Quick Template Chips -->
-      <div class="quick-chips-bar">
-        <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-muted); align-self:center;">
-          Insert:
-        </span>
-        <button class="chip-btn" onclick="insertBullet('• [App/Project]: ')">
-          + Standup Item
-        </button>
-        <button class="chip-btn" onclick="insertBullet('• [Escalation Resolved]: ')">
-          + Escalation
-        </button>
-        <button class="chip-btn" onclick="insertBullet('• [Release / Sign-off]: ')">
-          + Milestone Sign-off
-        </button>
-        <button class="chip-btn" onclick="insertBullet('• [SLA / Incident Review]: ')">
-          + SLA / Incident
-        </button>
-        <button class="chip-btn" onclick="insertBullet('• [Mindy Sync Prep]: ')">
-          + Mindy Sync Note
-        </button>
-        <button class="chip-btn" onclick="insertTemplate()">
-          + Standard Daily Template
-        </button>
-      </div>
-
-      <div class="textarea-container">
-        <textarea
-          id="accomplishmentsText"
-          class="main-textarea"
-          placeholder="Type what you accomplished today...&#10;&#10;Examples:&#10;• Led morning App Support triage; resolved Apple Ticketing Tool onboarding bottleneck&#10;• Polaris Deal Tracker: Completed finance SLA review with stakeholders&#10;• Frame IO & Scenechronize: Signed off on production patch deployment&#10;• Prepared agenda for Mindy weekly sync on team capacity and Q4 roadmap"
-          oninput="onInputText()"
-        ></textarea>
-      </div>
-
-      <div class="editor-footer">
-        <span id="saveStatus">Auto-saved to local memory</span>
-        <span id="charCount">0 words · 0 chars</span>
-      </div>
-
-      <!-- Structured accomplishments (optionally linked to applications) -->
-      <div class="rec-section">
-        <div class="rec-section-head">
-          <div>
-            <div class="rec-title">🔗 Linked Accomplishments <span id="recCountBadge" class="rec-sub"></span></div>
-            <div class="rec-sub">Optionally link to one or more applications, or leave general. One shared record, shown here and in each application's Activity History.</div>
-          </div>
-          <button class="btn btn-primary" onclick="openRecForm()">+ Add Accomplishment</button>
+      
+      <!-- Metrics -->
+      <div style="display: flex; gap: 16px; margin: 20px 0; padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); border-radius: 8px;">
+        <div style="flex: 1; text-align: center;">
+          <div style="font-size: 24px; font-weight: 700; color: #fff;" id="metricLogged">0</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Activities Logged</div>
         </div>
+        <div style="width: 1px; background: var(--card-border);"></div>
+        <div style="flex: 1; text-align: center;">
+          <div style="font-size: 24px; font-weight: 700; color: #fff;" id="metricCompleted">0</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Completed</div>
+        </div>
+        <div style="width: 1px; background: var(--card-border);"></div>
+        <div style="flex: 1; text-align: center;">
+          <div style="font-size: 24px; font-weight: 700; color: #fff;" id="metricApps">0</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Apps Linked</div>
+        </div>
+      </div>
 
-        <div class="rec-form" id="recForm">
+      <!-- Header & Add Button -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h2 style="font-size: 16px; font-weight: 600; margin: 0; color: #fff;">Activity Timeline</h2>
+        <button class="btn btn-primary" onclick="openRecForm()">+ Add Activity</button>
+      </div>
+
+      <!-- Filters -->
+      <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; background: rgba(255,255,255,0.02); padding: 8px; border: 1px solid var(--card-border); border-radius: 8px; align-items: center;">
+        <span style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Filter:</span>
+        <select id="filterApp" class="rec-select" style="max-width: 150px; font-size: 12px; padding: 4px 8px; height: 28px;" onchange="renderRecords()">
+          <option value="ALL">All Applications</option>
+          <option value="GENERAL">General (No App)</option>
+          <option value="amity">AMITY</option>
+          <option value="atlas">ATLAS</option>
+          <option value="appleticketing">Apple Ticketing Tool</option>
+          <option value="astrodocs">AstroDocs</option>
+          <option value="circa">Circa</option>
+          <option value="columba">Columba</option>
+          <option value="cudos">Cudos</option>
+          <option value="frameio">Frame IO</option>
+          <option value="givingtree">Giving Tree</option>
+          <option value="juno">Juno</option>
+          <option value="kroma">Kroma</option>
+          <option value="polaris">Polaris: Deal Tracker</option>
+          <option value="portalplus">Portal+</option>
+          <option value="scenechronize">Scenechronize</option>
+          <option value="screenbooker">Screen Booker</option>
+          <option value="siriusplus">Sirius+</option>
+          <option value="touchstone">Touchstone</option>
+          <option value="vetter">Vetter</option>
+          <option value="watchlist">Watchlist</option>
+          <option value="iscript">iScript</option>
+          <option value="mycalls">myCalls</option>
+        </select>
+        <select id="filterCategory" class="rec-select" style="max-width: 140px; font-size: 12px; padding: 4px 8px; height: 28px;" onchange="renderRecords()">
+          <option value="ALL">All Categories</option>
+          <option value="Accomplishment">Accomplishment</option>
+          <option value="Update">Update</option>
+          <option value="Issue">Issue</option>
+          <option value="Enhancement">Enhancement</option>
+          <option value="Follow-Up">Follow-Up</option>
+          <option value="Blocker">Blocker</option>
+          <option value="Decision">Decision</option>
+        </select>
+        <select id="filterStatus" class="rec-select" style="max-width: 130px; font-size: 12px; padding: 4px 8px; height: 28px;" onchange="renderRecords()">
+          <option value="ALL">All Statuses</option>
+          <option value="Completed">Completed</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Pending">Pending</option>
+          <option value="Blocked">Blocked</option>
+        </select>
+        <button class="btn" style="padding: 4px 10px; font-size: 12px; height: 28px; margin-left: auto;" onclick="resetFilters()">Clear</button>
+      </div>
+
+      <!-- Add/Edit Form (Hidden by default) -->
+      <div class="rec-form" id="recForm" style="display: none; background: #0d1117; margin-bottom: 20px;">
+        <div class="rec-grid" style="grid-template-columns: 1fr auto; align-items: end;">
           <div class="rec-col">
-            <label class="rec-label" id="recFormTitle">New accomplishment</label>
-            <textarea class="rec-textarea" id="recDesc" placeholder="What did you accomplish?"></textarea>
+            <label class="rec-label" id="recFormTitle" style="margin-bottom:0;">New activity</label>
           </div>
-          <div class="rec-grid">
-            <div class="rec-col">
-              <label class="rec-label">Category</label>
-              <select class="rec-select" id="recCategory">
-                <option>Accomplishment</option>
-                <option>Update</option>
-                <option>Issue</option>
-                <option>Enhancement</option>
-                <option>Follow-Up</option>
-                <option>Blocker</option>
-                <option>Decision</option>
-              </select>
+          <div class="rec-col" style="align-items: flex-end;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <label class="rec-label" style="margin:0;">Activity Date</label>
+                <input type="date" id="recDate" class="date-input" style="padding: 4px 8px; border-radius:4px; border:1px solid var(--card-border); background:var(--bg); color:var(--text); color-scheme:dark;" onchange="saveActivityDraft()" />
             </div>
-            <div class="rec-col">
-              <label class="rec-label">Status</label>
-              <select class="rec-select" id="recStatus">
-                <option>Completed</option>
-                <option>In Progress</option>
-                <option>Pending</option>
-                <option>Blocked</option>
-              </select>
-            </div>
-          </div>
-          <div class="rec-col">
-            <label class="rec-label">Next Steps (optional)</label>
-            <input class="rec-input" id="recNext" type="text" placeholder="e.g. Share summary with stakeholders Friday" />
-          </div>
-          <div class="rec-col">
-            <label class="rec-label">Link to applications (optional, none = general)</label>
-            <div class="app-pick-wrap" id="recAppPicker"></div>
-          </div>
-          <div class="rec-actions">
-            <button class="btn" onclick="closeRecForm()">Cancel</button>
-            <button class="btn btn-primary" onclick="saveRecord()">Save</button>
           </div>
         </div>
-
-        <div id="recList" style="display:flex; flex-direction:column; gap:8px;"></div>
+        <div class="rec-col">
+          <textarea class="rec-textarea" id="recDesc" placeholder="Activity description (Required)" oninput="saveActivityDraft()"></textarea>
+        </div>
+        <div class="rec-grid">
+          <div class="rec-col">
+            <label class="rec-label">Category</label>
+            <select class="rec-select" id="recCategory" onchange="saveActivityDraft()">
+              <option>Accomplishment</option>
+              <option>Update</option>
+              <option>Issue</option>
+              <option>Enhancement</option>
+              <option>Follow-Up</option>
+              <option>Blocker</option>
+              <option>Decision</option>
+            </select>
+          </div>
+          <div class="rec-col">
+            <label class="rec-label">Status</label>
+            <select class="rec-select" id="recStatus" onchange="saveActivityDraft()">
+              <option>Completed</option>
+              <option>In Progress</option>
+              <option>Pending</option>
+              <option>Blocked</option>
+            </select>
+          </div>
+        </div>
+        <div class="rec-col">
+          <label class="rec-label">Next Steps (Optional)</label>
+          <input type="text" class="rec-textarea" id="recNext" placeholder="What needs to happen next?" style="height:34px;" oninput="saveActivityDraft()">
+        </div>
+        <div class="rec-col">
+          <label class="rec-label">Linked Applications (Optional)</label>
+          <div class="multi-select-container" id="appMultiSelect">
+            <select id="legacyAppSelect" multiple style="display:none;"></select>
+            <div class="multi-select-input-area" onclick="document.getElementById('appSearchInput').focus()">
+              <div id="selectedAppChips" class="selected-chips"></div>
+              <input type="text" id="appSearchInput" class="multi-select-input" placeholder="Search applications..." oninput="onAppSearchInput()" onfocus="showAppDropdown()" onkeydown="onAppSearchKey(event)">
+            </div>
+            <div id="appDropdown" class="multi-select-dropdown" style="display:none;"></div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+          <button class="btn" onclick="closeRecForm()">Cancel</button>
+          <button class="btn btn-primary" onclick="saveRecord()">Save Activity</button>
+        </div>
       </div>
+
+      <!-- List -->
+      <div id="recList" class="rec-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+
     </div>
 
     <!-- History Sidebar -->
@@ -773,102 +967,302 @@
       loadDateEntry(selectedDate);
     }
 
+    const SECTIONS = [
+      { key: "focus", title: "Today's Focus & Key Accomplishments", icon: "🎯", noun: "accomplishment", ph: "What did you accomplish today?", empty: "No focus or accomplishments captured yet." },
+      { key: "escalations", title: "Escalations & Blockers Cleared", icon: "🚧", noun: "escalation", ph: "Any blockers cleared or escalations resolved?", empty: "No escalations or blockers captured." },
+      { key: "syncs", title: "Team, Stakeholder & Vendor Syncs", icon: "🤝", noun: "sync", ph: "Meetings or syncs held today...", empty: "No syncs captured." },
+      { key: "nextDay", title: "Next Day Priorities", icon: "⏭️", noun: "priority", ph: "What's the plan for tomorrow?", empty: "No next day priorities captured." }
+    ];
+
+    let currentStructuredLog = emptyStandup();
+
+    function uid(p) { return (p || "e") + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+    function emptyStandup() {
+      return { focus: [], escalations: [], syncs: [], nextDay: [], notes: "" };
+    }
+
+    function parseDailyLegacy(text) {
+      const st = emptyStandup();
+      if (!text) return st;
+      let cur = null;
+      const sectionFor = h => {
+        h = String(h).toLowerCase();
+        if (/focus|accomplishment/.test(h)) return "focus";
+        if (/escalation|blocker/.test(h)) return "escalations";
+        if (/sync|team|stakeholder|vendor/.test(h)) return "syncs";
+        if (/priorit|next day|tomorrow/.test(h)) return "nextDay";
+        return null;
+      };
+      const leftovers = [];
+      String(text).split("\n").forEach(raw => {
+        let line = raw.trim();
+        if (!line) return;
+        const h = line.match(/^#{1,6}\s*(.*)$/);
+        if (h) {
+          const t = h[1].replace(/^\d+[.)]\s*/, "").trim();
+          cur = sectionFor(t);
+          if (!cur && t) leftovers.push(t);
+          return;
+        }
+        line = line.replace(/^[•\u2022\-\*]+\s*/, "").trim();
+        if (!line) return;
+        if (/^(none|n\/a|na|nothing|tbd)\.?$/i.test(line)) return; 
+        
+        if (cur) {
+          st[cur].push({ id: uid("e"), text: line });
+        } else {
+          leftovers.push(line);
+        }
+      });
+      st.notes = leftovers.join("\n");
+      return st;
+    }
+
+    function serializeDaily(st) {
+      const L = [];
+      SECTIONS.forEach(sec => {
+        const items = (st[sec.key] || []).map(e => String(e.text || "").trim()).filter(Boolean);
+        if (items.length) {
+          L.push("### " + sec.title);
+          items.forEach(t => L.push("• " + t));
+          L.push("");
+        }
+      });
+      if (String(st.notes || "").trim()) {
+        L.push(st.notes.trim());
+      }
+      return L.join("\n").trim();
+    }
+
     function loadDateEntry(dateStr) {
       const [y, m, d] = dateStr.split("-").map(Number);
+      if (typeof erOnContextChange === "function") erOnContextChange();
       const dateObj = new Date(y, m - 1, d);
       document.getElementById("formattedDateLabel").textContent = dateObj.toLocaleDateString(undefined, {
         weekday: "long", year: "numeric", month: "short", day: "numeric"
       });
 
-      const field = document.getElementById("accomplishmentsText");
-      field.value = accomplishmentsByDate[dateStr] || "";
-      updateCounters();
-      document.getElementById("saveStatus").textContent = `Viewing entry for ${dateStr}`;
+      renderRecords();
       highlightActiveHistoryItem();
-      if (typeof renderRecords === "function") renderRecords();
     }
-
+    
     function onInputText() {
-      const text = document.getElementById("accomplishmentsText").value;
+      // Re-serialize the structured log to markdown text
+      const text = serializeDaily(currentStructuredLog);
+      
       accomplishmentsByDate[selectedDate] = text;
       localStorage.setItem("app_support_accomplishments_v1", JSON.stringify(accomplishmentsByDate));
+      
+      // We also update a dummy text field for backward compatibility with email recap
+      const fakeTextarea = document.getElementById("accomplishmentsText");
+      if(fakeTextarea) { fakeTextarea.value = text; }
+
       updateCounters();
       document.getElementById("saveStatus").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
       renderHistoryList();
     }
 
     function updateCounters() {
-      const text = document.getElementById("accomplishmentsText").value.trim();
+      const text = serializeDaily(currentStructuredLog);
       const words = text ? text.split(/\s+/).length : 0;
       document.getElementById("charCount").textContent = `${words} words · ${text.length} chars`;
     }
 
-    function insertBullet(bullet) {
-      const field = document.getElementById("accomplishmentsText");
-      const text = field.value;
-      if (text.length > 0 && !text.endsWith("\n")) {
-        field.value += "\n" + bullet;
+    /* Structured UI Rendering */
+    function entryHtml(s, e) {
+      return `<div class="mn-entry" data-id="${esc(e.id)}">
+          <textarea class="mn-entry-text" rows="1" placeholder="${esc(s.ph)}" aria-label="${esc(s.title)} entry"
+            data-sec="${s.key}" data-id="${esc(e.id)}" oninput="onEntryInput(this)" onkeydown="onEntryKey(event, this)">${esc(e.text)}</textarea>
+          <button type="button" class="mn-remove" title="Remove" aria-label="Remove entry" onclick="removeEntry('${s.key}', '${esc(e.id)}')">×</button>
+        </div>`;
+    }
+
+    function sectionHtml(s, m) {
+      const items = m[s.key] || [];
+      return `<section class="mn-sec" data-sec="${s.key}" aria-label="${esc(s.title)}">
+          <header class="mn-sec-head"><span class="mn-sec-icon" aria-hidden="true">${s.icon}</span><h3>${esc(s.title)}</h3><span class="mn-count">${items.length || ""}</span></header>
+          <div class="mn-entries">${items.length ? items.map(e => entryHtml(s, e)).join("") : `<div class="mn-empty">${esc(s.empty)}</div>`}</div>
+          <button type="button" class="mn-add" onclick="addEntry('${s.key}')">+ Add ${esc(s.noun)}</button>
+        </section>`;
+    }
+
+    function notesSectionHtml(m) {
+      if (!String(m.notes || "").trim()) return "";
+      return `<section class="mn-sec" data-sec="notes" aria-label="Additional notes">
+          <header class="mn-sec-head"><span class="mn-sec-icon" aria-hidden="true">🗒️</span><h3>Additional Notes</h3></header>
+          <div class="mn-hint">Earlier free-form notes that did not fit one of the sections above. Clear this box to remove it.</div>
+          <textarea class="mn-entry-text mn-notes" aria-label="Additional notes" oninput="onNotesInput(this)">${esc(m.notes)}</textarea>
+        </section>`;
+    }
+
+    function renderStructuredEditor() {
+      document.getElementById("mnSections").innerHTML = 
+        SECTIONS.map(s => sectionHtml(s, currentStructuredLog)).join("") + notesSectionHtml(currentStructuredLog);
+      
+      // Inject dummy textarea for email recap compatibility
+      if(!document.getElementById("accomplishmentsText")) {
+          const t = document.createElement("textarea");
+          t.id = "accomplishmentsText";
+          t.style.display = "none";
+          t.value = serializeDaily(currentStructuredLog);
+          document.body.appendChild(t);
       } else {
-        field.value += bullet;
+          document.getElementById("accomplishmentsText").value = serializeDaily(currentStructuredLog);
       }
-      field.focus();
+
+      document.querySelectorAll("#mnSections textarea").forEach(autosize);
+    }
+    
+    function rerenderSection(key) {
+      const el = document.querySelector(`#mnSections .mn-sec[data-sec="${key}"]`);
+      if (!el) { renderStructuredEditor(); return; }
+      const s = SECTIONS.find(x => x.key === key);
+      el.outerHTML = sectionHtml(s, currentStructuredLog);
+      document.querySelectorAll(`#mnSections .mn-sec[data-sec="${key}"] textarea`).forEach(autosize);
+    }
+    
+    function autosize(el) {
+      if (!el || el.classList.contains("mn-notes")) return;
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + 2 + "px";
+    }
+
+    function focusEnd(el) {
+      if (!el) return;
+      el.focus();
+      const n = (el.value || "").length;
+      try { el.setSelectionRange(n, n); } catch (e) {}
+    }
+
+    function findEntry(sec, id) { return (currentStructuredLog[sec] || []).find(e => e.id === id); }
+
+    function onEntryInput(el) {
+      const e = findEntry(el.dataset.sec, el.dataset.id);
+      if (!e) return;
+      e.text = el.value;
+      autosize(el);
       onInputText();
     }
 
-    function insertTemplate() {
-      const template =
-`### Today's Focus & Key Accomplishments
-• 
+    function addEntry(sec, afterId) {
+      const list = currentStructuredLog[sec];
+      const e = { id: uid("e"), text: "" };
+      const i = afterId ? list.findIndex(x => x.id === afterId) : -1;
+      if (i >= 0) list.splice(i + 1, 0, e); else list.push(e);
+      rerenderSection(sec);
+      focusEnd(document.querySelector(`textarea[data-sec="${sec}"][data-id="${e.id}"]`));
+      onInputText();
+    }
 
-### Escalations & Blockers Cleared
-• None
+    function removeEntry(sec, id, quiet) {
+      const list = currentStructuredLog[sec];
+      const i = list.findIndex(x => x.id === id);
+      if (i < 0) return;
+      if (!quiet && String(list[i].text || "").trim() && !confirm("Remove this entry?")) return;
+      const prev = list[i - 1];
+      list.splice(i, 1);
+      rerenderSection(sec);
+      if (quiet && prev) focusEnd(document.querySelector(`textarea[data-sec="${sec}"][data-id="${prev.id}"]`));
+      onInputText();
+    }
 
-### Team, Stakeholder & Vendor Syncs
-• 
-
-### Next Day Priorities
-• `;
-      const field = document.getElementById("accomplishmentsText");
-      if (field.value.trim().length > 0) {
-        if (!confirm("Add daily template to current notes?")) return;
-        field.value += "\n\n" + template;
-      } else {
-        field.value = template;
+    function onEntryKey(ev, el) {
+      if (ev.key === "Enter" && !ev.shiftKey && !ev.isComposing) {
+        ev.preventDefault();
+        addEntry(el.dataset.sec, el.dataset.id);
+      } else if (ev.key === "Backspace" && el.value === "") {
+        ev.preventDefault();
+        removeEntry(el.dataset.sec, el.dataset.id, true);
       }
-      field.focus();
+    }
+    
+    function onNotesInput(el) {
+      currentStructuredLog.notes = el.value;
       onInputText();
     }
 
     function renderHistoryList() {
       const container = document.getElementById("historyListContainer");
+      if (!container) return;
       container.innerHTML = "";
 
-      const keys = Object.keys(accomplishmentsByDate).filter(k => (accomplishmentsByDate[k] || "").trim().length > 0);
-      keys.sort((a, b) => b.localeCompare(a));
+      const q = (document.getElementById("historySearch").value || "").toLowerCase();
+      const fromD = document.getElementById("historyFrom").value;
+      const toD = document.getElementById("historyTo").value;
 
-      document.getElementById("historyCountBadge").textContent = `${keys.length} logged`;
+      // Group records by entryDate
+      const dateGroups = {};
+      records.forEach(r => {
+        const d = r.entryDate || r.createdAt.split('T')[0];
+        if (!dateGroups[d]) dateGroups[d] = { total: 0, completed: 0, items: [] };
+        dateGroups[d].items.push(r);
+        dateGroups[d].total++;
+        if (r.status === "Completed") dateGroups[d].completed++;
+      });
+
+      // Also include any dates from legacy accomplishmentsByDate just in case they haven't been converted to activities
+      Object.keys(accomplishmentsByDate).forEach(d => {
+        if (!dateGroups[d] && accomplishmentsByDate[d].trim().length > 0) {
+           dateGroups[d] = { total: 0, completed: 0, items: [], legacyText: accomplishmentsByDate[d] };
+        }
+      });
+
+      let keys = Object.keys(dateGroups);
+
+      // Apply Filters
+      keys = keys.filter(k => {
+        if (fromD && k < fromD) return false;
+        if (toD && k > toD) return false;
+        
+        const grp = dateGroups[k];
+        if (q) {
+           let matches = false;
+           if (grp.legacyText && grp.legacyText.toLowerCase().includes(q)) matches = true;
+           if (grp.items.some(r => (r.description && r.description.toLowerCase().includes(q)) || (r.nextSteps && r.nextSteps.toLowerCase().includes(q)))) matches = true;
+           return matches;
+        }
+        return true;
+      });
+
+      keys.sort((a, b) => b.localeCompare(a)); // Newest first
+
+      document.getElementById("historyCountBadge").textContent = `${keys.length} day${keys.length !== 1 ? 's' : ''}`;
 
       if (keys.length === 0) {
-        container.innerHTML = `<div style="font-size:12px; color:var(--text-muted); padding:10px;">No historical logs yet. Type above to record today's accomplishments.</div>`;
+        container.innerHTML = `<div style="font-size:12px; color:var(--text-muted); padding:10px; text-align:center; font-style:italic;">No recorded activities match.</div>`;
         return;
       }
 
       keys.forEach(k => {
+        const grp = dateGroups[k];
         const item = document.createElement("div");
         item.className = "history-item " + (k === selectedDate ? "active" : "");
+        
+        // Let's create a nice formatted date
+        const parts = k.split('-');
+        let displayDate = k;
+        if (parts.length === 3) {
+            const dObj = new Date(parts[0], parts[1]-1, parts[2]);
+            displayDate = dObj.toLocaleDateString(undefined, {month:"short", day:"numeric", year:"numeric"});
+        }
+
         item.onclick = () => {
           selectedDate = k;
           document.getElementById("datePicker").value = k;
           loadDateEntry(k);
+          renderHistoryList();
         };
 
-        const firstLine = (accomplishmentsByDate[k] || "").trim().split("\n")[0] || "Empty entry";
+        const metricsHtml = grp.total > 0 
+           ? `<div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${grp.total} activities · ${grp.completed} completed</div>`
+           : `<div style="font-size:11px; color:var(--text-muted); margin-top:4px; font-style:italic;">Legacy notes only</div>`;
 
         item.innerHTML = `
           <div class="history-item-date">
-            <span>${k}</span>
+            <span>${escapeHtml(displayDate)}</span>
           </div>
-          <div class="history-item-snippet">${firstLine.replace(/[#*•]/g, '').trim()}</div>
+          ${metricsHtml}
         `;
         container.appendChild(item);
       });
@@ -934,6 +1328,26 @@
     let editingRecId = null;
     let pickedAppIds = new Set();
 
+    const DRAFT_KEY = "app_support_activity_draft_v1";
+
+    function saveActivityDraft() {
+      if (editingRecId) return; // Only draft "New" activities
+      const draft = {
+        desc: document.getElementById("recDesc").value,
+        category: document.getElementById("recCategory").value,
+        status: document.getElementById("recStatus").value,
+        nextSteps: document.getElementById("recNext").value,
+        date: document.getElementById("recDate").value,
+        appIds: Array.from(pickedAppIds)
+      };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    }
+
+    function clearActivityDraft() {
+      localStorage.removeItem(DRAFT_KEY);
+    }
+
+
     function loadRecords() {
       try {
         const parsed = JSON.parse(localStorage.getItem(RECORDS_KEY) || "[]");
@@ -946,20 +1360,7 @@
     }
 
     function loadPortfolioApps() {
-      portfolioApps = [];
-      for (const k of PORTFOLIO_KEYS) {
-        const raw = localStorage.getItem(k);
-        if (!raw) continue;
-        try {
-          const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed) && parsed.length) {
-            portfolioApps = parsed.map(a => ({ id: a.id, name: a.name, stage: a.stage }));
-            return;
-          }
-        } catch (e) {}
-      }
-      // Portfolio not opened yet in this browser: fall back to the known 21 applications
-      portfolioApps = [
+      const baseApps = [
         ["astrodocs","AstroDocs","LIVE"],["atlas","ATLAS","LIVE"],["circa","Circa","LIVE"],["columba","Columba","LIVE"],
         ["frameio","Frame IO","LIVE"],["givingtree","Giving Tree","LIVE"],["iscript","iScript","LIVE"],["juno","Juno","LIVE"],
         ["mycalls","myCalls","LIVE"],["polaris","Polaris: Deal Tracker","LIVE"],["portalplus","Portal+","LIVE"],
@@ -968,6 +1369,28 @@
         ["cudos","Cudos","ONBOARDING"],["kroma","Kroma","ONBOARDING"],["siriusplus","Sirius+","ONBOARDING"],
         ["watchlist","Watchlist","ONBOARDING"]
       ].map(([id, name, stage]) => ({ id, name, stage }));
+      
+      portfolioApps = [...baseApps];
+      
+      for (const k of PORTFOLIO_KEYS) {
+        const raw = localStorage.getItem(k);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              parsed.forEach(p => {
+                if (!portfolioApps.some(a => a.id === p.id)) {
+                  portfolioApps.push({ id: p.id, name: p.name, stage: p.stage });
+                }
+              });
+              break;
+            }
+          } catch(e) {}
+        }
+      }
+      
+      portfolioApps.sort((a, b) => a.name.localeCompare(b.name));
+      populateAppFilter();
     }
 
     function appName(id) {
@@ -992,19 +1415,127 @@
       loadPortfolioApps();
       renderAppPicker();
       renderRecords();
+      renderHistoryList();
     }
+
+    let appDropdownFocusedIndex = -1;
 
     function renderAppPicker() {
-      const wrap = document.getElementById("recAppPicker");
-      wrap.innerHTML = portfolioApps.map(a =>
-        `<span class="app-pick ${pickedAppIds.has(a.id) ? "selected" : ""}" data-id="${esc(a.id)}" onclick="togglePick('${esc(a.id)}')">${esc(a.name)}</span>`
-      ).join("");
+      const chipContainer = document.getElementById("selectedAppChips");
+      if (!chipContainer) return;
+      
+      const legacySelect = document.getElementById("legacyAppSelect");
+      if (legacySelect) {
+        legacySelect.innerHTML = portfolioApps.map(a => `<option value="${esc(a.id)}" ${pickedAppIds.has(a.id) ? "selected" : ""}>${esc(a.name)}</option>`).join("");
+      }
+
+      chipContainer.innerHTML = Array.from(pickedAppIds).map(id => {
+        const app = portfolioApps.find(a => a.id === id);
+        const name = app ? app.name : id;
+        return `<span class="app-chip">🔗 ${esc(name)} <button type="button" class="chip-remove" title="Remove" aria-label="Remove ${esc(name)}" onclick="removeAppPick('${esc(id)}')">&times;</button></span>`;
+      }).join("");
+      renderAppDropdown();
     }
 
-    function togglePick(id) {
-      if (pickedAppIds.has(id)) pickedAppIds.delete(id); else pickedAppIds.add(id);
+    function removeAppPick(id) {
+      pickedAppIds.delete(id);
       renderAppPicker();
+      saveActivityDraft();
+      document.getElementById("appSearchInput").focus();
     }
+
+    function showAppDropdown() {
+      document.getElementById("appDropdown").style.display = "block";
+      renderAppDropdown();
+    }
+
+    function hideAppDropdown() {
+      // Small timeout to allow clicks on dropdown items to fire before it disappears
+      setTimeout(() => {
+        const dd = document.getElementById("appDropdown");
+        if (dd) dd.style.display = "none";
+      }, 150);
+    }
+
+    function onAppSearchInput() {
+      appDropdownFocusedIndex = -1;
+      showAppDropdown();
+    }
+
+    function renderAppDropdown() {
+      const dd = document.getElementById("appDropdown");
+      if (!dd) return;
+      const query = (document.getElementById("appSearchInput").value || "").toLowerCase();
+      
+      const available = portfolioApps.filter(a => !pickedAppIds.has(a.id) && a.name.toLowerCase().includes(query));
+      
+      if (available.length === 0) {
+        dd.innerHTML = `<div style="padding:8px 12px; font-size:12px; color:var(--text-muted); font-style:italic;">No matching applications found</div>`;
+        return;
+      }
+      
+      dd.innerHTML = available.map((a, idx) => `
+        <div class="dropdown-item ${idx === appDropdownFocusedIndex ? 'focused' : ''}" onmousedown="selectAppFromDropdown('${esc(a.id)}')">
+          <span>${esc(a.name)}</span>
+          <span class="stage-badge">${a.stage === 'LIVE' ? 'Live' : 'Onboarding'}</span>
+        </div>
+      `).join("");
+    }
+
+    function selectAppFromDropdown(id) {
+      pickedAppIds.add(id);
+      const input = document.getElementById("appSearchInput");
+      if (input) input.value = "";
+      appDropdownFocusedIndex = -1;
+      renderAppPicker();
+      saveActivityDraft();
+    }
+
+    function onAppSearchKey(e) {
+      const dd = document.getElementById("appDropdown");
+      const isVisible = dd && dd.style.display !== "none";
+      
+      const query = (document.getElementById("appSearchInput").value || "").toLowerCase();
+      const available = portfolioApps.filter(a => !pickedAppIds.has(a.id) && a.name.toLowerCase().includes(query));
+      
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (!isVisible) {
+          showAppDropdown();
+        } else {
+          appDropdownFocusedIndex = (appDropdownFocusedIndex + 1) % available.length;
+          renderAppDropdown();
+        }
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (isVisible) {
+          appDropdownFocusedIndex = (appDropdownFocusedIndex - 1 + available.length) % available.length;
+          renderAppDropdown();
+        }
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (isVisible && appDropdownFocusedIndex >= 0 && available[appDropdownFocusedIndex]) {
+          selectAppFromDropdown(available[appDropdownFocusedIndex].id);
+        } else if (isVisible && available.length === 1) {
+          selectAppFromDropdown(available[0].id);
+        }
+      } else if (e.key === "Backspace" && document.getElementById("appSearchInput").value === "") {
+        const arr = Array.from(pickedAppIds);
+        if (arr.length > 0) {
+          removeAppPick(arr[arr.length - 1]);
+        }
+      } else if (e.key === "Escape") {
+        hideAppDropdown();
+      }
+    }
+    
+    document.addEventListener("mousedown", (e) => {
+      const container = document.getElementById("appMultiSelect");
+      if (container && !container.contains(e.target)) {
+        const dd = document.getElementById("appDropdown");
+        if (dd) dd.style.display = "none";
+      }
+    });
 
     function openRecForm(rec) {
       editingRecId = rec ? rec.id : null;
@@ -1016,33 +1547,43 @@
       pickedAppIds = new Set(rec ? (rec.appIds || []) : []);
       renderAppPicker();
       document.getElementById("recForm").style.display = "flex";
+      const asi = document.getElementById("appSearchInput"); if (asi) asi.value = "";
       document.getElementById("recDesc").focus();
     }
 
     function closeRecForm() {
       document.getElementById("recForm").style.display = "none";
-      editingRecId = null;
-      pickedAppIds = new Set();
+      if (editingRecId) {
+        // We were editing an existing record, clear state so we don't pollute the next "New" form
+        editingRecId = null;
+        pickedAppIds = new Set();
+      }
+      // If we are cancelling a "New" activity, the DOM text remains and gets picked up by openRecForm(null) next time
     }
 
     function saveRecord() {
       const desc = document.getElementById("recDesc").value.trim();
-      if (!desc) { showToast("Please describe the accomplishment first."); return; }
+      if (!desc) { 
+        showToast("Please describe the activity first."); 
+        document.getElementById("recDesc").focus();
+        return; 
+      }
       loadRecords(); // re-read so changes made on the portfolio page are not overwritten
       const category = document.getElementById("recCategory").value;
       const status = document.getElementById("recStatus").value;
       const nextSteps = document.getElementById("recNext").value.trim();
+      const entryDate = document.getElementById("recDate").value || selectedDate;
       const appIds = Array.from(pickedAppIds);
       const nowIso = new Date().toISOString();
 
       if (editingRecId) {
         const rec = records.find(r => r.id === editingRecId);
         if (rec) {
-          // createdAt and entryDate are intentionally preserved
           rec.description = desc;
           rec.category = category;
           rec.nextSteps = nextSteps;
           rec.appIds = appIds;
+          rec.entryDate = entryDate; // Allow date changes during edits
           if (rec.status !== status) {
             const prevStatus = rec.status;
             rec.status = status;
@@ -1058,16 +1599,29 @@
           category,
           status,
           nextSteps,
-          appIds,                       // [] = general accomplishment
-          entryDate: selectedDate,      // the day this belongs to in the Daily view
+          appIds,
+          entryDate: entryDate,
           createdAt: nowIso,
           completedAt: status === "Completed" ? nowIso : null,
           updatedAt: nowIso
         });
+        clearActivityDraft();
       }
       persistRecords();
+      
+      // Make sure the view switches to the date that the record was just saved under
+      if (entryDate !== selectedDate) {
+        document.getElementById("datePicker").value = entryDate;
+        onDateChange();
+      }
+      
+      // We must clear state so closeRecForm() doesn't leave an editingRecId active
+      editingRecId = null; 
+      pickedAppIds = new Set();
+      
       closeRecForm();
       renderRecords();
+      renderHistoryList();
       showToast(appIds.length ? `Saved and linked to ${appIds.length} application${appIds.length > 1 ? "s" : ""}` : "Saved as general accomplishment");
     }
 
@@ -1082,6 +1636,7 @@
       persistRecords();
       if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: status, label: rec.description });
       renderRecords();
+      renderHistoryList();
     }
 
     function editRecord(id) {
@@ -1096,6 +1651,7 @@
       records = records.filter(r => r.id !== id);
       persistRecords();
       renderRecords();
+      renderHistoryList();
       showToast("Accomplishment deleted");
     }
 
@@ -1105,39 +1661,103 @@
         .sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0));
     }
 
+    function resetFilters() {
+      if (document.getElementById("filterApp")) document.getElementById("filterApp").value = "ALL";
+      if (document.getElementById("filterCategory")) document.getElementById("filterCategory").value = "ALL";
+      if (document.getElementById("filterStatus")) document.getElementById("filterStatus").value = "ALL";
+      renderRecords();
+      renderHistoryList();
+    }
+    
+    function populateAppFilter() {
+      const sel = document.getElementById("filterApp");
+      if (!sel) return;
+      const currentVal = sel.value;
+      const opts = [
+        `<option value="ALL">All Applications</option>`,
+        `<option value="GENERAL">General (No App)</option>`
+      ];
+      portfolioApps.forEach(a => {
+        opts.push(`<option value="${esc(a.id)}">${esc(a.name)}</option>`);
+      });
+      sel.innerHTML = opts.join("");
+      if (sel.querySelector(`option[value="${currentVal}"]`)) {
+        sel.value = currentVal;
+      }
+    }
+
     function renderRecords() {
       const list = document.getElementById("recList");
       if (!list) return;
-      const items = recordsForDate(selectedDate);
-      document.getElementById("recCountBadge").textContent = items.length ? `(${items.length} for this day)` : "";
+      
+      let items = recordsForDate(selectedDate).slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      
+      const fApp = document.getElementById("filterApp") ? document.getElementById("filterApp").value : "ALL";
+      const fCat = document.getElementById("filterCategory") ? document.getElementById("filterCategory").value : "ALL";
+      const fStat = document.getElementById("filterStatus") ? document.getElementById("filterStatus").value : "ALL";
+      
+      items = items.filter(r => {
+        let matchApp = true;
+        if (fApp === "GENERAL") matchApp = !(r.appIds && r.appIds.length);
+        else if (fApp !== "ALL") matchApp = r.appIds && r.appIds.includes(fApp);
+        
+        let matchCat = (fCat === "ALL") || (r.category === fCat);
+        let matchStat = (fStat === "ALL") || (r.status === fStat);
+        
+        return matchApp && matchCat && matchStat;
+      });
+      
+      // Update Metrics
+      document.getElementById("metricLogged").textContent = items.length;
+      document.getElementById("metricCompleted").textContent = items.filter(r => r.status === "Completed").length;
+      
+      const appSet = new Set();
+      items.forEach(r => (r.appIds || []).forEach(id => appSet.add(id)));
+      document.getElementById("metricApps").textContent = appSet.size;
+
       if (!items.length) {
-        list.innerHTML = `<div class="rec-empty">No linked accomplishments for this day. Use “+ Add Accomplishment” to add one.</div>`;
+        list.innerHTML = `<div class="rec-empty" style="text-align:center; padding:30px; color:var(--text-muted); font-style:italic;">No activities logged for this day.</div>`;
         return;
       }
+      
       const statuses = ["Completed", "In Progress", "Pending", "Blocked"];
       list.innerHTML = items.map(r => {
         const general = !(r.appIds && r.appIds.length);
         const appPills = general
-          ? `<span class="pill general">General</span>`
-          : r.appIds.map(id => `<span class="pill app">🔗 ${esc(appName(id))}</span>`).join("");
+          ? `<span class="pill general" style="background:rgba(255,255,255,0.05); color:#fff;">General</span>`
+          : r.appIds.map(id => `<span class="pill app" style="background:rgba(47,129,247,0.15); color:var(--accent-hover);">🔗 ${esc(appName(id))}</span>`).join("");
+        
+        let statusColor = "var(--text-muted)";
+        if (r.status === "Completed") statusColor = "var(--green)";
+        if (r.status === "In Progress") statusColor = "var(--accent-hover)";
+        if (r.status === "Blocked") statusColor = "var(--orange)";
+
         const opts = statuses.map(s => `<option ${r.status === s ? "selected" : ""}>${s}</option>`).join("");
+        
+        const time = fmtStamp(r.createdAt).split(" at ")[1] || "";
+        
         return `
-          <div class="rec-card ${general ? "general" : ""}">
-            <div class="rec-card-top">
-              <div class="rec-badges">
-                <span class="pill">${esc(r.category)}</span>
-                <select class="rec-status-select" onchange="changeRecStatus('${r.id}', this.value)">${opts}</select>
-                ${appPills}
+          <div class="rec-card ${general ? "general" : ""}" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position:relative;">
+            <div style="display:flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+              <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+                <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">${time}</span>
+                <span style="width: 4px; height: 4px; background: var(--text-muted); border-radius: 50%; opacity: 0.5;"></span>
+                <span style="font-size: 12px; font-weight: 500; color: ${statusColor};">${esc(r.category)}</span>
+                <span style="width: 4px; height: 4px; background: var(--text-muted); border-radius: 50%; opacity: 0.5;"></span>
+                <select style="background:transparent; border:none; color:inherit; font-size:12px; cursor:pointer; outline:none;" onchange="changeRecStatus('${r.id}', this.value)">${opts}</select>
               </div>
-              <div>
-                <button class="link-btn" onclick="editRecord('${r.id}')">Edit</button>
-                <button class="link-btn danger" onclick="deleteRecord('${r.id}')">Delete</button>
+              <div style="display:flex; gap:12px;">
+                <button style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:13px;" onclick="editRecord('${r.id}')">Edit</button>
+                <button style="background:none; border:none; color:var(--orange); cursor:pointer; font-size:13px;" onclick="deleteRecord('${r.id}')">Delete</button>
               </div>
             </div>
-            <div class="rec-desc">${esc(r.description)}</div>
-            ${r.nextSteps ? `<div class="rec-next"><strong>↳ Next Steps:</strong> ${esc(r.nextSteps)}</div>` : ""}
-            <div class="rec-meta">Created ${esc(fmtStamp(r.createdAt))}${r.completedAt ? " · Completed " + esc(fmtStamp(r.completedAt)) : ""}</div>
-            ${window.DashData ? DashData.trailHtml(DashData.eventsForEntity("record", r.id), { id: "rtrail-" + r.id }) : ""}
+            
+            <div style="font-size: 14px; line-height: 1.5; color: #fff; margin-bottom: 8px;">${esc(r.description)}</div>
+            ${r.nextSteps ? `<div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;"><strong>↳ Next Steps:</strong> ${esc(r.nextSteps)}</div>` : ""}
+            
+            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+              ${appPills}
+            </div>
           </div>`;
       }).join("");
     }
@@ -1317,7 +1937,37 @@ function wrCollect(apps, start, end) {
         });
       });
     }
+  });
 
+  // Pull in completed actions and decisions from Mindy Syncs natively
+  let mindyStore = { meetings: [] };
+  try {
+    mindyStore = JSON.parse(localStorage.getItem("app_support_mindy_meetings_v2") || "{}");
+  } catch(e) {}
+  
+  (mindyStore.meetings || []).forEach(m => {
+    const act = m.date || localToday();
+    
+    (m.decisionItems || []).forEach(d => {
+      if (!String(d.description).trim()) return;
+      items.push({
+        key: "mindy_dec:" + d.id, origin: "mindy", appIds: d.appId ? [d.appId] : [], kind: "decision",
+        category: "Decision", status: "Completed",
+        description: d.description, nextSteps: "", activityDate: act, completionDate: act
+      });
+    });
+    
+    (m.actionItems || []).forEach(a => {
+      if (!String(a.description).trim()) return;
+      let ns = [];
+      if (String(a.owner).trim()) ns.push("Owner: " + a.owner.trim());
+      if (a.due) ns.push("Due: " + a.due);
+      items.push({
+        key: "mindy_act:" + a.id, origin: "mindy", appIds: a.appId ? [a.appId] : [], kind: "action",
+        category: "Action Item", status: a.status || "Pending",
+        description: a.description, nextSteps: ns.join(" · "), activityDate: act, completionDate: a.status === "Completed" ? act : ""
+      });
+    });
   });
 
   (records || []).forEach(r => {

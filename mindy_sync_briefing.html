@@ -38,6 +38,42 @@
       margin: 0 auto;
     }
 
+    
+    /* Tab System */
+    .tab-bar { display: flex; border-bottom: 1px solid var(--card-border); margin-bottom: 20px; }
+    .tab-btn {
+      background: transparent; color: var(--text-muted); border: none; padding: 12px 20px;
+      font-size: 14px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    
+    .history-meeting-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+    .history-meeting-header { background: rgba(255,255,255,0.03); padding: 12px 16px; border-bottom: 1px solid var(--card-border); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+    .history-meeting-header:hover { background: rgba(255,255,255,0.06); }
+    .history-meeting-body { padding: 16px; display: none; }
+    .history-meeting-body.open { display: block; }
+
+
+    .agenda-item { background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 8px; padding: 10px; margin-bottom: 8px; position: relative; }
+    .agenda-item-header { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+    .agenda-item-body { display: flex; flex-direction: column; gap: 8px; }
+    .agenda-input { background: transparent; border: 1px solid transparent; color: var(--text); padding: 4px 6px; border-radius: 4px; font-family: var(--font-sans); font-size: 13px; width: 100%; transition: border-color 0.15s ease; }
+    .agenda-input:focus { border-color: var(--purple); outline: none; background: #0d1117; }
+    .agenda-input.title { font-weight: 600; font-size: 14px; }
+    .agenda-select { background: #0d1117; border: 1px solid var(--card-border); color: var(--text); padding: 3px 6px; border-radius: 4px; font-size: 11px; cursor: pointer; outline: none; }
+    .agenda-tools { display: flex; gap: 6px; align-items: center; margin-left: auto; }
+    .agenda-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; }
+    .agenda-btn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+    .agenda-btn.danger:hover { color: #ff7b72; background: rgba(248,81,73,0.1); }
+    .agenda-drag { cursor: grab; color: var(--text-muted); padding: 0 4px; }
+    
+    .suggestion-pill { display: inline-flex; align-items: center; gap: 4px; background: rgba(163,113,247,0.15); color: #c4a1ff; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: all 0.15s ease; }
+    .suggestion-pill:hover { border-color: var(--purple); background: rgba(163,113,247,0.25); }
+
     /* Top Navigation */
     .top-nav {
       display: flex;
@@ -153,17 +189,10 @@
     }
 
     /* Layout Grid */
-    .sync-layout {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 24px;
-      align-items: start;
-    }
+    .sync-layout { display: block; }
 
     @media (max-width: 1100px) {
-      .sync-layout {
-        grid-template-columns: 1fr;
-      }
+      .sync-layout { display: block; }
     }
 
     /* Section Cards */
@@ -496,23 +525,94 @@
   </div>
 
   <div class="sync-layout">
-    <!-- Left Column: Applications flagged for Mindy & Follow-ups -->
-    <div>
-      <div class="panel-card">
-        <div class="panel-header">
-          <div class="panel-title">
-            <span style="color: var(--purple);">🟣</span>
-            <span>Items Tagged: Discuss with Mindy</span>
-            <span class="badge-pill" id="mindyCountBadge">0</span>
-          </div>
-          <a href="app_support_dashboard.html" class="action-link">Tag more in Portfolio →</a>
-        </div>
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tabPrep" onclick="switchTab('Prep')">Meeting Prep</button>
+      <button class="tab-btn" id="tabFollowUps" onclick="switchTab('FollowUps')">Portfolio Follow-ups</button>
+      <button class="tab-btn" id="tabHistory" onclick="switchTab('History')">Meeting History</button>
+    </div>
 
-        <div class="app-sync-list" id="mindyAppsList">
-          <!-- Rendered via JS -->
+    <!-- Panel 1: Meeting Prep -->
+    <div class="tab-panel active" id="panelPrep">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); padding: 12px 16px; border-radius: 8px;">
+        <div style="display:flex; align-items:center; gap: 12px;">
+          <span style="font-weight:600; color:var(--purple); text-transform:uppercase; font-size:12px; letter-spacing:0.5px;">Meeting Date:</span>
+          <input type="date" id="mindyMeetDate" class="date-input" style="background:var(--bg); border:1px solid var(--card-border); padding:4px 8px; border-radius:4px; color:var(--text); color-scheme:dark;" onchange="curMindy().date = this.value; saveMindyStore(); renderHistory();">
         </div>
+        <button class="btn btn-primary" onclick="startNextMeeting()">+ Start Next Meeting</button>
       </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        
+        <!-- Left: Agenda & Decisions -->
+        <div>
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span>📋 Current Meeting Agenda</span>
+              </div>
+              <span style="font-size:11px; color:var(--text-muted);" id="agendaSaveTime">Auto-saved</span>
+            </div>
+            <div id="mindyAgendaContainer"></div>
+            <div style="margin-bottom: 16px;">
+              <button class="btn" style="font-size:12px;" onclick="addAgendaItem()">+ Add Agenda Topic</button>
+            </div>
+            <div id="suggestedAgendaContainer" style="display:none; margin-bottom:16px;">
+              <div style="font-size:11px; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase; font-weight:600;">Suggested Topics (Flagged Apps)</div>
+              <div id="suggestedAgendaList" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+            </div>
 
+            <div class="panel-header" style="margin-top:24px;">
+              <div class="panel-title">
+                <span>✍️ Decisions</span>
+              </div>
+            </div>
+            <div id="mindyDecisionsContainer"></div>
+            <div style="margin-bottom: 16px;">
+              <button class="btn" style="font-size:12px;" onclick="addDecisionItem()">+ Add Decision</button>
+            </div>
+
+            <div class="panel-header" style="margin-top:24px;">
+              <div class="panel-title">
+                <span>✅ Action Items</span>
+              </div>
+            </div>
+            <div id="mindyActionsContainer"></div>
+            <div style="margin-bottom: 16px;">
+              <button class="btn" style="font-size:12px;" onclick="addActionItem()">+ Add Action Item</button>
+            </div>
+            
+            <!-- We also need a place to log specific Action Items or just rely on the text area? The prompt says "Decisions made" and "Action items and next steps". Let's stick with the text area for now but clearly separated visually or just keep them as they are in the placeholder. -->
+            
+            <div style="display:flex; justify-content:flex-end; align-items:center; padding-top:6px;">
+              <button class="btn btn-purple" style="font-size:12px;" onclick="generateExecutiveBriefing()">
+                Export Full Briefing →
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right: Flagged for Discussion -->
+        <div>
+          <div class="panel-card">
+            <div class="panel-header">
+              <div class="panel-title">
+                <span style="color: var(--purple);">🟣</span>
+                <span>Applications Flagged for Discussion</span>
+                <span class="badge-pill" id="mindyCountBadge">0</span>
+              </div>
+              <a href="app_support_dashboard.html" class="action-link">Tag more in Portfolio →</a>
+            </div>
+            <div class="app-sync-list" id="mindyAppsList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Panel 2: Follow-ups -->
+    <div class="tab-panel" id="panelFollowUps">
       <div class="panel-card">
         <div class="panel-header">
           <div class="panel-title">
@@ -521,51 +621,27 @@
             <span class="badge-pill" id="followUpCountBadge">0</span>
           </div>
         </div>
-
         <div class="app-sync-list" id="followUpAppsList">
           <!-- Rendered via JS -->
         </div>
       </div>
     </div>
 
-    <!-- Right Column: 1:1 Agenda, Meeting Notes & Decisions -->
-    <div>
+    <!-- Panel 3: Meeting History -->
+    <div class="tab-panel" id="panelHistory">
       <div class="panel-card">
         <div class="panel-header">
           <div class="panel-title">
-            <span>📋 Meeting Agenda with Mindy</span>
-          </div>
-          <span style="font-size:11px; color:var(--text-muted);" id="agendaSaveTime">Auto-saved</span>
-        </div>
-        <textarea
-          id="mindyAgendaText"
-          class="sync-textarea"
-          placeholder="Key topics to review with Mindy...&#10;• Strategic resource allocation / tier 2 capacity&#10;• Blockers on onboarding pipeline (Apple Ticketing Tool sign-off)&#10;• Stakeholder alignment updates&#10;• Upcoming maintenance windows"
-          oninput="autoSaveMindyNotes()"
-        ></textarea>
-
-        <div class="panel-header" style="margin-top:14px;">
-          <div class="panel-title">
-            <span>✍️ Notes, Decisions & Agreed Actions</span>
+            <span>🕰️ Previous Meetings with Mindy</span>
+            <span class="badge-pill" id="historyCountBadge">0</span>
           </div>
         </div>
-        <textarea
-          id="mindyDecisionsText"
-          class="sync-textarea"
-          placeholder="Decisions made during the sync...&#10;• Mindy agreed to escalate architecture sign-off with Eng Director&#10;• Approved moving Go-Live checkpoint to next Thursday&#10;• Action Item: Lead PM to circulate revised onboarding timeline by EOD"
-          oninput="autoSaveMindyNotes()"
-        ></textarea>
-
-        <div style="display:flex; justify-content:space-between; align-items:center; padding-top:6px;">
-          <button class="btn" style="font-size:12px;" onclick="loadRecentAccomplishments()">
-            📥 Import Today's Standup Notes
-          </button>
-          <button class="btn btn-purple" style="font-size:12px;" onclick="generateExecutiveBriefing()">
-            Export Full Briefing →
-          </button>
+        <div id="meetingHistoryList">
+          <!-- Rendered via JS -->
         </div>
       </div>
     </div>
+
   </div>
 
   <!-- Toast -->
@@ -579,7 +655,7 @@
         <button class="btn" style="padding: 2px 8px; font-size:14px;" onclick="closeModal()">✕</button>
       </div>
       <div class="modal-body">
-        <pre id="exportContent" class="export-pre"></pre>
+        <textarea id="exportContent" class="sync-textarea" style="height:450px; font-family:var(--font-mono); font-size:13px; white-space:pre-wrap;"></textarea>
       </div>
       <div class="modal-footer">
         <button class="btn" onclick="copyBriefingToClipboard()">Copy to Clipboard</button>
@@ -591,7 +667,8 @@
   <script src="dashboard_data.js"></script>
   <script>
     let portfolioData = [];
-    let mindyNotesData = { agenda: "", decisions: "" };
+    let mindyStore = { activeId: null, meetings: [] };
+    let mindyHistory = []; // legacy support array (replaced)
 
     /* ---- Shared record store (same store used by the Portfolio and Daily pages) ----
        Meeting notes, decisions and action items are saved here ONCE, linked to the
@@ -739,23 +816,187 @@
       }
     }
 
+    
+    let mindyHistory = [];
+
     function loadMindyNotes() {
-      const saved = localStorage.getItem("app_support_mindy_notes_v1");
-      if (saved) {
-        try {
-          mindyNotesData = JSON.parse(saved);
-          document.getElementById("mindyAgendaText").value = mindyNotesData.agenda || "";
-          document.getElementById("mindyDecisionsText").value = mindyNotesData.decisions || "";
-        } catch (e) {
-          mindyNotesData = { agenda: "", decisions: "" };
+      try {
+        const raw = localStorage.getItem("app_support_mindy_meetings_v2");
+        if (raw) {
+          mindyStore = JSON.parse(raw);
+          return;
         }
+      } catch(e) {}
+
+      mindyStore = { activeId: null, meetings: [] };
+      
+      try {
+          const oldHist = JSON.parse(localStorage.getItem("app_support_mindy_history_v1") || "[]");
+          oldHist.forEach(h => {
+            mindyStore.meetings.push({
+              id: h.id,
+              date: h.date.split("T")[0],
+              legacyAgenda: h.agenda,
+              legacyDecisions: h.decisions,
+              agendaItems: [], decisionItems: [], actionItems: []
+            });
+          });
+      } catch(e) {}
+
+      try {
+          const oldNotes = JSON.parse(localStorage.getItem("app_support_mindy_notes_v1") || "{}");
+          if (oldNotes.agendaItems || oldNotes.decisionItems || oldNotes.actionItems) {
+              const draft = {
+                id: "mindy_" + Date.now(),
+                date: localToday(),
+                agendaItems: oldNotes.agendaItems || [],
+                decisionItems: oldNotes.decisionItems || [],
+                actionItems: oldNotes.actionItems || []
+              };
+              mindyStore.meetings.push(draft);
+              mindyStore.activeId = draft.id;
+          }
+      } catch(e) {}
+      
+      saveMindyStore();
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+      
+      document.getElementById('tab' + tabName).classList.add('active');
+      document.getElementById('panel' + tabName).classList.add('active');
+      
+      if (tabName === 'History') renderHistory();
+    }
+
+    function startNextMeeting() {
+      const cur = curMindy();
+      const carriedActions = (cur.actionItems || []).filter(a => a.status !== "Completed" && a.status !== "Resolved");
+      const next = {
+        id: "mindy_" + Date.now(),
+        date: localToday(),
+        agendaItems: [],
+        decisionItems: [],
+        actionItems: carriedActions.map(a => ({...a, id: "act_" + Date.now() + Math.random().toString(36).slice(2,6)}))
+      };
+      mindyStore.meetings.push(next);
+      mindyStore.activeId = next.id;
+      saveMindyStore();
+      
+      const dateInput = document.getElementById("mindyMeetDate");
+      if (dateInput) dateInput.value = next.date;
+      
+      renderSyncLists();
+      renderHistory();
+      showToast("Started new meeting. Unresolved actions carried forward.");
+    }
+    
+    function reopenMeeting(id) {
+      mindyStore.activeId = id;
+      saveMindyStore();
+      switchTab('Prep');
+      renderSyncLists();
+      renderHistory();
+      showToast("Historical record opened.");
+    }
+
+    function toggleHistoryCard(id) {
+      const body = document.getElementById("history-body-" + id);
+      const icon = document.getElementById("history-icon-" + id);
+      if (body.classList.contains("open")) {
+        body.classList.remove("open");
+        icon.textContent = "▼";
+      } else {
+        body.classList.add("open");
+        icon.textContent = "▲";
       }
     }
 
+    function renderHistory() {
+      const list = document.getElementById("meetingHistoryList");
+      if(!list) return;
+      document.getElementById("historyCountBadge").textContent = mindyStore.meetings.length;
+      
+      if (mindyStore.meetings.length === 0) {
+        list.innerHTML = `<div style="text-align:center; color:var(--text-muted); font-size:13px; font-style:italic; padding:20px;">No previous meetings recorded yet.</div>`;
+        return;
+      }
+      
+      list.innerHTML = mindyStore.meetings.slice().sort((a,b) => (b.date||"").localeCompare(a.date||"")).map(m => {
+        const dateParts = (m.date || "").split("-");
+        let dateStr = "Unknown Date";
+        if(dateParts.length === 3) {
+            dateStr = new Date(dateParts[0], dateParts[1]-1, dateParts[2]).toLocaleDateString(undefined, { weekday:"short", month:"short", day:"numeric", year:"numeric" });
+        }
+        
+        const isCurrent = m.id === mindyStore.activeId;
+        
+        let contentHtml = "";
+        if (m.legacyAgenda || m.legacyDecisions) {
+            contentHtml = `
+              <div style="margin-bottom:12px;">
+                <div style="font-size:12px; font-weight:700; color:var(--purple); text-transform:uppercase; margin-bottom:4px;">Legacy Agenda</div>
+                <div style="font-size:13px; white-space:pre-wrap; color:var(--text-muted);">${esc(m.legacyAgenda) || "<em>No agenda</em>"}</div>
+              </div>
+              <div>
+                <div style="font-size:12px; font-weight:700; color:var(--purple); text-transform:uppercase; margin-bottom:4px;">Legacy Decisions & Actions</div>
+                <div style="font-size:13px; white-space:pre-wrap; color:var(--text-muted);">${esc(m.legacyDecisions) || "<em>No decisions recorded</em>"}</div>
+              </div>
+            `;
+        } else {
+            const ags = (m.agendaItems || []).map(a => `<li><strong style="color:var(--text);">${esc(a.title)}</strong> ${a.appId ? `(${esc(a.appId)})` : ''} - <span style="opacity:0.8;">${esc(a.status)}</span></li>`).join("");
+            const decs = (m.decisionItems || []).map(d => `<li><strong style="color:var(--text);">${esc(d.description)}</strong> ${d.appId ? `(${esc(d.appId)})` : ''}</li>`).join("");
+            const acts = (m.actionItems || []).map(a => `<li><strong style="color:var(--text);">${esc(a.description)}</strong> ${a.owner ? `(${esc(a.owner)})` : ''} - <span style="opacity:0.8;">${esc(a.status)}</span></li>`).join("");
+            
+            contentHtml = `
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                 <div>
+                    <div style="font-size:12px; font-weight:700; color:var(--purple); text-transform:uppercase; margin-bottom:4px;">Agenda & Decisions</div>
+                    <ul style="font-size:13px; color:var(--text-muted); margin-left:16px; margin-bottom:12px;">
+                       ${ags || "<li><em>No agenda topics</em></li>"}
+                    </ul>
+                    <ul style="font-size:13px; color:var(--text-muted); margin-left:16px;">
+                       ${decs || ""}
+                    </ul>
+                 </div>
+                 <div>
+                    <div style="font-size:12px; font-weight:700; color:var(--purple); text-transform:uppercase; margin-bottom:4px;">Action Items</div>
+                    <ul style="font-size:13px; color:var(--text-muted); margin-left:16px;">
+                       ${acts || "<li><em>No action items</em></li>"}
+                    </ul>
+                 </div>
+              </div>
+            `;
+        }
+        
+        return `
+          <div class="history-meeting-card" style="${isCurrent ? 'border:1px solid var(--purple); background:rgba(163, 113, 247, 0.05);' : ''}">
+            <div class="history-meeting-header" onclick="toggleHistoryCard('${m.id}')">
+              <div style="display:flex; align-items:center;">
+                 <span style="font-weight:600; font-size:14px; color:${isCurrent ? 'var(--purple)' : 'var(--text)'};">${dateStr}</span>
+                 ${isCurrent ? `<span style="font-size:10px; font-weight:700; background:var(--purple); color:#fff; padding:2px 6px; border-radius:4px; margin-left:8px;">CURRENT</span>` : ""}
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                 ${!isCurrent ? `<button class="btn" style="padding:2px 8px; font-size:11px;" onclick="event.stopPropagation(); reopenMeeting('${m.id}')">Reopen & Edit</button>` : ""}
+                 <span id="history-icon-${m.id}" style="color:var(--text-muted); font-size:12px;">▼</span>
+              </div>
+            </div>
+            <div class="history-meeting-body" id="history-body-${m.id}">
+              ${contentHtml}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    
+
     function autoSaveMindyNotes() {
-      mindyNotesData.agenda = document.getElementById("mindyAgendaText").value;
-      mindyNotesData.decisions = document.getElementById("mindyDecisionsText").value;
-      localStorage.setItem("app_support_mindy_notes_v1", JSON.stringify(mindyNotesData));
+      
+      
+      localStorage.setItem("app_support_mindy_notes_v1", JSON.stringify(curMindy()));
       document.getElementById("agendaSaveTime").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
@@ -919,6 +1160,7 @@
     }
 
     function renderSyncLists() {
+      renderAgenda();
       const mindyListEl = document.getElementById("mindyAppsList");
       const followUpListEl = document.getElementById("followUpAppsList");
 
@@ -948,24 +1190,68 @@
           </div>
         `;
       } else {
-        followUpListEl.innerHTML = followUpApps.map(app => `
-          <div class="app-sync-item" style="border-left-color: var(--orange);">
-            <div class="app-sync-header">
-              <div class="app-title-area">
-                <span class="app-sync-name">${esc(app.name)}</span>
-                <span class="stage-tag ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">${esc(app.stage)}</span>
-                ${app.discussWithMindy === 'Yes' ? '<span style="font-size:10px; font-weight:600; padding:2px 6px; border-radius:4px; background:var(--purple-bg); color:#d2a8ff;">🟣 Mindy</span>' : ''}
+        followUpListEl.innerHTML = followUpApps.map(app => {
+          let meetStore = {};
+          try { meetStore = JSON.parse(localStorage.getItem("app_support_stakeholder_meetings_v1") || "{}"); } catch(e) {}
+          
+          let actionItems = [];
+          if (meetStore[app.id] && Array.isArray(meetStore[app.id].meetings)) {
+            meetStore[app.id].meetings.forEach(m => {
+              (m.actions || []).forEach(act => {
+                if (act.status !== "Completed") actionItems.push(act);
+              });
+            });
+          }
+          
+          // Also pull from daily activity records
+          const relatedRecords = records.filter(r => r.appIds && r.appIds.includes(app.id) && r.status !== "Completed");
+          
+          let subItems = [];
+          relatedRecords.forEach(r => {
+             subItems.push({ desc: r.description, owner: "Unassigned", next: r.nextSteps, status: r.status });
+          });
+          actionItems.forEach(a => {
+             subItems.push({ desc: a.action, owner: a.owner || "Unassigned", next: null, status: a.status || "Pending", due: a.due });
+          });
+          
+          let subItemsHtml = "";
+          if (subItems.length > 0) {
+             subItemsHtml = `<div style="margin-top:12px; display:flex; flex-direction:column; gap:8px;">` + subItems.map(item => `
+               <div style="background:rgba(255,255,255,0.03); border:1px solid var(--card-border); border-radius:6px; padding:10px;">
+                  <div style="font-size:13px; font-weight:500; color:var(--text); margin-bottom:6px;">${esc(item.desc)}</div>
+                  <div style="display:flex; flex-wrap:wrap; gap:12px; font-size:11px; color:var(--text-muted);">
+                    <span><strong style="color:var(--text);">Owner:</strong> ${esc(item.owner)}</span>
+                    ${item.status ? `<span><strong style="color:var(--text);">Status:</strong> ${esc(item.status)}</span>` : ""}
+                    ${item.due ? `<span><strong style="color:var(--text);">Due:</strong> ${esc(item.due)}</span>` : ""}
+                    ${item.next ? `<span style="width:100%; margin-top:2px;"><strong style="color:var(--text);">Next Step:</strong> ${esc(item.next)}</span>` : ""}
+                  </div>
+               </div>
+             `).join("") + `</div>`;
+          }
+
+          return `
+          <div class="history-meeting-card" style="margin-bottom:12px;">
+            <div class="history-meeting-header" onclick="toggleFollowUpCard('${app.id}')" style="padding:12px 16px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-weight:600; font-size:14px; color:var(--text);">${esc(app.name)}</span>
+                <span style="font-size:11px; color:var(--text-muted); background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px;">${esc(app.businessUnit || "Enterprise Solutions")}</span>
               </div>
-              <button class="btn" style="padding:2px 8px; font-size:11px;" onclick="unflagFollowUp('${app.id}')">Clear Follow Up</button>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:11px; color:var(--orange); font-weight:600;">${subItems.length} active item${subItems.length !== 1 ? 's' : ''}</span>
+                <span id="followup-icon-${app.id}" style="color:var(--text-muted); font-size:12px; margin-left:4px;">▼</span>
+              </div>
             </div>
-            <div class="notes-box ${!app.activity || !app.activity.trim() ? 'empty' : ''}">
-              ${app.activity && app.activity.trim() ? esc(app.activity) : 'No activity details recorded.'}
-            </div>
-            <div class="app-sync-footer">
-              <span>Business Unit: <strong style="color:#fff;">${esc(app.businessUnit || 'Enterprise Solutions')}</strong></span>
+            <div class="history-meeting-body" id="followup-body-${app.id}" style="padding:16px; display:none;">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px;">
+                  <div style="font-size:12px; font-weight:700; color:var(--orange); text-transform:uppercase;">Current Follow-up Summary</div>
+                  <button class="btn" style="padding:2px 8px; font-size:11px;" onclick="unflagFollowUp('${app.id}')">Clear Portfolio Flag</button>
+              </div>
+              <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">${esc(app.activity) || "<em>No summary notes provided</em>"}</div>
+              ${subItemsHtml}
             </div>
           </div>
-        `).join("");
+          `;
+        }).join("");
       }
     }
 
@@ -1153,66 +1439,104 @@
     }
 
     function generateExecutiveBriefing() {
-      loadRecords();
-      loadPortfolio();
-      const today = localToday();
-      const mindyApps = portfolioData.filter(a => a.discussWithMindy === "Yes");
-      const followUpApps = portfolioData.filter(a => a.followUp === "Yes");
-      const agenda = document.getElementById("mindyAgendaText").value.trim();
-      const decisions = document.getElementById("mindyDecisionsText").value.trim();
-      const flat = s => String(s || "").replace(/\n/g, " ").trim();
+      const cur = curMindy();
+      let md = `# Meeting Briefing with Mindy
+`;
+      const dateParts = (cur.date || "").split("-");
+      let dateStr = cur.date;
+      if(dateParts.length === 3) {
+          dateStr = new Date(dateParts[0], dateParts[1]-1, dateParts[2]).toLocaleDateString(undefined, { weekday:"long", month:"long", day:"numeric", year:"numeric" });
+      }
+      md += `**Date:** ${dateStr}
 
-      let md = `# Executive Briefing & Mindy Sync Pack\n`;
-      md += `**Date:** ${today} | **Author:** Lead Project/Program Manager | **Audience:** Mindy & Support Leadership\n\n`;
+`;
 
-      md += `## 1. Meeting Agenda & Strategic Topics\n`;
-      md += `${agenda || "No agenda items typed."}\n\n`;
-
-      md += `## 2. 🟣 Portfolio Items Flagged to Discuss with Mindy (${mindyApps.length})\n`;
-      if (mindyApps.length > 0) {
-        mindyApps.forEach(a => {
-          const b = computeBrief(a);
-          md += `\n### ${a.name} (${a.stage}) [Business Unit: ${a.businessUnit || 'Enterprise Solutions'}]\n`;
-          md += `- **Follow Up Required:** ${a.followUp}\n`;
-          md += `- **Support & Prioritization Notes:** ${a.activity ? flat(a.activity) : "None logged."}\n`;
-          md += `- **Recent Activity:**\n`;
-          md += b.recent.length
-            ? b.recent.map(h => `  - ${h.meetingDate ? "Meeting " + fmtDay(h.meetingDate) : h.when} · ${h.kind ? kindLabel(h.kind) : h.category} [${h.status}]: ${flat(h.description)}`).join("\n") + "\n"
-            : `  - None recorded.\n`;
-          md += `- **Blockers / Issues:** ` + (b.blockers.length ? "\n" + b.blockers.slice(0, 3).map(h => `  - ${flat(h.description)} [${h.status}]`).join("\n") + "\n" : "None documented.\n");
-          md += `- **Open Questions:** ` + (b.questions.length ? "\n" + b.questions.map(h => `  - ${flat(h.description)}`).join("\n") + "\n" : "None logged.\n");
-          md += `- **Recommended Next Steps:** ` + (b.nextSteps.length ? "\n" + b.nextSteps.map(n => `  - ${n.text}`).join("\n") + "\n" : "None documented.\n");
-          const mtg = b.log;
-          md += `- **Meeting Notes / Decisions / Action Items:** ` + (mtg.length ? "\n" + mtg.map(h => `  - ${fmtDay(h.meetingDate)} · ${kindLabel(h.kind)} [${h.status}]: ${flat(h.description)}${h.nextSteps ? " (Next: " + flat(h.nextSteps) + ")" : ""}`).join("\n") + "\n" : "None recorded.\n");
+      md += `## 📋 Agenda Topics
+`;
+      if (cur.agendaItems && cur.agendaItems.length > 0) {
+        cur.agendaItems.forEach(a => {
+          md += `- **${esc(a.title)}**`;
+          if (a.appId) md += ` (${esc(a.appId)})`;
+          md += ` - *${esc(a.status)}*
+`;
+          if (a.details) md += `  ${esc(a.details).split("
+").join("
+  ")}
+`;
         });
       } else {
-        md += `No portfolio items currently tagged for discussion.\n`;
+        md += `_No structured agenda topics recorded._
+`;
       }
+      md += `
+`;
 
-      md += `\n## 3. ⚡ Operational Follow-Up Action Items (${followUpApps.length})\n`;
-      if (followUpApps.length > 0) {
-        followUpApps.forEach(a => {
-          md += `- **${a.name}** (${a.stage}): ${a.activity ? flat(a.activity) : "Follow up required."}\n`;
+      md += `## ✍️ Key Decisions
+`;
+      if (cur.decisionItems && cur.decisionItems.length > 0) {
+        cur.decisionItems.forEach(d => {
+          md += `- **${esc(d.description)}**`;
+          if (d.appId) md += ` (${esc(d.appId)})`;
+          md += `
+`;
         });
       } else {
-        md += `No active follow-up actions flagged.\n`;
+        md += `_No decisions recorded._
+`;
+      }
+      md += `
+`;
+
+      md += `## ✅ Action Items & Next Steps
+`;
+      if (cur.actionItems && cur.actionItems.length > 0) {
+        cur.actionItems.forEach(a => {
+          md += `- **${esc(a.description)}**`;
+          if (a.appId) md += ` (${esc(a.appId)})`;
+          md += `
+  *Owner:* ${esc(a.owner || "Unassigned")} | *Due:* ${esc(a.due || "None")} | *Status:* ${esc(a.status)}
+`;
+        });
+      } else {
+        md += `_No action items recorded._
+`;
+      }
+      md += `
+`;
+
+      // Outstanding Blockers
+      md += `## 🚧 Outstanding Blockers & High Priorities
+`;
+      let blockers = [];
+      (cur.agendaItems || []).forEach(a => {
+        if (a.priority === "Critical" || a.status === "Blocked") {
+          blockers.push(`- **Agenda:** ${esc(a.title)} [${esc(a.priority)} priority / ${esc(a.status)}]`);
+        }
+      });
+      (cur.actionItems || []).forEach(a => {
+        if (a.status === "Blocked") {
+          blockers.push(`- **Action:** ${esc(a.description)} [Blocked]`);
+        }
+      });
+      portfolioData.filter(app => app.followUp === "Yes").forEach(app => {
+        blockers.push(`- **Portfolio App:** ${esc(app.name)} [Follow-up Flagged]`);
+      });
+      
+      if (blockers.length > 0) {
+        md += blockers.join("
+") + "
+";
+      } else {
+        md += `_No active blockers or critical issues identified._
+`;
       }
 
-      md += `\n## 4. Agreed Decisions & Next Steps\n`;
-      md += `${decisions || "Pending meeting discussion."}\n\n`;
-
-      md += `---\n*Generated from Application Support Lead PM Dashboard*\n`;
-
-      document.getElementById("exportContent").textContent = md;
+      document.getElementById("exportContent").value = md;
       document.getElementById("exportModal").style.display = "flex";
     }
 
-    function closeModal() {
-      document.getElementById("exportModal").style.display = "none";
-    }
-
     function copyBriefingToClipboard() {
-      const text = document.getElementById("exportContent").textContent;
+      const text = document.getElementById("exportContent").value;
       navigator.clipboard.writeText(text).then(() => {
         showToast("Copied briefing pack to clipboard!");
       });
