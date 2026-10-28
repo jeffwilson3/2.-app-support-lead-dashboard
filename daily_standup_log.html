@@ -595,7 +595,46 @@ color: var(--text-muted); font-size: 13px; line-height: 1.6; display: flex; flex
 }
 @media (prefers-reduced-motion: reduce) {
 .er-tab, .er-tool { transition: none; }
+
+.multi-select-container { position: relative; width: 100%; font-family: var(--font-sans); }
+.multi-select-input-area {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+  background: #0d1117; border: 1px solid var(--card-border); border-radius: 6px;
+  padding: 6px 10px; min-height: 38px; cursor: text; transition: border-color 0.15s ease;
+}
+.multi-select-input-area:focus-within { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.multi-select-input {
+  flex: 1; min-width: 150px; border: none; background: transparent; color: var(--text);
+  font-size: 13px; outline: none; padding: 2px 0;
+}
+.multi-select-input::placeholder { color: var(--text-muted); }
+.selected-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.app-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(47,129,247,0.15); color: var(--accent-hover);
+  font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 999px;
+}
+.chip-remove {
+  cursor: pointer; opacity: 0.6; font-size: 14px; line-height: 1; border: none; 
+  background: transparent; color: inherit; padding: 0; margin: 0; font-weight: bold;
+}
+.chip-remove:hover { opacity: 1; color: #fff; }
+.multi-select-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; margin-top: 4px;
+  background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 6px;
+  max-height: 220px; overflow-y: auto; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.dropdown-item {
+  padding: 8px 12px; font-size: 13px; cursor: pointer; color: var(--text);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.dropdown-item:hover, .dropdown-item.focused { background: var(--card-hover); }
+.dropdown-item .stage-badge { 
+  font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.1); 
+  color: var(--text-muted); font-weight: 600; text-transform: uppercase;
+}
 </style>
+
 </head>
 <body>
 <nav class="top-nav">
@@ -1294,7 +1333,7 @@ dd.innerHTML = `<div style="padding:8px 12px; font-size:12px; color:var(--text-m
 return;
 }
 dd.innerHTML = available.map((a, idx) => `
-<div class="dropdown-item ${idx === appDropdownFocusedIndex ? 'focused' : ''}" onclick="selectAppFromDropdown('${esc(a.id)}')">
+<div class="dropdown-item ${idx === appDropdownFocusedIndex ? 'focused' : ''}" onclick="selectAppFromDropdown('${esc(a.id)}'); event.stopPropagation();">
 <span>${esc(a.name)}</span>
 <span class="stage-badge">${a.stage === 'LIVE' ? 'Live' : 'Onboarding'}</span>
 </div>

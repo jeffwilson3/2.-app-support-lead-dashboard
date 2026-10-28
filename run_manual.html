@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+var out = [];
+function test() {
+  try {
+    let selectedDate = "2026-10-20";
+    let x = selectedDate;
+  } catch(e) {
+    out.push("Err: " + e.message);
+  }
+}
+test();
+console.log(out);
+</script>
+</body>
+</html>
