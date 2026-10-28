@@ -1118,7 +1118,7 @@ const metricsHtml = grp.total > 0
 : `<div style="font-size:11px; color:var(--text-muted); margin-top:4px; font-style:italic;">Legacy notes only</div>`;
 item.innerHTML = `
 <div class="history-item-date">
-<span>${escapeHtml(displayDate)}</span>
+<span>${esc(displayDate)}</span>
 </div>
 ${metricsHtml}
 `;
@@ -1294,7 +1294,7 @@ dd.innerHTML = `<div style="padding:8px 12px; font-size:12px; color:var(--text-m
 return;
 }
 dd.innerHTML = available.map((a, idx) => `
-<div class="dropdown-item ${idx === appDropdownFocusedIndex ? 'focused' : ''}" onmousedown="selectAppFromDropdown('${esc(a.id)}')">
+<div class="dropdown-item ${idx === appDropdownFocusedIndex ? 'focused' : ''}" onclick="selectAppFromDropdown('${esc(a.id)}')">
 <span>${esc(a.name)}</span>
 <span class="stage-badge">${a.stage === 'LIVE' ? 'Live' : 'Onboarding'}</span>
 </div>
@@ -1352,12 +1352,24 @@ if (dd) dd.style.display = "none";
 });
 function openRecForm(rec) {
 editingRecId = rec ? rec.id : null;
-document.getElementById("recFormTitle").textContent = rec ? "Edit accomplishment" : "New accomplishment";
-document.getElementById("recDesc").value = rec ? rec.description : "";
-document.getElementById("recCategory").value = rec ? rec.category : "Accomplishment";
-document.getElementById("recStatus").value = rec ? rec.status : "Completed";
-document.getElementById("recNext").value = rec ? (rec.nextSteps || "") : "";
-pickedAppIds = new Set(rec ? (rec.appIds || []) : []);
+document.getElementById("recFormTitle").textContent = rec ? "Edit activity" : "New activity";
+if (rec) {
+document.getElementById("recDesc").value = rec.description || "";
+document.getElementById("recCategory").value = rec.category || "Accomplishment";
+document.getElementById("recStatus").value = rec.status || "Completed";
+document.getElementById("recNext").value = rec.nextSteps || "";
+document.getElementById("recDate").value = rec.entryDate || selectedDate;
+pickedAppIds = new Set(rec.appIds || []);
+} else {
+let draft = {};
+try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || "{}"); } catch(e) {}
+document.getElementById("recDesc").value = draft.desc || "";
+document.getElementById("recCategory").value = draft.category || "Accomplishment";
+document.getElementById("recStatus").value = draft.status || "Completed";
+document.getElementById("recNext").value = draft.nextSteps || "";
+document.getElementById("recDate").value = draft.date || selectedDate;
+pickedAppIds = new Set(draft.appIds || []);
+}
 renderAppPicker();
 document.getElementById("recForm").style.display = "flex";
 const asi = document.getElementById("appSearchInput"); if (asi) asi.value = "";
