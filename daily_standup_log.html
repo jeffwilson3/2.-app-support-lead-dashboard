@@ -1,563 +1,510 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Daily Accomplishments & Standup Log | App Support Lead</title>
-  <style>
-    :root {
-      --bg: #0d1117;
-      --card-bg: #161b22;
-      --card-border: #30363d;
-      --card-hover: #1c2128;
-      --text: #e6edf3;
-      --text-muted: #8b949e;
-      --accent: #2f81f7;
-      --accent-hover: #58a6ff;
-      --green: #238636;
-      --green-light: #2ea043;
-      --orange: #db6d28;
-      --purple: #a371f7;
-      --border-radius: 12px;
-      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --font-mono: "SF Mono", Menlo, Consolas, Monaco, monospace;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-sans);
-      line-height: 1.5;
-      padding: 24px;
-      max-width: 1540px;
-      margin: 0 auto;
-    }
-
-    /* Top Navigation Bar */
-    .top-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 8px 16px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .nav-tabs {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .nav-tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      color: var(--text-muted);
-      border: 1px solid transparent;
-      transition: all 0.15s ease;
-    }
-
-    .nav-tab:hover {
-      color: var(--text);
-      background: var(--card-hover);
-    }
-
-    .nav-tab.active {
-      color: #fff;
-      background: rgba(47, 129, 247, 0.18);
-      border-color: rgba(47, 129, 247, 0.4);
-    }
-
-    .header-main {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .header-title h1 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .role-badge {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(47, 129, 247, 0.2);
-      color: var(--accent-hover);
-      border: 1px solid rgba(47, 129, 247, 0.4);
-    }
-
-    .btn {
-      background: var(--card-bg);
-      color: var(--text);
-      border: 1px solid var(--card-border);
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s ease;
-      text-decoration: none;
-    }
-
-    .btn:hover {
-      background: var(--card-hover);
-      border-color: #8b949e;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-    }
-
-    /* Layout Columns */
-    .log-layout {
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 24px;
-      align-items: start;
-    }
-
-    @media (max-width: 1024px) {
-      .log-layout {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Main Editor Card */
-    .editor-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--border-radius);
-      padding: 24px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    .date-control-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--card-border);
-      margin-bottom: 18px;
-    }
-
-    .date-nav-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .date-input {
-      background: #0d1117;
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 13px;
-      outline: none;
-    }
-
-    .quick-chips-bar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
-    .chip-btn {
-      background: #0d1117;
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      font-size: 12px;
-      padding: 5px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.15s ease;
-    }
-
-    .chip-btn:hover {
-      background: var(--card-hover);
-      border-color: #8b949e;
-      color: #fff;
-    }
-
-    .textarea-container {
-      position: relative;
-    }
-
-    .main-textarea {
-      width: 100%;
-      min-height: 380px;
-      background: #0d1117;
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      color: var(--text);
-      padding: 16px;
-      font-family: var(--font-sans);
-      font-size: 14px;
-      line-height: 1.7;
-      resize: vertical;
-      outline: none;
-      transition: border-color 0.15s ease;
-    }
-
-    .main-textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent);
-    }
-
-    .editor-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
-      font-size: 12px;
-      color: var(--text-muted);
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    /* History Sidebar */
-    .sidebar-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--border-radius);
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .sidebar-title {
-      font-size: 14px;
-      font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 480px;
-      overflow-y: auto;
-    }
-
-    .history-item {
-      background: #0d1117;
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .history-item:hover {
-      border-color: var(--accent);
-      background: var(--card-hover);
-    }
-
-    .history-item.active {
-      border-color: var(--accent);
-      background: rgba(47, 129, 247, 0.12);
-    }
-
-    .history-item-date {
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .history-item-snippet {
-      font-size: 11px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #238636;
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-      display: none;
-      animation: fadeIn 0.2s ease;
-      z-index: 100;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-
-    /* Structured Editor CSS */
-    .mn-sections { display: flex; flex-direction: column; gap: 14px; }
-    .mn-sec {
-      background: #0d1117; border: 1px solid var(--card-border); border-radius: 10px;
-      padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;
-    }
-    .mn-sec-head { display: flex; align-items: center; gap: 8px; }
-    .mn-sec-head h3 { font-size: 14px; font-weight: 700; color: #fff; margin: 0; }
-    .mn-sec-icon { font-size: 15px; }
-    .mn-count { font-size: 11px; color: var(--text-muted); background: rgba(255, 255, 255, 0.08); border-radius: 999px; padding: 1px 7px; }
-    .mn-count:empty { display: none; }
-    .mn-entries { display: flex; flex-direction: column; gap: 6px; }
-    .mn-entry { display: flex; align-items: flex-start; gap: 8px; }
-    .mn-entry::before {
-      content: ""; flex: none; width: 5px; height: 5px; border-radius: 50%;
-      background: var(--text-muted); opacity: 0.6; margin-top: 15px;
-    }
-    .mn-entry-text {
-      flex: 1; resize: none; overflow: hidden; box-sizing: border-box;
-      background: var(--card-bg); border: 1px solid transparent; color: var(--text);
-      font-family: var(--font-sans); font-size: 13px; line-height: 1.5; border-radius: 6px;
-      padding: 7px 10px; outline: none; min-height: 34px; width: 100%;
-      transition: border-color 0.15s ease;
-    }
-    .mn-entry-text:hover { border-color: var(--card-border); }
-    .mn-entry-text:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-    .mn-remove {
-      flex: none; width: 28px; height: 28px; margin-top: 3px; border-radius: 6px;
-      border: 1px solid transparent; background: transparent; color: var(--text-muted);
-      font-size: 16px; line-height: 1; cursor: pointer; opacity: 0.5; transition: all 0.15s ease;
-    }
-    .mn-entry:hover .mn-remove, .mn-remove:focus-visible { opacity: 1; }
-    .mn-remove:hover { color: #ff7b72; border-color: rgba(248, 81, 73, 0.4); background: rgba(248, 81, 73, 0.1); }
-    .mn-add {
-      align-self: flex-start; background: transparent; border: 1px dashed var(--card-border);
-      color: var(--accent-hover); font-size: 12px; font-weight: 600; padding: 5px 12px;
-      border-radius: 6px; cursor: pointer; transition: all 0.15s ease;
-    }
-    .mn-add:hover { border-color: var(--accent); background: rgba(47, 129, 247, 0.08); }
-    .mn-empty { font-size: 12px; color: var(--text-muted); font-style: italic; padding: 2px 0 2px 13px; }
-    .mn-notes { min-height: 70px; resize: vertical; overflow: auto; border-color: var(--card-border); }
-    .mn-hint { font-size: 11px; color: var(--text-muted); }
-
-    /* Structured (linkable) accomplishments */
-    .rec-section {
-      margin-top: 22px;
-      padding-top: 18px;
-      border-top: 1px solid var(--card-border);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .rec-section-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .rec-title { font-size: 14px; font-weight: 700; }
-    .rec-sub { font-size: 11px; color: var(--text-muted); }
-    .rec-form {
-      background: #0d1117;
-      border: 1px solid rgba(47, 129, 247, 0.4);
-      border-radius: 8px;
-      padding: 12px;
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .rec-col { display: flex; flex-direction: column; gap: 4px; }
-    .rec-label {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.5px; color: var(--text-muted);
-    }
-    .rec-input, .rec-select, .rec-textarea {
-      background: #161b22; border: 1px solid var(--card-border); color: var(--text);
-      font-family: var(--font-sans); font-size: 12px; border-radius: 6px;
-      padding: 6px 8px; outline: none;
-    }
-    .rec-input:focus, .rec-select:focus, .rec-textarea:focus {
-      border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent);
-    }
-    .rec-textarea { min-height: 64px; resize: vertical; line-height: 1.45; }
-    .app-pick-wrap { display: flex; flex-wrap: wrap; gap: 6px; max-height: 120px; overflow-y: auto; }
-    .app-pick {
-      font-size: 11px; padding: 3px 9px; border-radius: 999px; cursor: pointer;
-      background: #161b22; border: 1px solid var(--card-border); color: var(--text-muted);
-      user-select: none; transition: all 0.15s ease;
-    }
-    .app-pick:hover { color: var(--text); border-color: #8b949e; }
-    .app-pick.selected {
-      background: rgba(47, 129, 247, 0.2); border-color: var(--accent); color: #fff;
-    }
-    .rec-actions { display: flex; justify-content: flex-end; gap: 6px; }
-    .rec-card {
-      background: #0d1117; border: 1px solid rgba(48, 54, 61, 0.8);
-      border-left: 3px solid var(--accent); border-radius: 8px; padding: 10px 12px;
-      display: flex; flex-direction: column; gap: 6px;
-    }
-    .rec-card.general { border-left-color: var(--purple); }
-    .rec-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .rec-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .pill {
-      font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
-      background: rgba(56, 139, 253, 0.18); color: #58a6ff; border: 1px solid rgba(56, 139, 253, 0.35);
-    }
-    .pill.general { background: rgba(163, 113, 247, 0.18); color: #d2a8ff; border-color: rgba(163, 113, 247, 0.35); }
-    .pill.app { background: rgba(57, 197, 207, 0.15); color: #7ee787; border-color: rgba(57, 197, 207, 0.4); }
-    .rec-status-select {
-      background: #161b22; border: 1px solid var(--card-border); color: var(--text);
-      font-size: 11px; font-weight: 600; border-radius: 4px; padding: 2px 4px; outline: none; cursor: pointer;
-    }
-    .rec-desc { font-size: 13px; white-space: pre-wrap; line-height: 1.5; }
-    .rec-next {
-      font-size: 11px; color: #79c0ff; background: rgba(56, 139, 253, 0.08);
-      border-left: 2px solid var(--accent); padding: 3px 6px; border-radius: 0 4px 4px 0;
-    }
-    .rec-meta { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
-    .rec-empty {
-      font-size: 12px; color: var(--text-muted); font-style: italic; padding: 10px;
-      border: 1px dashed var(--card-border); border-radius: 8px; text-align: center;
-    }
-    .link-btn {
-      background: transparent; border: none; color: var(--accent-hover);
-      font-size: 11px; cursor: pointer; padding: 2px 6px; border-radius: 4px;
-    }
-    .link-btn:hover { background: var(--card-hover); color: #fff; }
-    .link-btn.danger { color: #ff7b72; }
-
-    /* Weekly report modal */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(3px);
-      display: none; justify-content: center; align-items: center; z-index: 999; padding: 20px;
-    }
-    .modal-box {
-      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--border-radius);
-      width: 100%; max-width: 820px; max-height: 88vh; display: flex; flex-direction: column;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
-    }
-    .modal-header {
-      padding: 14px 20px; border-bottom: 1px solid var(--card-border);
-      display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
-    }
-    .modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
-    .modal-footer {
-      padding: 12px 20px; border-top: 1px solid var(--card-border);
-      display: flex; justify-content: flex-end; gap: 10px;
-    }
-    .export-pre {
-      background: #0d1117; border: 1px solid var(--card-border); padding: 14px; border-radius: 8px;
-      font-family: var(--font-mono); font-size: 12px; color: var(--text); white-space: pre-wrap;
-      max-height: 460px; overflow-y: auto;
-    }
-
-    /* Weekly report editor */
-    .wr-box { max-width: 1000px; }
-    .wr-lbl { font-size: 11px; color: var(--text-muted); font-weight: 600; }
-    .wr-banner {
-      margin: 10px 20px 0; padding: 8px 12px; border-radius: 8px; font-size: 12px;
-      background: rgba(47, 129, 247, 0.1); border: 1px solid rgba(47, 129, 247, 0.3);
-      display: flex; justify-content: space-between; align-items: center; gap: 10px; line-height: 1.5;
-    }
-    .wr-tabs { display: flex; align-items: center; gap: 6px; padding: 10px 20px 0; }
-    .wr-tab {
-      background: transparent; border: 1px solid var(--card-border); color: var(--text-muted);
-      font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 6px; cursor: pointer;
-    }
-    .wr-tab.active { background: rgba(47, 129, 247, 0.18); border-color: rgba(47, 129, 247, 0.5); color: #fff; }
-    .wr-hint { margin-left: auto; font-size: 11px; color: var(--text-muted); }
-    .wr-editor {
-      width: 100%; min-height: 420px; background: #0d1117; color: var(--text);
-      border: 1px solid var(--card-border); border-radius: 8px; padding: 14px;
-      font-family: var(--font-mono); font-size: 12px; line-height: 1.6; resize: vertical; outline: none;
-    }
-    .wr-editor:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-    .wr-preview {
-      background: #0d1117; border: 1px solid var(--card-border); border-radius: 8px; padding: 18px 22px;
-      font-size: 13px; line-height: 1.6; min-height: 420px;
-    }
-    .wr-preview h1 { font-size: 20px; margin: 0 0 8px; }
-    .wr-preview h2 { font-size: 15px; margin: 18px 0 6px; padding-bottom: 4px; border-bottom: 1px solid var(--card-border); }
-    .wr-preview h3 { font-size: 13px; margin: 12px 0 4px; color: #79c0ff; }
-    .wr-preview p { margin: 4px 0; }
-    .wr-preview ul { margin: 4px 0 4px 20px; }
-    .wr-preview li { margin: 3px 0; }
-    .wr-preview em { color: var(--text-muted); }
-    .wr-preview hr { border: 0; border-top: 1px solid var(--card-border); margin: 14px 0; }
-    .wr-details { margin-top: 14px; border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; background: #0d1117; }
-    .wr-details summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-muted); }
-    .wr-ref {
-      display: flex; justify-content: space-between; align-items: center; gap: 10px;
-      padding: 7px 0; border-top: 1px solid rgba(48, 54, 61, 0.6);
-    }
-    .wr-ref:first-of-type { margin-top: 8px; }
-    .wr-ref.viewing { background: rgba(47, 129, 247, 0.08); }
-    .wr-ref-label { font-size: 12px; font-weight: 600; }
-    .wr-ref-text { font-size: 11px; color: var(--text-muted); }
-    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-/* ================= Email Recap tab (er-*) ================= */
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daily Accomplishments & Standup Log | App Support Lead</title>
+<style>
+:root {
+--bg: #0d1117;
+--card-bg: #161b22;
+--card-border: #30363d;
+--card-hover: #1c2128;
+--text: #e6edf3;
+--text-muted: #8b949e;
+--accent: #2f81f7;
+--accent-hover: #58a6ff;
+--green: #238636;
+--green-light: #2ea043;
+--orange: #db6d28;
+--purple: #a371f7;
+--border-radius: 12px;
+--font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+--font-mono: "SF Mono", Menlo, Consolas, Monaco, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+background-color: var(--bg);
+color: var(--text);
+font-family: var(--font-sans);
+line-height: 1.5;
+padding: 24px;
+max-width: 1540px;
+margin: 0 auto;
+}
+.top-nav {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: var(--card-bg);
+border: 1px solid var(--card-border);
+border-radius: 12px;
+padding: 8px 16px;
+margin-bottom: 24px;
+flex-wrap: wrap;
+gap: 12px;
+}
+.nav-brand {
+display: flex;
+align-items: center;
+gap: 10px;
+font-weight: 700;
+font-size: 15px;
+}
+.nav-tabs {
+display: flex;
+gap: 8px;
+align-items: center;
+flex-wrap: wrap;
+}
+.nav-tab {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 8px 14px;
+border-radius: 8px;
+font-size: 13px;
+font-weight: 600;
+text-decoration: none;
+color: var(--text-muted);
+border: 1px solid transparent;
+transition: all 0.15s ease;
+}
+.nav-tab:hover {
+color: var(--text);
+background: var(--card-hover);
+}
+.nav-tab.active {
+color: #fff;
+background: rgba(47, 129, 247, 0.18);
+border-color: rgba(47, 129, 247, 0.4);
+}
+.header-main {
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 16px;
+margin-bottom: 24px;
+}
+.header-title h1 {
+font-size: 26px;
+font-weight: 700;
+letter-spacing: -0.5px;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.role-badge {
+font-size: 11px;
+font-weight: 600;
+text-transform: uppercase;
+padding: 3px 8px;
+border-radius: 999px;
+background: rgba(47, 129, 247, 0.2);
+color: var(--accent-hover);
+border: 1px solid rgba(47, 129, 247, 0.4);
+}
+.btn {
+background: var(--card-bg);
+color: var(--text);
+border: 1px solid var(--card-border);
+padding: 7px 14px;
+border-radius: 8px;
+font-size: 13px;
+font-weight: 500;
+cursor: pointer;
+display: inline-flex;
+align-items: center;
+gap: 6px;
+transition: all 0.15s ease;
+text-decoration: none;
+}
+.btn:hover {
+background: var(--card-hover);
+border-color: #8b949e;
+}
+.btn-primary {
+background: var(--accent);
+border-color: var(--accent);
+color: #fff;
+}
+.btn-primary:hover {
+background: var(--accent-hover);
+}
+.log-layout {
+display: grid;
+grid-template-columns: 1fr 340px;
+gap: 24px;
+align-items: start;
+}
+@media (max-width: 1024px) {
+.log-layout {
+grid-template-columns: 1fr;
+}
+}
+.editor-card {
+background: var(--card-bg);
+border: 1px solid var(--card-border);
+border-radius: var(--border-radius);
+padding: 24px;
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+.date-control-bar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 12px;
+padding-bottom: 16px;
+border-bottom: 1px solid var(--card-border);
+margin-bottom: 18px;
+}
+.date-nav-group {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.date-input {
+background: #0d1117;
+border: 1px solid var(--card-border);
+color: var(--text);
+padding: 7px 12px;
+border-radius: 8px;
+font-family: inherit;
+font-size: 13px;
+outline: none;
+}
+.quick-chips-bar {
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+margin-bottom: 14px;
+}
+.chip-btn {
+background: #0d1117;
+border: 1px solid var(--card-border);
+color: var(--text);
+font-size: 12px;
+padding: 5px 10px;
+border-radius: 6px;
+cursor: pointer;
+display: inline-flex;
+align-items: center;
+gap: 5px;
+transition: all 0.15s ease;
+}
+.chip-btn:hover {
+background: var(--card-hover);
+border-color: #8b949e;
+color: #fff;
+}
+.textarea-container {
+position: relative;
+}
+.main-textarea {
+width: 100%;
+min-height: 380px;
+background: #0d1117;
+border: 1px solid var(--card-border);
+border-radius: 8px;
+color: var(--text);
+padding: 16px;
+font-family: var(--font-sans);
+font-size: 14px;
+line-height: 1.7;
+resize: vertical;
+outline: none;
+transition: border-color 0.15s ease;
+}
+.main-textarea:focus {
+border-color: var(--accent);
+box-shadow: 0 0 0 1px var(--accent);
+}
+.editor-footer {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-top: 14px;
+font-size: 12px;
+color: var(--text-muted);
+flex-wrap: wrap;
+gap: 10px;
+}
+.sidebar-card {
+background: var(--card-bg);
+border: 1px solid var(--card-border);
+border-radius: var(--border-radius);
+padding: 18px;
+display: flex;
+flex-direction: column;
+gap: 14px;
+}
+.sidebar-title {
+font-size: 14px;
+font-weight: 700;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding-bottom: 10px;
+border-bottom: 1px solid var(--card-border);
+}
+.history-list {
+display: flex;
+flex-direction: column;
+gap: 8px;
+max-height: 480px;
+overflow-y: auto;
+}
+.history-item {
+background: #0d1117;
+border: 1px solid var(--card-border);
+border-radius: 8px;
+padding: 10px 12px;
+cursor: pointer;
+transition: all 0.15s ease;
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
+.history-item:hover {
+border-color: var(--accent);
+background: var(--card-hover);
+}
+.history-item.active {
+border-color: var(--accent);
+background: rgba(47, 129, 247, 0.12);
+}
+.history-item-date {
+font-size: 13px;
+font-weight: 600;
+color: #fff;
+display: flex;
+justify-content: space-between;
+}
+.history-item-snippet {
+font-size: 11px;
+color: var(--text-muted);
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.toast {
+position: fixed;
+bottom: 24px;
+right: 24px;
+background: #238636;
+color: #fff;
+padding: 10px 18px;
+border-radius: 8px;
+font-size: 13px;
+box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+display: none;
+animation: fadeIn 0.2s ease;
+z-index: 100;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(8px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.mn-sections { display: flex; flex-direction: column; gap: 14px; }
+.mn-sec {
+background: #0d1117; border: 1px solid var(--card-border); border-radius: 10px;
+padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;
+}
+.mn-sec-head { display: flex; align-items: center; gap: 8px; }
+.mn-sec-head h3 { font-size: 14px; font-weight: 700; color: #fff; margin: 0; }
+.mn-sec-icon { font-size: 15px; }
+.mn-count { font-size: 11px; color: var(--text-muted); background: rgba(255, 255, 255, 0.08); border-radius: 999px; padding: 1px 7px; }
+.mn-count:empty { display: none; }
+.mn-entries { display: flex; flex-direction: column; gap: 6px; }
+.mn-entry { display: flex; align-items: flex-start; gap: 8px; }
+.mn-entry::before {
+content: ""; flex: none; width: 5px; height: 5px; border-radius: 50%;
+background: var(--text-muted); opacity: 0.6; margin-top: 15px;
+}
+.mn-entry-text {
+flex: 1; resize: none; overflow: hidden; box-sizing: border-box;
+background: var(--card-bg); border: 1px solid transparent; color: var(--text);
+font-family: var(--font-sans); font-size: 13px; line-height: 1.5; border-radius: 6px;
+padding: 7px 10px; outline: none; min-height: 34px; width: 100%;
+transition: border-color 0.15s ease;
+}
+.mn-entry-text:hover { border-color: var(--card-border); }
+.mn-entry-text:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.mn-remove {
+flex: none; width: 28px; height: 28px; margin-top: 3px; border-radius: 6px;
+border: 1px solid transparent; background: transparent; color: var(--text-muted);
+font-size: 16px; line-height: 1; cursor: pointer; opacity: 0.5; transition: all 0.15s ease;
+}
+.mn-entry:hover .mn-remove, .mn-remove:focus-visible { opacity: 1; }
+.mn-remove:hover { color: #ff7b72; border-color: rgba(248, 81, 73, 0.4); background: rgba(248, 81, 73, 0.1); }
+.mn-add {
+align-self: flex-start; background: transparent; border: 1px dashed var(--card-border);
+color: var(--accent-hover); font-size: 12px; font-weight: 600; padding: 5px 12px;
+border-radius: 6px; cursor: pointer; transition: all 0.15s ease;
+}
+.mn-add:hover { border-color: var(--accent); background: rgba(47, 129, 247, 0.08); }
+.mn-empty { font-size: 12px; color: var(--text-muted); font-style: italic; padding: 2px 0 2px 13px; }
+.mn-notes { min-height: 70px; resize: vertical; overflow: auto; border-color: var(--card-border); }
+.mn-hint { font-size: 11px; color: var(--text-muted); }
+.rec-section {
+margin-top: 22px;
+padding-top: 18px;
+border-top: 1px solid var(--card-border);
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+.rec-section-head {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 8px;
+flex-wrap: wrap;
+}
+.rec-title { font-size: 14px; font-weight: 700; }
+.rec-sub { font-size: 11px; color: var(--text-muted); }
+.rec-form {
+background: #0d1117;
+border: 1px solid rgba(47, 129, 247, 0.4);
+border-radius: 8px;
+padding: 12px;
+display: none;
+flex-direction: column;
+gap: 10px;
+}
+.rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.rec-col { display: flex; flex-direction: column; gap: 4px; }
+.rec-label {
+font-size: 10px; font-weight: 700; text-transform: uppercase;
+letter-spacing: 0.5px; color: var(--text-muted);
+}
+.rec-input, .rec-select, .rec-textarea {
+background: #161b22; border: 1px solid var(--card-border); color: var(--text);
+font-family: var(--font-sans); font-size: 12px; border-radius: 6px;
+padding: 6px 8px; outline: none;
+}
+.rec-input:focus, .rec-select:focus, .rec-textarea:focus {
+border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent);
+}
+.rec-textarea { min-height: 64px; resize: vertical; line-height: 1.45; }
+.app-pick-wrap { display: flex; flex-wrap: wrap; gap: 6px; max-height: 120px; overflow-y: auto; }
+.app-pick {
+font-size: 11px; padding: 3px 9px; border-radius: 999px; cursor: pointer;
+background: #161b22; border: 1px solid var(--card-border); color: var(--text-muted);
+user-select: none; transition: all 0.15s ease;
+}
+.app-pick:hover { color: var(--text); border-color: #8b949e; }
+.app-pick.selected {
+background: rgba(47, 129, 247, 0.2); border-color: var(--accent); color: #fff;
+}
+.rec-actions { display: flex; justify-content: flex-end; gap: 6px; }
+.rec-card {
+background: #0d1117; border: 1px solid rgba(48, 54, 61, 0.8);
+border-left: 3px solid var(--accent); border-radius: 8px; padding: 10px 12px;
+display: flex; flex-direction: column; gap: 6px;
+}
+.rec-card.general { border-left-color: var(--purple); }
+.rec-card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rec-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.pill {
+font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px;
+background: rgba(56, 139, 253, 0.18); color: #58a6ff; border: 1px solid rgba(56, 139, 253, 0.35);
+}
+.pill.general { background: rgba(163, 113, 247, 0.18); color: #d2a8ff; border-color: rgba(163, 113, 247, 0.35); }
+.pill.app { background: rgba(57, 197, 207, 0.15); color: #7ee787; border-color: rgba(57, 197, 207, 0.4); }
+.rec-status-select {
+background: #161b22; border: 1px solid var(--card-border); color: var(--text);
+font-size: 11px; font-weight: 600; border-radius: 4px; padding: 2px 4px; outline: none; cursor: pointer;
+}
+.rec-desc { font-size: 13px; white-space: pre-wrap; line-height: 1.5; }
+.rec-next {
+font-size: 11px; color: #79c0ff; background: rgba(56, 139, 253, 0.08);
+border-left: 2px solid var(--accent); padding: 3px 6px; border-radius: 0 4px 4px 0;
+}
+.rec-meta { font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); }
+.rec-empty {
+font-size: 12px; color: var(--text-muted); font-style: italic; padding: 10px;
+border: 1px dashed var(--card-border); border-radius: 8px; text-align: center;
+}
+.link-btn {
+background: transparent; border: none; color: var(--accent-hover);
+font-size: 11px; cursor: pointer; padding: 2px 6px; border-radius: 4px;
+}
+.link-btn:hover { background: var(--card-hover); color: #fff; }
+.link-btn.danger { color: #ff7b72; }
+.modal-overlay {
+position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(3px);
+display: none; justify-content: center; align-items: center; z-index: 999; padding: 20px;
+}
+.modal-box {
+background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--border-radius);
+width: 100%; max-width: 820px; max-height: 88vh; display: flex; flex-direction: column;
+box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+}
+.modal-header {
+padding: 14px 20px; border-bottom: 1px solid var(--card-border);
+display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.modal-body { padding: 16px 20px; overflow-y: auto; flex: 1; }
+.modal-footer {
+padding: 12px 20px; border-top: 1px solid var(--card-border);
+display: flex; justify-content: flex-end; gap: 10px;
+}
+.export-pre {
+background: #0d1117; border: 1px solid var(--card-border); padding: 14px; border-radius: 8px;
+font-family: var(--font-mono); font-size: 12px; color: var(--text); white-space: pre-wrap;
+max-height: 460px; overflow-y: auto;
+}
+.wr-box { max-width: 1000px; }
+.wr-lbl { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+.wr-banner {
+margin: 10px 20px 0; padding: 8px 12px; border-radius: 8px; font-size: 12px;
+background: rgba(47, 129, 247, 0.1); border: 1px solid rgba(47, 129, 247, 0.3);
+display: flex; justify-content: space-between; align-items: center; gap: 10px; line-height: 1.5;
+}
+.wr-tabs { display: flex; align-items: center; gap: 6px; padding: 10px 20px 0; }
+.wr-tab {
+background: transparent; border: 1px solid var(--card-border); color: var(--text-muted);
+font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 6px; cursor: pointer;
+}
+.wr-tab.active { background: rgba(47, 129, 247, 0.18); border-color: rgba(47, 129, 247, 0.5); color: #fff; }
+.wr-hint { margin-left: auto; font-size: 11px; color: var(--text-muted); }
+.wr-editor {
+width: 100%; min-height: 420px; background: #0d1117; color: var(--text);
+border: 1px solid var(--card-border); border-radius: 8px; padding: 14px;
+font-family: var(--font-mono); font-size: 12px; line-height: 1.6; resize: vertical; outline: none;
+}
+.wr-editor:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.wr-preview {
+background: #0d1117; border: 1px solid var(--card-border); border-radius: 8px; padding: 18px 22px;
+font-size: 13px; line-height: 1.6; min-height: 420px;
+}
+.wr-preview h1 { font-size: 20px; margin: 0 0 8px; }
+.wr-preview h2 { font-size: 15px; margin: 18px 0 6px; padding-bottom: 4px; border-bottom: 1px solid var(--card-border); }
+.wr-preview h3 { font-size: 13px; margin: 12px 0 4px; color: #79c0ff; }
+.wr-preview p { margin: 4px 0; }
+.wr-preview ul { margin: 4px 0 4px 20px; }
+.wr-preview li { margin: 3px 0; }
+.wr-preview em { color: var(--text-muted); }
+.wr-preview hr { border: 0; border-top: 1px solid var(--card-border); margin: 14px 0; }
+.wr-details { margin-top: 14px; border: 1px solid var(--card-border); border-radius: 8px; padding: 8px 12px; background: #0d1117; }
+.wr-details summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.wr-ref {
+display: flex; justify-content: space-between; align-items: center; gap: 10px;
+padding: 7px 0; border-top: 1px solid rgba(48, 54, 61, 0.6);
+}
+.wr-ref:first-of-type { margin-top: 8px; }
+.wr-ref.viewing { background: rgba(47, 129, 247, 0.08); }
+.wr-ref-label { font-size: 12px; font-weight: 600; }
+.wr-ref-text { font-size: 11px; color: var(--text-muted); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .er-tablist { display: flex; gap: 4px; border-bottom: 1px solid var(--card-border); margin: -8px 0 0; flex-wrap: wrap; }
 .er-tab {
-  background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px;
-  color: var(--text-muted); font-family: var(--font-sans); font-size: 13px; font-weight: 600;
-  padding: 8px 14px; cursor: pointer; border-radius: 6px 6px 0 0; transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px;
+color: var(--text-muted); font-family: var(--font-sans); font-size: 13px; font-weight: 600;
+padding: 8px 14px; cursor: pointer; border-radius: 6px 6px 0 0; transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 .er-tab:hover { color: var(--text); background: var(--card-hover); }
 .er-tab[aria-selected="true"] { color: #fff; border-bottom-color: var(--accent); }
@@ -567,30 +514,25 @@
 .er-panel[hidden], .er-panel [hidden] { display: none !important; }
 .er-panel:focus { outline: none; }
 .er-panel:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: 4px; border-radius: 6px; }
-
 .er-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding-bottom: 16px; border-bottom: 1px solid var(--card-border); }
 .er-title { font-size: 20px; font-weight: 700; color: #fff; margin: 0; }
 .er-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
 .er-head .btn, .er-stale .btn, .er-subject-row .btn { padding: 5px 10px; font-size: 12px; }
-
 .er-stale {
-  background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.35); border-radius: 8px;
-  padding: 10px 14px; font-size: 12px; line-height: 1.5; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+background: rgba(240, 136, 62, 0.1); border: 1px solid rgba(240, 136, 62, 0.35); border-radius: 8px;
+padding: 10px 14px; font-size: 12px; line-height: 1.5; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
 }
-
 .er-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .er-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
 .er-subject-row { display: flex; gap: 8px; align-items: center; min-width: 0; }
 .er-subject {
-  flex: 1; min-width: 0; box-sizing: border-box; background: #0d1117; border: 1px solid var(--card-border); color: var(--text);
-  font-family: var(--font-sans); font-size: 13px; border-radius: 6px; padding: 7px 10px; outline: none;
+flex: 1; min-width: 0; box-sizing: border-box; background: #0d1117; border: 1px solid var(--card-border); color: var(--text);
+font-family: var(--font-sans); font-size: 13px; border-radius: 6px; padding: 7px 10px; outline: none;
 }
 .er-subject:focus { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-
-/* Light "paper" compose card: roughly what the recipient sees, inside the dark page. */
 .er-compose {
-  max-width: 720px; width: 100%; box-sizing: border-box; background: #ffffff; color: #1f2328;
-  border: 1px solid #d0d7de; border-radius: 8px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); overflow: hidden;
+max-width: 720px; width: 100%; box-sizing: border-box; background: #ffffff; color: #1f2328;
+border: 1px solid #d0d7de; border-radius: 8px; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45); overflow: hidden;
 }
 .er-compose-row { display: flex; align-items: center; gap: 10px; padding: 8px 16px; border-bottom: 1px solid #d8dee4; min-width: 0; }
 .er-compose-label { font-size: 13px; font-weight: 600; color: #57606a; min-width: 56px; }
@@ -599,17 +541,17 @@
 .er-compose .er-subject:focus { border-color: #2f81f7; box-shadow: 0 0 0 1px #2f81f7; }
 .er-toolbar { display: flex; gap: 2px; flex-wrap: wrap; align-items: center; padding: 6px 12px; background: #f6f8fa; border-bottom: 1px solid #d8dee4; }
 .er-tool {
-  min-width: 30px; height: 28px; padding: 0 8px; border: 1px solid transparent; border-radius: 4px; background: transparent;
-  color: #1f2328; font-family: var(--font-sans); font-size: 13px; cursor: pointer; transition: background 0.15s;
+min-width: 30px; height: 28px; padding: 0 8px; border: 1px solid transparent; border-radius: 4px; background: transparent;
+color: #1f2328; font-family: var(--font-sans); font-size: 13px; cursor: pointer; transition: background 0.15s;
 }
 .er-tool:hover { background: #eaeef2; border-color: #d0d7de; }
 .er-tool:focus { outline: none; }
 .er-tool:focus-visible { outline: 2px solid #2f81f7; outline-offset: 1px; }
 .er-tool-sep { width: 1px; height: 18px; background: #d0d7de; margin: 0 4px; }
 .er-preview {
-  width: 100%; box-sizing: border-box; min-height: 260px; background: #ffffff; color: #1f2328; padding: 24px 28px;
-  font-family: Calibri, Carlito, "Segoe UI", -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
-  font-size: 15px; line-height: 1.6; overflow-wrap: anywhere; outline: none; cursor: text;
+width: 100%; box-sizing: border-box; min-height: 260px; background: #ffffff; color: #1f2328; padding: 24px 28px;
+font-family: Calibri, Carlito, "Segoe UI", -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+font-size: 15px; line-height: 1.6; overflow-wrap: anywhere; outline: none; cursor: text;
 }
 .er-preview:focus { box-shadow: inset 0 0 0 2px #2f81f7; }
 .er-preview p { margin: 0 0 12px; }
@@ -618,1169 +560,1008 @@
 .er-preview ol { margin: 0 0 14px; padding-left: 24px; list-style: decimal; }
 .er-preview li { margin: 0 0 4px; }
 .er-preview > :last-child { margin-bottom: 0; }
-
 .er-statusline { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; font-size: 12px; color: var(--text-muted); }
 .er-badge { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; border: 1px solid var(--card-border); color: var(--text-muted); }
 .er-badge.er-badge-edited { color: #e3b341; border-color: rgba(227, 179, 65, 0.5); background: rgba(227, 179, 65, 0.1); }
 .er-versions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .er-versions select {
-  background: #0d1117; color: var(--text); border: 1px solid var(--card-border); border-radius: 6px; padding: 5px 8px;
-  font-family: var(--font-sans); font-size: 12px; max-width: 100%;
+background: #0d1117; color: var(--text); border: 1px solid var(--card-border); border-radius: 6px; padding: 5px 8px;
+font-family: var(--font-sans); font-size: 12px; max-width: 100%;
 }
 .er-versions select:focus-visible { outline: 2px solid var(--accent-hover); outline-offset: 1px; }
 .er-versions .btn { padding: 5px 10px; font-size: 12px; }
 .er-decision {
-  border: 1px solid var(--accent); background: rgba(47, 129, 247, 0.1); border-radius: 8px; padding: 14px 16px;
-  display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--text); max-width: 720px; box-sizing: border-box;
+border: 1px solid var(--accent); background: rgba(47, 129, 247, 0.1); border-radius: 8px; padding: 14px 16px;
+display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--text); max-width: 720px; box-sizing: border-box;
 }
 .er-decision strong { color: #fff; font-size: 14px; }
 .er-decision-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .er-decision-actions .btn { padding: 5px 12px; font-size: 12px; }
-
 .er-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .er-note { font-size: 12px; color: var(--text-muted); }
-
 .er-empty {
-  border: 1px dashed var(--card-border); border-radius: 8px; padding: 32px 20px; text-align: center;
-  color: var(--text-muted); font-size: 13px; line-height: 1.6; display: flex; flex-direction: column; align-items: center; gap: 12px;
+border: 1px dashed var(--card-border); border-radius: 8px; padding: 32px 20px; text-align: center;
+color: var(--text-muted); font-size: 13px; line-height: 1.6; display: flex; flex-direction: column; align-items: center; gap: 12px;
 }
 .er-empty strong { color: var(--text); font-size: 14px; }
-
 .er-copy-buffer { position: fixed; left: -9999px; top: 0; width: 1px; height: 1px; overflow: hidden; opacity: 0; color: #000; background: #fff; }
-
 @media (max-width: 900px) {
-  .er-preview { padding: 16px; min-height: 200px; }
-  .er-compose-row { flex-wrap: wrap; padding: 8px 12px; }
-  .er-toolbar { padding: 6px 8px; }
-  .er-subject-row { flex-wrap: wrap; }
-  .er-subject { flex-basis: 100%; }
-  .er-tab { padding: 8px 10px; }
+.er-preview { padding: 16px; min-height: 200px; }
+.er-compose-row { flex-wrap: wrap; padding: 8px 12px; }
+.er-toolbar { padding: 6px 8px; }
+.er-subject-row { flex-wrap: wrap; }
+.er-subject { flex-basis: 100%; }
+.er-tab { padding: 8px 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .er-tab, .er-tool { transition: none; }
-  </style>
+.er-tab, .er-tool { transition: none; }
+</style>
 </head>
 <body>
-
-  <!-- Top Navigation -->
-  <nav class="top-nav">
-    <div class="nav-brand">
-      <span style="color:var(--accent);">●</span>
-      <span>Application Support Lead</span>
-    </div>
-    <div class="nav-tabs">
-      <a href="app_support_dashboard.html" class="nav-tab">
-        <span>📊 Application Portfolio (21)</span>
-      </a>
-      <a href="monthly_stakeholder_sync.html" class="nav-tab">
-        <span>🤝 Monthly Stakeholder Sync Hub</span>
-      </a>
-      <a href="daily_standup_log.html" class="nav-tab active">
-        <span>📝 Daily Accomplishments & Standup</span>
-      </a>
-      <a href="mindy_sync_briefing.html" class="nav-tab">
-        <span>🟣 Briefing & Mindy Sync Notes</span>
-      </a>
-    </div>
-    <div>
-      <button class="btn btn-primary" onclick="copyTodayUpdate()">Copy for Standup</button>
-    </div>
-  </nav>
-
-  <!-- Header -->
-  <div class="header-main">
-    <div class="header-title">
-      <h1>
-        <span>Daily Accomplishments & Standup Log</span>
-        <span class="role-badge">Lead PM / PgM</span>
-      </h1>
-      <p style="color:var(--text-muted); font-size:13px; margin-top:4px;">
-        Dedicated workspace to type, document, and track what you delivered each day.
-      </p>
-    </div>
-    <div class="header-actions">
-      <button class="btn" onclick="openWeeklyReport()">📅 Weekly Report</button>
-      <button class="btn" onclick="saveNow(true)">Save Log</button>
-      <button class="btn" onclick="clearDayConfirm()">Clear Entry</button>
-    </div>
-  </div>
-
-  <!-- Layout -->
-  <div class="log-layout">
-    <!-- Compact Daily Activity Dashboard -->
-    <div class="editor-card" id="activityDashboard">
-      
-      <!-- Top Summary & Navigation -->
-      <div class="date-control-bar" style="margin-bottom: 0;">
-        <div class="date-nav-group">
-          <button class="btn" onclick="stepDate(-1)">← Previous Day</button>
-          <input type="date" id="datePicker" class="date-input" onchange="onDateChange()" />
-          <button class="btn" onclick="stepDate(1)">Next Day →</button>
-          <button class="btn" onclick="jumpToToday()">Today</button>
-        </div>
-        <div id="formattedDateLabel" style="font-size:13px; font-weight:600; color:var(--text-muted);">
-          Tuesday, Oct 20, 2026
-        </div>
-      </div>
-      
-      <!-- Metrics -->
-      <div style="display: flex; gap: 16px; margin: 20px 0; padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); border-radius: 8px;">
-        <div style="flex: 1; text-align: center;">
-          <div style="font-size: 24px; font-weight: 700; color: #fff;" id="metricLogged">0</div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Activities Logged</div>
-        </div>
-        <div style="width: 1px; background: var(--card-border);"></div>
-        <div style="flex: 1; text-align: center;">
-          <div style="font-size: 24px; font-weight: 700; color: #fff;" id="metricCompleted">0</div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Completed</div>
-        </div>
-        <div style="width: 1px; background: var(--card-border);"></div>
-        <div style="flex: 1; text-align: center;">
-          <div style="font-size: 24px; font-weight: 700; color: #fff;" id="metricApps">0</div>
-          <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Apps Linked</div>
-        </div>
-      </div>
-
-      <!-- Header & Add Button -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h2 style="font-size: 16px; font-weight: 600; margin: 0; color: #fff;">Activity Timeline</h2>
-        <button class="btn btn-primary" onclick="openRecForm()">+ Add Activity</button>
-      </div>
-
-      <!-- Filters -->
-      <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; background: rgba(255,255,255,0.02); padding: 8px; border: 1px solid var(--card-border); border-radius: 8px; align-items: center;">
-        <span style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Filter:</span>
-        <select id="filterApp" class="rec-select" style="max-width: 150px; font-size: 12px; padding: 4px 8px; height: 28px;" onchange="renderRecords()">
-          <option value="ALL">All Applications</option>
-          <option value="GENERAL">General (No App)</option>
-          <option value="amity">AMITY</option>
-          <option value="atlas">ATLAS</option>
-          <option value="appleticketing">Apple Ticketing Tool</option>
-          <option value="astrodocs">AstroDocs</option>
-          <option value="circa">Circa</option>
-          <option value="columba">Columba</option>
-          <option value="cudos">Cudos</option>
-          <option value="frameio">Frame IO</option>
-          <option value="givingtree">Giving Tree</option>
-          <option value="juno">Juno</option>
-          <option value="kroma">Kroma</option>
-          <option value="polaris">Polaris: Deal Tracker</option>
-          <option value="portalplus">Portal+</option>
-          <option value="scenechronize">Scenechronize</option>
-          <option value="screenbooker">Screen Booker</option>
-          <option value="siriusplus">Sirius+</option>
-          <option value="touchstone">Touchstone</option>
-          <option value="vetter">Vetter</option>
-          <option value="watchlist">Watchlist</option>
-          <option value="iscript">iScript</option>
-          <option value="mycalls">myCalls</option>
-        </select>
-        <select id="filterCategory" class="rec-select" style="max-width: 140px; font-size: 12px; padding: 4px 8px; height: 28px;" onchange="renderRecords()">
-          <option value="ALL">All Categories</option>
-          <option value="Accomplishment">Accomplishment</option>
-          <option value="Update">Update</option>
-          <option value="Issue">Issue</option>
-          <option value="Enhancement">Enhancement</option>
-          <option value="Follow-Up">Follow-Up</option>
-          <option value="Blocker">Blocker</option>
-          <option value="Decision">Decision</option>
-        </select>
-        <select id="filterStatus" class="rec-select" style="max-width: 130px; font-size: 12px; padding: 4px 8px; height: 28px;" onchange="renderRecords()">
-          <option value="ALL">All Statuses</option>
-          <option value="Completed">Completed</option>
-          <option value="In Progress">In Progress</option>
-          <option value="Pending">Pending</option>
-          <option value="Blocked">Blocked</option>
-        </select>
-        <button class="btn" style="padding: 4px 10px; font-size: 12px; height: 28px; margin-left: auto;" onclick="resetFilters()">Clear</button>
-      </div>
-
-      <!-- Add/Edit Form (Hidden by default) -->
-      <div class="rec-form" id="recForm" style="display: none; background: #0d1117; margin-bottom: 20px;">
-        <div class="rec-grid" style="grid-template-columns: 1fr auto; align-items: end;">
-          <div class="rec-col">
-            <label class="rec-label" id="recFormTitle" style="margin-bottom:0;">New activity</label>
-          </div>
-          <div class="rec-col" style="align-items: flex-end;">
-            <div style="display:flex; align-items:center; gap:8px;">
-                <label class="rec-label" style="margin:0;">Activity Date</label>
-                <input type="date" id="recDate" class="date-input" style="padding: 4px 8px; border-radius:4px; border:1px solid var(--card-border); background:var(--bg); color:var(--text); color-scheme:dark;" onchange="saveActivityDraft()" />
-            </div>
-          </div>
-        </div>
-        <div class="rec-col">
+<nav class="top-nav">
+<div class="nav-brand">
+<span style="color:var(--accent);">●</span>
+<span>Application Support Lead</span>
+</div>
+<div class="nav-tabs">
+<a href="app_support_dashboard.html" class="nav-tab">
+<span>📊 Application Portfolio (21)</span>
+</a>
+<a href="monthly_stakeholder_sync.html" class="nav-tab">
+<span>🤝 Monthly Stakeholder Sync Hub</span>
+</a>
+<a href="daily_standup_log.html" class="nav-tab active">
+<span>📝 Daily Accomplishments & Standup</span>
+</a>
+<a href="mindy_sync_briefing.html" class="nav-tab">
+<span>🟣 Briefing & Mindy Sync Notes</span>
+</a>
+</div>
+<div>
+<button class="btn btn-primary" onclick="copyTodayUpdate()">Copy for Standup</button>
+</div>
+</nav>
+<div class="header-main">
+<div class="header-title">
+<h1>
+<span>Daily Accomplishments & Standup Log</span>
+<span class="role-badge">Lead PM / PgM</span>
+</h1>
+<p style="color:var(--text-muted); font-size:13px; margin-top:4px;">
+Dedicated workspace to type, document, and track what you delivered each day.
+</p>
+</div>
+<div class="header-actions">
+<button class="btn" onclick="openWeeklyReport()">📅 Weekly Report</button>
+<button class="btn" onclick="saveNow(true)">Save Log</button>
+<button class="btn" onclick="clearDayConfirm()">Clear Entry</button>
+</div>
+</div>
+<div class="log-layout">
+<div class="editor-card" id="activityDashboard">
+<div class="date-control-bar" style="margin-bottom: 0;">
+<div class="date-nav-group">
+<button class="btn" onclick="stepDate(-1)">← Previous Day</button>
+<input type="date" id="datePicker" class="date-input" onchange="onDateChange()" />
+<button class="btn" onclick="stepDate(1)">Next Day →</button>
+<button class="btn" onclick="jumpToToday()">Today</button>
+</div>
+<div id="formattedDateLabel" style="font-size:13px; font-weight:600; color:var(--text-muted);">
+Tuesday, Oct 20, 2026
+</div>
+</div>
+<div style="display: flex; gap: 16px; margin: 20px 0; padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid var(--card-border); border-radius: 8px;">
+<div style="flex: 1; text-align: center;">
+<div style="font-size: 24px; font-weight: 700; color: #fff;" id="metricLogged">0</div>
+<div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Activities Logged</div>
+</div>
+<div style="width: 1px; background: var(--card-border);"></div>
+<div style="flex: 1; text-align: center;">
+<div style="font-size: 24px; font-weight: 700; color: #fff;" id="metricCompleted">0</div>
+<div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Completed</div>
+</div>
+<div style="width: 1px; background: var(--card-border);"></div>
+<div style="flex: 1; text-align: center;">
+<div style="font-size: 24px; font-weight: 700; color: #fff;" id="metricApps">0</div>
+<div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Apps Linked</div>
+</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+<h2 style="font-size: 16px; font-weight: 600; margin: 0; color: #fff;">Activity Timeline</h2>
+<button class="btn btn-primary" onclick="openRecForm()">+ Add Activity</button>
+</div>
+<div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; background: rgba(255,255,255,0.02); padding: 8px; border: 1px solid var(--card-border); border-radius: 8px; align-items: center;">
+<span style="font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Filter:</span>
+<select id="filterApp" class="rec-select" style="max-width: 150px; font-size: 12px; padding: 4px 8px; height: 28px;" onchange="renderRecords()">
+<option value="ALL">All Applications</option>
+<option value="GENERAL">General (No App)</option>
+<option value="amity">AMITY</option>
+<option value="atlas">ATLAS</option>
+<option value="appleticketing">Apple Ticketing Tool</option>
+<option value="astrodocs">AstroDocs</option>
+<option value="circa">Circa</option>
+<option value="columba">Columba</option>
+<option value="cudos">Cudos</option>
+<option value="frameio">Frame IO</option>
+<option value="givingtree">Giving Tree</option>
+<option value="juno">Juno</option>
+<option value="kroma">Kroma</option>
+<option value="polaris">Polaris: Deal Tracker</option>
+<option value="portalplus">Portal+</option>
+<option value="scenechronize">Scenechronize</option>
+<option value="screenbooker">Screen Booker</option>
+<option value="siriusplus">Sirius+</option>
+<option value="touchstone">Touchstone</option>
+<option value="vetter">Vetter</option>
+<option value="watchlist">Watchlist</option>
+<option value="iscript">iScript</option>
+<option value="mycalls">myCalls</option>
+</select>
+<select id="filterCategory" class="rec-select" style="max-width: 140px; font-size: 12px; padding: 4px 8px; height: 28px;" onchange="renderRecords()">
+<option value="ALL">All Categories</option>
+<option value="Accomplishment">Accomplishment</option>
+<option value="Update">Update</option>
+<option value="Issue">Issue</option>
+<option value="Enhancement">Enhancement</option>
+<option value="Follow-Up">Follow-Up</option>
+<option value="Blocker">Blocker</option>
+<option value="Decision">Decision</option>
+</select>
+<select id="filterStatus" class="rec-select" style="max-width: 130px; font-size: 12px; padding: 4px 8px; height: 28px;" onchange="renderRecords()">
+<option value="ALL">All Statuses</option>
+<option value="Completed">Completed</option>
+<option value="In Progress">In Progress</option>
+<option value="Pending">Pending</option>
+<option value="Blocked">Blocked</option>
+</select>
+<button class="btn" style="padding: 4px 10px; font-size: 12px; height: 28px; margin-left: auto;" onclick="resetFilters()">Clear</button>
+</div>
+<div class="rec-form" id="recForm" style="display: none; background: #0d1117; margin-bottom: 20px;">
+<div class="rec-grid" style="grid-template-columns: 1fr auto; align-items: end;">
+<div class="rec-col">
+<label class="rec-label" id="recFormTitle" style="margin-bottom:0;">New activity</label>
+</div>
+<div class="rec-col" style="align-items: flex-end;">
+<div style="display:flex; align-items:center; gap:8px;">
+<label class="rec-label" style="margin:0;">Activity Date</label>
+<input type="date" id="recDate" class="date-input" style="padding: 4px 8px; border-radius:4px; border:1px solid var(--card-border); background:var(--bg); color:var(--text); color-scheme:dark;" onchange="saveActivityDraft()" />
+</div>
+</div>
+</div>
+<div class="rec-col">
           <textarea class="rec-textarea" id="recDesc" placeholder="Activity description (Required)" oninput="saveActivityDraft()"></textarea>
-        </div>
-        <div class="rec-grid">
-          <div class="rec-col">
-            <label class="rec-label">Category</label>
-            <select class="rec-select" id="recCategory" onchange="saveActivityDraft()">
-              <option>Accomplishment</option>
-              <option>Update</option>
-              <option>Issue</option>
-              <option>Enhancement</option>
-              <option>Follow-Up</option>
-              <option>Blocker</option>
-              <option>Decision</option>
-            </select>
-          </div>
-          <div class="rec-col">
-            <label class="rec-label">Status</label>
-            <select class="rec-select" id="recStatus" onchange="saveActivityDraft()">
-              <option>Completed</option>
-              <option>In Progress</option>
-              <option>Pending</option>
-              <option>Blocked</option>
-            </select>
-          </div>
-        </div>
-        <div class="rec-col">
-          <label class="rec-label">Next Steps (Optional)</label>
-          <input type="text" class="rec-textarea" id="recNext" placeholder="What needs to happen next?" style="height:34px;" oninput="saveActivityDraft()">
-        </div>
-        <div class="rec-col">
-          <label class="rec-label">Linked Applications (Optional)</label>
-          <div class="multi-select-container" id="appMultiSelect">
-            <select id="legacyAppSelect" multiple style="display:none;"></select>
-            <div class="multi-select-input-area" onclick="document.getElementById('appSearchInput').focus()">
-              <div id="selectedAppChips" class="selected-chips"></div>
-              <input type="text" id="appSearchInput" class="multi-select-input" placeholder="Search applications..." oninput="onAppSearchInput()" onfocus="showAppDropdown()" onkeydown="onAppSearchKey(event)">
-            </div>
-            <div id="appDropdown" class="multi-select-dropdown" style="display:none;"></div>
-          </div>
-        </div>
-        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
-          <button class="btn" onclick="closeRecForm()">Cancel</button>
-          <button class="btn btn-primary" onclick="saveRecord()">Save Activity</button>
-        </div>
-      </div>
-
-      <!-- List -->
-      <div id="recList" class="rec-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
-
-    </div>
-
-    <!-- History Sidebar -->
-    <div class="sidebar-card">
-      <div class="sidebar-title">
-        <span>Log History by Date</span>
-        <span id="historyCountBadge" style="font-size:11px; color:var(--text-muted);">0 logged</span>
-      </div>
-      <div class="history-list" id="historyListContainer">
-        <!-- Rendered by JS -->
-      </div>
-      <div style="font-size: 11px; color: var(--text-muted); text-align: center; padding-top: 6px;">
-        Select any past date to view or edit accomplishments.
-      </div>
-    </div>
-  </div>
-
-  <div id="toastNotification" class="toast">Saved successfully!</div>
-
-  <!-- Weekly report modal -->
-  <div id="weeklyModal" class="modal-overlay">
-    <div class="modal-box wr-box">
-      <div class="modal-header">
-        <h3 style="font-size:16px;">📅 Weekly Application Support Progress Report</h3>
-        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <label class="wr-lbl">From</label>
-          <input type="date" id="wrFrom" class="date-input" onchange="wrOnRangeChange()" />
-          <label class="wr-lbl">To</label>
-          <input type="date" id="wrTo" class="date-input" onchange="wrOnRangeChange()" />
-          <button class="btn" onclick="wrLastFullWeek()">Last full week</button>
-          <button class="btn" onclick="wrRegenerate()" title="Rebuild from the dashboard (replaces edits)">↻ Regenerate</button>
-          <button class="btn" onclick="closeWeeklyReport()">✕</button>
-        </div>
-      </div>
-      <div id="wrBanner" class="wr-banner" style="display:none;"></div>
-      <div class="wr-tabs">
-        <button id="wrTabEdit" class="wr-tab active" onclick="wrSetTab('edit')">✏️ Edit</button>
-        <button id="wrTabPreview" class="wr-tab" onclick="wrSetTab('preview')">👁 Preview</button>
-        <span class="wr-hint">Draft only. Nothing is emailed or distributed automatically.</span>
-      </div>
-      <div class="modal-body">
+</div>
+<div class="rec-grid">
+<div class="rec-col">
+<label class="rec-label">Category</label>
+<select class="rec-select" id="recCategory" onchange="saveActivityDraft()">
+<option>Accomplishment</option>
+<option>Update</option>
+<option>Issue</option>
+<option>Enhancement</option>
+<option>Follow-Up</option>
+<option>Blocker</option>
+<option>Decision</option>
+</select>
+</div>
+<div class="rec-col">
+<label class="rec-label">Status</label>
+<select class="rec-select" id="recStatus" onchange="saveActivityDraft()">
+<option>Completed</option>
+<option>In Progress</option>
+<option>Pending</option>
+<option>Blocked</option>
+</select>
+</div>
+</div>
+<div class="rec-col">
+<label class="rec-label">Next Steps (Optional)</label>
+<input type="text" class="rec-textarea" id="recNext" placeholder="What needs to happen next?" style="height:34px;" oninput="saveActivityDraft()">
+</div>
+<div class="rec-col">
+<label class="rec-label">Linked Applications (Optional)</label>
+<div class="multi-select-container" id="appMultiSelect">
+<select id="legacyAppSelect" multiple style="display:none;"></select>
+<div class="multi-select-input-area" onclick="document.getElementById('appSearchInput').focus()">
+<div id="selectedAppChips" class="selected-chips"></div>
+<input type="text" id="appSearchInput" class="multi-select-input" placeholder="Search applications..." oninput="onAppSearchInput()" onfocus="showAppDropdown()" onkeydown="onAppSearchKey(event)">
+</div>
+<div id="appDropdown" class="multi-select-dropdown" style="display:none;"></div>
+</div>
+</div>
+<div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+<button class="btn" onclick="closeRecForm()">Cancel</button>
+<button class="btn btn-primary" onclick="saveRecord()">Save Activity</button>
+</div>
+</div>
+<div id="recList" class="rec-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+</div>
+<div class="sidebar-card">
+<div class="sidebar-title">
+<span>Log History by Date</span>
+<span id="historyCountBadge" style="font-size:11px; color:var(--text-muted);">0 logged</span>
+</div>
+<div class="history-list" id="historyListContainer">
+</div>
+<div style="font-size: 11px; color: var(--text-muted); text-align: center; padding-top: 6px;">
+Select any past date to view or edit accomplishments.
+</div>
+</div>
+</div>
+<div id="toastNotification" class="toast">Saved successfully!</div>
+<div id="weeklyModal" class="modal-overlay">
+<div class="modal-box wr-box">
+<div class="modal-header">
+<h3 style="font-size:16px;">📅 Weekly Application Support Progress Report</h3>
+<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+<label class="wr-lbl">From</label>
+<input type="date" id="wrFrom" class="date-input" onchange="wrOnRangeChange()" />
+<label class="wr-lbl">To</label>
+<input type="date" id="wrTo" class="date-input" onchange="wrOnRangeChange()" />
+<button class="btn" onclick="wrLastFullWeek()">Last full week</button>
+<button class="btn" onclick="wrRegenerate()" title="Rebuild from the dashboard (replaces edits)">↻ Regenerate</button>
+<button class="btn" onclick="closeWeeklyReport()">✕</button>
+</div>
+</div>
+<div id="wrBanner" class="wr-banner" style="display:none;"></div>
+<div class="wr-tabs">
+<button id="wrTabEdit" class="wr-tab active" onclick="wrSetTab('edit')">✏️ Edit</button>
+<button id="wrTabPreview" class="wr-tab" onclick="wrSetTab('preview')">👁 Preview</button>
+<span class="wr-hint">Draft only. Nothing is emailed or distributed automatically.</span>
+</div>
+<div class="modal-body">
         <textarea id="wrEditor" class="wr-editor" oninput="wrOnEdit()" spellcheck="true"></textarea>
-        <div id="wrPreview" class="wr-preview" style="display:none;"></div>
-
-        <details class="wr-details">
-          <summary>Source notes you can insert (<span id="wrRefsCount">0</span>) — not written into the report automatically</summary>
-          <div id="wrRefsList"></div>
-        </details>
-        <details class="wr-details">
-          <summary>Saved final versions (<span id="wrSavedCount">0</span>)</summary>
-          <div id="wrSavedList"></div>
-        </details>
-      </div>
-      <div class="modal-footer">
-        <button class="btn" onclick="wrCopyPlain()">Copy plain text</button>
-        <button class="btn" onclick="wrCopyFormatted()">Copy formatted</button>
-        <button id="wrSaveBtn" class="btn btn-primary" onclick="wrSaveFinal()">💾 Save as final version</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="dashboard_data.js"></script>
-  <script>
-    function localYmd(d) {
-      return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-    }
-
-    let accomplishmentsByDate = {};
-    let selectedDate = localYmd(new Date());
-
-    function init() {
-      const saved = localStorage.getItem("app_support_accomplishments_v1");
-      if (saved) {
-        try {
-          accomplishmentsByDate = JSON.parse(saved);
-        } catch (e) {
-          accomplishmentsByDate = {};
-        }
-      }
-
-      document.getElementById("datePicker").value = selectedDate;
-      loadDateEntry(selectedDate);
-      renderHistoryList();
-      initRecords();
-    }
-
-    function onDateChange() {
-      const val = document.getElementById("datePicker").value;
-      if (val) {
-        selectedDate = val;
-        loadDateEntry(selectedDate);
-      }
-    }
-
-    function stepDate(days) {
-      const [y, m, d] = selectedDate.split("-").map(Number);
-      const curr = new Date(y, m - 1, d);
-      curr.setDate(curr.getDate() + days);
-      selectedDate = localYmd(curr);
-      document.getElementById("datePicker").value = selectedDate;
-      loadDateEntry(selectedDate);
-    }
-
-    function jumpToToday() {
-      selectedDate = localYmd(new Date());
-      document.getElementById("datePicker").value = selectedDate;
-      loadDateEntry(selectedDate);
-    }
-
-    const SECTIONS = [
-      { key: "focus", title: "Today's Focus & Key Accomplishments", icon: "🎯", noun: "accomplishment", ph: "What did you accomplish today?", empty: "No focus or accomplishments captured yet." },
-      { key: "escalations", title: "Escalations & Blockers Cleared", icon: "🚧", noun: "escalation", ph: "Any blockers cleared or escalations resolved?", empty: "No escalations or blockers captured." },
-      { key: "syncs", title: "Team, Stakeholder & Vendor Syncs", icon: "🤝", noun: "sync", ph: "Meetings or syncs held today...", empty: "No syncs captured." },
-      { key: "nextDay", title: "Next Day Priorities", icon: "⏭️", noun: "priority", ph: "What's the plan for tomorrow?", empty: "No next day priorities captured." }
-    ];
-
-    let currentStructuredLog = emptyStandup();
-
-    function uid(p) { return (p || "e") + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
-
-    function emptyStandup() {
-      return { focus: [], escalations: [], syncs: [], nextDay: [], notes: "" };
-    }
-
-    function parseDailyLegacy(text) {
-      const st = emptyStandup();
-      if (!text) return st;
-      let cur = null;
-      const sectionFor = h => {
-        h = String(h).toLowerCase();
-        if (/focus|accomplishment/.test(h)) return "focus";
-        if (/escalation|blocker/.test(h)) return "escalations";
-        if (/sync|team|stakeholder|vendor/.test(h)) return "syncs";
-        if (/priorit|next day|tomorrow/.test(h)) return "nextDay";
-        return null;
-      };
-      const leftovers = [];
-      String(text).split("\n").forEach(raw => {
-        let line = raw.trim();
-        if (!line) return;
-        const h = line.match(/^#{1,6}\s*(.*)$/);
-        if (h) {
-          const t = h[1].replace(/^\d+[.)]\s*/, "").trim();
-          cur = sectionFor(t);
-          if (!cur && t) leftovers.push(t);
-          return;
-        }
-        line = line.replace(/^[•\u2022\-\*]+\s*/, "").trim();
-        if (!line) return;
-        if (/^(none|n\/a|na|nothing|tbd)\.?$/i.test(line)) return; 
-        
-        if (cur) {
-          st[cur].push({ id: uid("e"), text: line });
-        } else {
-          leftovers.push(line);
-        }
-      });
-      st.notes = leftovers.join("\n");
-      return st;
-    }
-
-    function serializeDaily(st) {
-      const L = [];
-      SECTIONS.forEach(sec => {
-        const items = (st[sec.key] || []).map(e => String(e.text || "").trim()).filter(Boolean);
-        if (items.length) {
-          L.push("### " + sec.title);
-          items.forEach(t => L.push("• " + t));
-          L.push("");
-        }
-      });
-      if (String(st.notes || "").trim()) {
-        L.push(st.notes.trim());
-      }
-      return L.join("\n").trim();
-    }
-
-    function loadDateEntry(dateStr) {
-      const [y, m, d] = dateStr.split("-").map(Number);
-      if (typeof erOnContextChange === "function") erOnContextChange();
-      const dateObj = new Date(y, m - 1, d);
-      document.getElementById("formattedDateLabel").textContent = dateObj.toLocaleDateString(undefined, {
-        weekday: "long", year: "numeric", month: "short", day: "numeric"
-      });
-
-      renderRecords();
-      highlightActiveHistoryItem();
-    }
-    
-    function onInputText() {
-      // Re-serialize the structured log to markdown text
-      const text = serializeDaily(currentStructuredLog);
-      
-      accomplishmentsByDate[selectedDate] = text;
-      localStorage.setItem("app_support_accomplishments_v1", JSON.stringify(accomplishmentsByDate));
-      
-      // We also update a dummy text field for backward compatibility with email recap
-      const fakeTextarea = document.getElementById("accomplishmentsText");
-      if(fakeTextarea) { fakeTextarea.value = text; }
-
-      updateCounters();
-      document.getElementById("saveStatus").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      renderHistoryList();
-    }
-
-    function updateCounters() {
-      const text = serializeDaily(currentStructuredLog);
-      const words = text ? text.split(/\s+/).length : 0;
-      document.getElementById("charCount").textContent = `${words} words · ${text.length} chars`;
-    }
-
-    /* Structured UI Rendering */
-    function entryHtml(s, e) {
-      return `<div class="mn-entry" data-id="${esc(e.id)}">
+<div id="wrPreview" class="wr-preview" style="display:none;"></div>
+<details class="wr-details">
+<summary>Source notes you can insert (<span id="wrRefsCount">0</span>) — not written into the report automatically</summary>
+<div id="wrRefsList"></div>
+</details>
+<details class="wr-details">
+<summary>Saved final versions (<span id="wrSavedCount">0</span>)</summary>
+<div id="wrSavedList"></div>
+</details>
+</div>
+<div class="modal-footer">
+<button class="btn" onclick="wrCopyPlain()">Copy plain text</button>
+<button class="btn" onclick="wrCopyFormatted()">Copy formatted</button>
+<button id="wrSaveBtn" class="btn btn-primary" onclick="wrSaveFinal()">💾 Save as final version</button>
+</div>
+</div>
+</div>
+<script src="dashboard_data.js"></script>
+<script>
+function localYmd(d) {
+return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+let accomplishmentsByDate = {};
+let selectedDate = localYmd(new Date());
+function init() {
+const saved = localStorage.getItem("app_support_accomplishments_v1");
+if (saved) {
+try {
+accomplishmentsByDate = JSON.parse(saved);
+} catch (e) {
+accomplishmentsByDate = {};
+}
+}
+document.getElementById("datePicker").value = selectedDate;
+loadDateEntry(selectedDate);
+renderHistoryList();
+initRecords();
+}
+function onDateChange() {
+const val = document.getElementById("datePicker").value;
+if (val) {
+selectedDate = val;
+loadDateEntry(selectedDate);
+}
+}
+function stepDate(days) {
+const [y, m, d] = selectedDate.split("-").map(Number);
+const curr = new Date(y, m - 1, d);
+curr.setDate(curr.getDate() + days);
+selectedDate = localYmd(curr);
+document.getElementById("datePicker").value = selectedDate;
+loadDateEntry(selectedDate);
+}
+function jumpToToday() {
+selectedDate = localYmd(new Date());
+document.getElementById("datePicker").value = selectedDate;
+loadDateEntry(selectedDate);
+}
+const SECTIONS = [
+{ key: "focus", title: "Today's Focus & Key Accomplishments", icon: "🎯", noun: "accomplishment", ph: "What did you accomplish today?", empty: "No focus or accomplishments captured yet." },
+{ key: "escalations", title: "Escalations & Blockers Cleared", icon: "🚧", noun: "escalation", ph: "Any blockers cleared or escalations resolved?", empty: "No escalations or blockers captured." },
+{ key: "syncs", title: "Team, Stakeholder & Vendor Syncs", icon: "🤝", noun: "sync", ph: "Meetings or syncs held today...", empty: "No syncs captured." },
+{ key: "nextDay", title: "Next Day Priorities", icon: "⏭️", noun: "priority", ph: "What's the plan for tomorrow?", empty: "No next day priorities captured." }
+];
+let currentStructuredLog = emptyStandup();
+function uid(p) { return (p || "e") + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function emptyStandup() {
+return { focus: [], escalations: [], syncs: [], nextDay: [], notes: "" };
+}
+function parseDailyLegacy(text) {
+const st = emptyStandup();
+if (!text) return st;
+let cur = null;
+const sectionFor = h => {
+h = String(h).toLowerCase();
+if (/focus|accomplishment/.test(h)) return "focus";
+if (/escalation|blocker/.test(h)) return "escalations";
+if (/sync|team|stakeholder|vendor/.test(h)) return "syncs";
+if (/priorit|next day|tomorrow/.test(h)) return "nextDay";
+return null;
+};
+const leftovers = [];
+String(text).split("\n").forEach(raw => {
+let line = raw.trim();
+if (!line) return;
+const h = line.match(/^#{1,6}\s*(.*)$/);
+if (h) {
+const t = h[1].replace(/^\d+[.)]\s*/, "").trim();
+cur = sectionFor(t);
+if (!cur && t) leftovers.push(t);
+return;
+}
+line = line.replace(/^[•\u2022\-\*]+\s*/, "").trim();
+if (!line) return;
+if (/^(none|n\/a|na|nothing|tbd)\.?$/i.test(line)) return;
+if (cur) {
+st[cur].push({ id: uid("e"), text: line });
+} else {
+leftovers.push(line);
+}
+});
+st.notes = leftovers.join("\n");
+return st;
+}
+function serializeDaily(st) {
+const L = [];
+SECTIONS.forEach(sec => {
+const items = (st[sec.key] || []).map(e => String(e.text || "").trim()).filter(Boolean);
+if (items.length) {
+L.push("### " + sec.title);
+items.forEach(t => L.push("• " + t));
+L.push("");
+}
+});
+if (String(st.notes || "").trim()) {
+L.push(st.notes.trim());
+}
+return L.join("\n").trim();
+}
+function loadDateEntry(dateStr) {
+const [y, m, d] = dateStr.split("-").map(Number);
+if (typeof erOnContextChange === "function") erOnContextChange();
+const dateObj = new Date(y, m - 1, d);
+document.getElementById("formattedDateLabel").textContent = dateObj.toLocaleDateString(undefined, {
+weekday: "long", year: "numeric", month: "short", day: "numeric"
+});
+renderRecords();
+highlightActiveHistoryItem();
+}
+function onInputText() {
+// Re-serialize the structured log to markdown text
+const text = serializeDaily(currentStructuredLog);
+accomplishmentsByDate[selectedDate] = text;
+localStorage.setItem("app_support_accomplishments_v1", JSON.stringify(accomplishmentsByDate));
+// We also update a dummy text field for backward compatibility with email recap
+const fakeTextarea = document.getElementById("accomplishmentsText");
+if(fakeTextarea) { fakeTextarea.value = text; }
+updateCounters();
+document.getElementById("saveStatus").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+renderHistoryList();
+}
+function updateCounters() {
+const text = serializeDaily(currentStructuredLog);
+const words = text ? text.split(/\s+/).length : 0;
+document.getElementById("charCount").textContent = `${words} words · ${text.length} chars`;
+}
+function entryHtml(s, e) {
+return `<div class="mn-entry" data-id="${esc(e.id)}">
           <textarea class="mn-entry-text" rows="1" placeholder="${esc(s.ph)}" aria-label="${esc(s.title)} entry"
             data-sec="${s.key}" data-id="${esc(e.id)}" oninput="onEntryInput(this)" onkeydown="onEntryKey(event, this)">${esc(e.text)}</textarea>
-          <button type="button" class="mn-remove" title="Remove" aria-label="Remove entry" onclick="removeEntry('${s.key}', '${esc(e.id)}')">×</button>
-        </div>`;
-    }
-
-    function sectionHtml(s, m) {
-      const items = m[s.key] || [];
-      return `<section class="mn-sec" data-sec="${s.key}" aria-label="${esc(s.title)}">
-          <header class="mn-sec-head"><span class="mn-sec-icon" aria-hidden="true">${s.icon}</span><h3>${esc(s.title)}</h3><span class="mn-count">${items.length || ""}</span></header>
-          <div class="mn-entries">${items.length ? items.map(e => entryHtml(s, e)).join("") : `<div class="mn-empty">${esc(s.empty)}</div>`}</div>
-          <button type="button" class="mn-add" onclick="addEntry('${s.key}')">+ Add ${esc(s.noun)}</button>
-        </section>`;
-    }
-
-    function notesSectionHtml(m) {
-      if (!String(m.notes || "").trim()) return "";
-      return `<section class="mn-sec" data-sec="notes" aria-label="Additional notes">
-          <header class="mn-sec-head"><span class="mn-sec-icon" aria-hidden="true">🗒️</span><h3>Additional Notes</h3></header>
-          <div class="mn-hint">Earlier free-form notes that did not fit one of the sections above. Clear this box to remove it.</div>
+<button type="button" class="mn-remove" title="Remove" aria-label="Remove entry" onclick="removeEntry('${s.key}', '${esc(e.id)}')">×</button>
+</div>`;
+}
+function sectionHtml(s, m) {
+const items = m[s.key] || [];
+return `<section class="mn-sec" data-sec="${s.key}" aria-label="${esc(s.title)}">
+<header class="mn-sec-head"><span class="mn-sec-icon" aria-hidden="true">${s.icon}</span><h3>${esc(s.title)}</h3><span class="mn-count">${items.length || ""}</span></header>
+<div class="mn-entries">${items.length ? items.map(e => entryHtml(s, e)).join("") : `<div class="mn-empty">${esc(s.empty)}</div>`}</div>
+<button type="button" class="mn-add" onclick="addEntry('${s.key}')">+ Add ${esc(s.noun)}</button>
+</section>`;
+}
+function notesSectionHtml(m) {
+if (!String(m.notes || "").trim()) return "";
+return `<section class="mn-sec" data-sec="notes" aria-label="Additional notes">
+<header class="mn-sec-head"><span class="mn-sec-icon" aria-hidden="true">🗒️</span><h3>Additional Notes</h3></header>
+<div class="mn-hint">Earlier free-form notes that did not fit one of the sections above. Clear this box to remove it.</div>
           <textarea class="mn-entry-text mn-notes" aria-label="Additional notes" oninput="onNotesInput(this)">${esc(m.notes)}</textarea>
-        </section>`;
-    }
-
-    function renderStructuredEditor() {
-      document.getElementById("mnSections").innerHTML = 
-        SECTIONS.map(s => sectionHtml(s, currentStructuredLog)).join("") + notesSectionHtml(currentStructuredLog);
-      
-      // Inject dummy textarea for email recap compatibility
-      if(!document.getElementById("accomplishmentsText")) {
-          const t = document.createElement("textarea");
-          t.id = "accomplishmentsText";
-          t.style.display = "none";
-          t.value = serializeDaily(currentStructuredLog);
-          document.body.appendChild(t);
-      } else {
-          document.getElementById("accomplishmentsText").value = serializeDaily(currentStructuredLog);
-      }
-
-      document.querySelectorAll("#mnSections textarea").forEach(autosize);
-    }
-    
-    function rerenderSection(key) {
-      const el = document.querySelector(`#mnSections .mn-sec[data-sec="${key}"]`);
-      if (!el) { renderStructuredEditor(); return; }
-      const s = SECTIONS.find(x => x.key === key);
-      el.outerHTML = sectionHtml(s, currentStructuredLog);
-      document.querySelectorAll(`#mnSections .mn-sec[data-sec="${key}"] textarea`).forEach(autosize);
-    }
-    
-    function autosize(el) {
-      if (!el || el.classList.contains("mn-notes")) return;
-      el.style.height = "auto";
-      el.style.height = el.scrollHeight + 2 + "px";
-    }
-
-    function focusEnd(el) {
-      if (!el) return;
-      el.focus();
-      const n = (el.value || "").length;
-      try { el.setSelectionRange(n, n); } catch (e) {}
-    }
-
-    function findEntry(sec, id) { return (currentStructuredLog[sec] || []).find(e => e.id === id); }
-
-    function onEntryInput(el) {
-      const e = findEntry(el.dataset.sec, el.dataset.id);
-      if (!e) return;
-      e.text = el.value;
-      autosize(el);
-      onInputText();
-    }
-
-    function addEntry(sec, afterId) {
-      const list = currentStructuredLog[sec];
-      const e = { id: uid("e"), text: "" };
-      const i = afterId ? list.findIndex(x => x.id === afterId) : -1;
-      if (i >= 0) list.splice(i + 1, 0, e); else list.push(e);
-      rerenderSection(sec);
-      focusEnd(document.querySelector(`textarea[data-sec="${sec}"][data-id="${e.id}"]`));
-      onInputText();
-    }
-
-    function removeEntry(sec, id, quiet) {
-      const list = currentStructuredLog[sec];
-      const i = list.findIndex(x => x.id === id);
-      if (i < 0) return;
-      if (!quiet && String(list[i].text || "").trim() && !confirm("Remove this entry?")) return;
-      const prev = list[i - 1];
-      list.splice(i, 1);
-      rerenderSection(sec);
-      if (quiet && prev) focusEnd(document.querySelector(`textarea[data-sec="${sec}"][data-id="${prev.id}"]`));
-      onInputText();
-    }
-
-    function onEntryKey(ev, el) {
-      if (ev.key === "Enter" && !ev.shiftKey && !ev.isComposing) {
-        ev.preventDefault();
-        addEntry(el.dataset.sec, el.dataset.id);
-      } else if (ev.key === "Backspace" && el.value === "") {
-        ev.preventDefault();
-        removeEntry(el.dataset.sec, el.dataset.id, true);
-      }
-    }
-    
-    function onNotesInput(el) {
-      currentStructuredLog.notes = el.value;
-      onInputText();
-    }
-
-    function renderHistoryList() {
-      const container = document.getElementById("historyListContainer");
-      if (!container) return;
-      container.innerHTML = "";
-
-      const q = (document.getElementById("historySearch").value || "").toLowerCase();
-      const fromD = document.getElementById("historyFrom").value;
-      const toD = document.getElementById("historyTo").value;
-
-      // Group records by entryDate
-      const dateGroups = {};
-      records.forEach(r => {
-        const d = r.entryDate || r.createdAt.split('T')[0];
-        if (!dateGroups[d]) dateGroups[d] = { total: 0, completed: 0, items: [] };
-        dateGroups[d].items.push(r);
-        dateGroups[d].total++;
-        if (r.status === "Completed") dateGroups[d].completed++;
-      });
-
-      // Also include any dates from legacy accomplishmentsByDate just in case they haven't been converted to activities
-      Object.keys(accomplishmentsByDate).forEach(d => {
-        if (!dateGroups[d] && accomplishmentsByDate[d].trim().length > 0) {
-           dateGroups[d] = { total: 0, completed: 0, items: [], legacyText: accomplishmentsByDate[d] };
-        }
-      });
-
-      let keys = Object.keys(dateGroups);
-
-      // Apply Filters
-      keys = keys.filter(k => {
-        if (fromD && k < fromD) return false;
-        if (toD && k > toD) return false;
-        
-        const grp = dateGroups[k];
-        if (q) {
-           let matches = false;
-           if (grp.legacyText && grp.legacyText.toLowerCase().includes(q)) matches = true;
-           if (grp.items.some(r => (r.description && r.description.toLowerCase().includes(q)) || (r.nextSteps && r.nextSteps.toLowerCase().includes(q)))) matches = true;
-           return matches;
-        }
-        return true;
-      });
-
-      keys.sort((a, b) => b.localeCompare(a)); // Newest first
-
-      document.getElementById("historyCountBadge").textContent = `${keys.length} day${keys.length !== 1 ? 's' : ''}`;
-
-      if (keys.length === 0) {
-        container.innerHTML = `<div style="font-size:12px; color:var(--text-muted); padding:10px; text-align:center; font-style:italic;">No recorded activities match.</div>`;
-        return;
-      }
-
-      keys.forEach(k => {
-        const grp = dateGroups[k];
-        const item = document.createElement("div");
-        item.className = "history-item " + (k === selectedDate ? "active" : "");
-        
-        // Let's create a nice formatted date
-        const parts = k.split('-');
-        let displayDate = k;
-        if (parts.length === 3) {
-            const dObj = new Date(parts[0], parts[1]-1, parts[2]);
-            displayDate = dObj.toLocaleDateString(undefined, {month:"short", day:"numeric", year:"numeric"});
-        }
-
-        item.onclick = () => {
-          selectedDate = k;
-          document.getElementById("datePicker").value = k;
-          loadDateEntry(k);
-          renderHistoryList();
-        };
-
-        const metricsHtml = grp.total > 0 
-           ? `<div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${grp.total} activities · ${grp.completed} completed</div>`
-           : `<div style="font-size:11px; color:var(--text-muted); margin-top:4px; font-style:italic;">Legacy notes only</div>`;
-
-        item.innerHTML = `
-          <div class="history-item-date">
-            <span>${escapeHtml(displayDate)}</span>
-          </div>
-          ${metricsHtml}
-        `;
-        container.appendChild(item);
-      });
-    }
-
-    function highlightActiveHistoryItem() {
-      document.querySelectorAll(".history-item").forEach(el => {
-        const dateText = el.querySelector(".history-item-date span")?.textContent;
-        if (dateText === selectedDate) {
-          el.classList.add("active");
-        } else {
-          el.classList.remove("active");
-        }
-      });
-    }
-
-    function copyTodayUpdate() {
-      const text = document.getElementById("accomplishmentsText").value;
-      if (!text.trim()) {
-        showToast("No accomplishments entered for today to copy!");
-        return;
-      }
-      const formatted = `*Application Support Lead Daily Accomplishments (${selectedDate}):*\n\n${text}`;
-      navigator.clipboard.writeText(formatted).then(() => {
-        showToast("Copied daily standup update to clipboard!");
-      });
-    }
-
-    function saveNow(showToastMsg) {
-      localStorage.setItem("app_support_accomplishments_v1", JSON.stringify(accomplishmentsByDate));
-      if (showToastMsg) showToast("Log saved successfully!");
-    }
-
-    function clearDayConfirm() {
-      if (confirm(`Clear all accomplishments logged for ${selectedDate}?`)) {
-        delete accomplishmentsByDate[selectedDate];
-        localStorage.setItem("app_support_accomplishments_v1", JSON.stringify(accomplishmentsByDate));
-        loadDateEntry(selectedDate);
-        renderHistoryList();
-        showToast("Cleared entry for this day");
-      }
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById("toastNotification");
-      toast.textContent = msg;
-      toast.style.display = "block";
-      setTimeout(() => { toast.style.display = "none"; }, 2500);
-    }
-
-    window.onload = init;
-
-    /* ============================================================
-       Shared accomplishment records (linked to portfolio applications)
-       Single source of truth: one record per accomplishment, referencing
-       applications by id. The portfolio page reads the same store, so
-       nothing is duplicated or double-counted.
-       ============================================================ */
-    const RECORDS_KEY = "app_support_accomplishment_records_v1";
-    const PORTFOLIO_KEYS = ["app_support_portfolio_v3", "app_support_portfolio_v2", "app_support_portfolio_v1"];
-    let records = [];
-    let portfolioApps = [];
-    let editingRecId = null;
-    let pickedAppIds = new Set();
-
-    const DRAFT_KEY = "app_support_activity_draft_v1";
-
-    function saveActivityDraft() {
-      if (editingRecId) return; // Only draft "New" activities
-      const draft = {
-        desc: document.getElementById("recDesc").value,
-        category: document.getElementById("recCategory").value,
-        status: document.getElementById("recStatus").value,
-        nextSteps: document.getElementById("recNext").value,
-        date: document.getElementById("recDate").value,
-        appIds: Array.from(pickedAppIds)
-      };
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-    }
-
-    function clearActivityDraft() {
-      localStorage.removeItem(DRAFT_KEY);
-    }
-
-
-    function loadRecords() {
-      try {
-        const parsed = JSON.parse(localStorage.getItem(RECORDS_KEY) || "[]");
-        records = Array.isArray(parsed) ? parsed : [];
-      } catch (e) { records = []; }
-    }
-
-    function persistRecords() {
-      localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
-    }
-
-    function loadPortfolioApps() {
-      const baseApps = [
-        ["astrodocs","AstroDocs","LIVE"],["atlas","ATLAS","LIVE"],["circa","Circa","LIVE"],["columba","Columba","LIVE"],
-        ["frameio","Frame IO","LIVE"],["givingtree","Giving Tree","LIVE"],["iscript","iScript","LIVE"],["juno","Juno","LIVE"],
-        ["mycalls","myCalls","LIVE"],["polaris","Polaris: Deal Tracker","LIVE"],["portalplus","Portal+","LIVE"],
-        ["scenechronize","Scenechronize","LIVE"],["screenbooker","Screen Booker","LIVE"],["touchstone","Touchstone","LIVE"],
-        ["vetter","Vetter","LIVE"],["amity","AMITY","ONBOARDING"],["appleticketing","Apple Ticketing Tool","ONBOARDING"],
-        ["cudos","Cudos","ONBOARDING"],["kroma","Kroma","ONBOARDING"],["siriusplus","Sirius+","ONBOARDING"],
-        ["watchlist","Watchlist","ONBOARDING"]
-      ].map(([id, name, stage]) => ({ id, name, stage }));
-      
-      portfolioApps = [...baseApps];
-      
-      for (const k of PORTFOLIO_KEYS) {
-        const raw = localStorage.getItem(k);
-        if (raw) {
-          try {
-            const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed)) {
-              parsed.forEach(p => {
-                if (!portfolioApps.some(a => a.id === p.id)) {
-                  portfolioApps.push({ id: p.id, name: p.name, stage: p.stage });
-                }
-              });
-              break;
-            }
-          } catch(e) {}
-        }
-      }
-      
-      portfolioApps.sort((a, b) => a.name.localeCompare(b.name));
-      populateAppFilter();
-    }
-
-    function appName(id) {
-      const a = portfolioApps.find(x => x.id === id);
-      return a ? a.name : id;
-    }
-
-    function esc(s) {
-      return String(s == null ? "" : s)
-        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-    }
-
-    function fmtStamp(iso) {
-      const d = new Date(iso);
-      if (isNaN(d.getTime())) return "";
-      return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) + " at " +
-             d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    }
-
-    function initRecords() {
-      loadRecords();
-      loadPortfolioApps();
-      renderAppPicker();
-      renderRecords();
-      renderHistoryList();
-    }
-
-    let appDropdownFocusedIndex = -1;
-
-    function renderAppPicker() {
-      const chipContainer = document.getElementById("selectedAppChips");
-      if (!chipContainer) return;
-      
-      const legacySelect = document.getElementById("legacyAppSelect");
-      if (legacySelect) {
-        legacySelect.innerHTML = portfolioApps.map(a => `<option value="${esc(a.id)}" ${pickedAppIds.has(a.id) ? "selected" : ""}>${esc(a.name)}</option>`).join("");
-      }
-
-      chipContainer.innerHTML = Array.from(pickedAppIds).map(id => {
-        const app = portfolioApps.find(a => a.id === id);
-        const name = app ? app.name : id;
-        return `<span class="app-chip">🔗 ${esc(name)} <button type="button" class="chip-remove" title="Remove" aria-label="Remove ${esc(name)}" onclick="removeAppPick('${esc(id)}')">&times;</button></span>`;
-      }).join("");
-      renderAppDropdown();
-    }
-
-    function removeAppPick(id) {
-      pickedAppIds.delete(id);
-      renderAppPicker();
-      saveActivityDraft();
-      document.getElementById("appSearchInput").focus();
-    }
-
-    function showAppDropdown() {
-      document.getElementById("appDropdown").style.display = "block";
-      renderAppDropdown();
-    }
-
-    function hideAppDropdown() {
-      // Small timeout to allow clicks on dropdown items to fire before it disappears
-      setTimeout(() => {
-        const dd = document.getElementById("appDropdown");
-        if (dd) dd.style.display = "none";
-      }, 150);
-    }
-
-    function onAppSearchInput() {
-      appDropdownFocusedIndex = -1;
-      showAppDropdown();
-    }
-
-    function renderAppDropdown() {
-      const dd = document.getElementById("appDropdown");
-      if (!dd) return;
-      const query = (document.getElementById("appSearchInput").value || "").toLowerCase();
-      
-      const available = portfolioApps.filter(a => !pickedAppIds.has(a.id) && a.name.toLowerCase().includes(query));
-      
-      if (available.length === 0) {
-        dd.innerHTML = `<div style="padding:8px 12px; font-size:12px; color:var(--text-muted); font-style:italic;">No matching applications found</div>`;
-        return;
-      }
-      
-      dd.innerHTML = available.map((a, idx) => `
-        <div class="dropdown-item ${idx === appDropdownFocusedIndex ? 'focused' : ''}" onmousedown="selectAppFromDropdown('${esc(a.id)}')">
-          <span>${esc(a.name)}</span>
-          <span class="stage-badge">${a.stage === 'LIVE' ? 'Live' : 'Onboarding'}</span>
-        </div>
-      `).join("");
-    }
-
-    function selectAppFromDropdown(id) {
-      pickedAppIds.add(id);
-      const input = document.getElementById("appSearchInput");
-      if (input) input.value = "";
-      appDropdownFocusedIndex = -1;
-      renderAppPicker();
-      saveActivityDraft();
-    }
-
-    function onAppSearchKey(e) {
-      const dd = document.getElementById("appDropdown");
-      const isVisible = dd && dd.style.display !== "none";
-      
-      const query = (document.getElementById("appSearchInput").value || "").toLowerCase();
-      const available = portfolioApps.filter(a => !pickedAppIds.has(a.id) && a.name.toLowerCase().includes(query));
-      
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        if (!isVisible) {
-          showAppDropdown();
-        } else {
-          appDropdownFocusedIndex = (appDropdownFocusedIndex + 1) % available.length;
-          renderAppDropdown();
-        }
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        if (isVisible) {
-          appDropdownFocusedIndex = (appDropdownFocusedIndex - 1 + available.length) % available.length;
-          renderAppDropdown();
-        }
-      } else if (e.key === "Enter") {
-        e.preventDefault();
-        if (isVisible && appDropdownFocusedIndex >= 0 && available[appDropdownFocusedIndex]) {
-          selectAppFromDropdown(available[appDropdownFocusedIndex].id);
-        } else if (isVisible && available.length === 1) {
-          selectAppFromDropdown(available[0].id);
-        }
-      } else if (e.key === "Backspace" && document.getElementById("appSearchInput").value === "") {
-        const arr = Array.from(pickedAppIds);
-        if (arr.length > 0) {
-          removeAppPick(arr[arr.length - 1]);
-        }
-      } else if (e.key === "Escape") {
-        hideAppDropdown();
-      }
-    }
-    
-    document.addEventListener("mousedown", (e) => {
-      const container = document.getElementById("appMultiSelect");
-      if (container && !container.contains(e.target)) {
-        const dd = document.getElementById("appDropdown");
-        if (dd) dd.style.display = "none";
-      }
-    });
-
-    function openRecForm(rec) {
-      editingRecId = rec ? rec.id : null;
-      document.getElementById("recFormTitle").textContent = rec ? "Edit accomplishment" : "New accomplishment";
-      document.getElementById("recDesc").value = rec ? rec.description : "";
-      document.getElementById("recCategory").value = rec ? rec.category : "Accomplishment";
-      document.getElementById("recStatus").value = rec ? rec.status : "Completed";
-      document.getElementById("recNext").value = rec ? (rec.nextSteps || "") : "";
-      pickedAppIds = new Set(rec ? (rec.appIds || []) : []);
-      renderAppPicker();
-      document.getElementById("recForm").style.display = "flex";
-      const asi = document.getElementById("appSearchInput"); if (asi) asi.value = "";
-      document.getElementById("recDesc").focus();
-    }
-
-    function closeRecForm() {
-      document.getElementById("recForm").style.display = "none";
-      if (editingRecId) {
-        // We were editing an existing record, clear state so we don't pollute the next "New" form
-        editingRecId = null;
-        pickedAppIds = new Set();
-      }
-      // If we are cancelling a "New" activity, the DOM text remains and gets picked up by openRecForm(null) next time
-    }
-
-    function saveRecord() {
-      const desc = document.getElementById("recDesc").value.trim();
-      if (!desc) { 
-        showToast("Please describe the activity first."); 
-        document.getElementById("recDesc").focus();
-        return; 
-      }
-      loadRecords(); // re-read so changes made on the portfolio page are not overwritten
-      const category = document.getElementById("recCategory").value;
-      const status = document.getElementById("recStatus").value;
-      const nextSteps = document.getElementById("recNext").value.trim();
-      const entryDate = document.getElementById("recDate").value || selectedDate;
-      const appIds = Array.from(pickedAppIds);
-      const nowIso = new Date().toISOString();
-
-      if (editingRecId) {
-        const rec = records.find(r => r.id === editingRecId);
-        if (rec) {
-          rec.description = desc;
-          rec.category = category;
-          rec.nextSteps = nextSteps;
-          rec.appIds = appIds;
-          rec.entryDate = entryDate; // Allow date changes during edits
-          if (rec.status !== status) {
-            const prevStatus = rec.status;
-            rec.status = status;
-            rec.completedAt = status === "Completed" ? (rec.completedAt || nowIso) : null;
-            if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: status, label: rec.description });
-          }
-          rec.updatedAt = nowIso;
-        }
-      } else {
-        records.push({
-          id: "rec_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-          description: desc,
-          category,
-          status,
-          nextSteps,
-          appIds,
-          entryDate: entryDate,
-          createdAt: nowIso,
-          completedAt: status === "Completed" ? nowIso : null,
-          updatedAt: nowIso
-        });
-        clearActivityDraft();
-      }
-      persistRecords();
-      
-      // Make sure the view switches to the date that the record was just saved under
-      if (entryDate !== selectedDate) {
-        document.getElementById("datePicker").value = entryDate;
-        onDateChange();
-      }
-      
-      // We must clear state so closeRecForm() doesn't leave an editingRecId active
-      editingRecId = null; 
-      pickedAppIds = new Set();
-      
-      closeRecForm();
-      renderRecords();
-      renderHistoryList();
-      showToast(appIds.length ? `Saved and linked to ${appIds.length} application${appIds.length > 1 ? "s" : ""}` : "Saved as general accomplishment");
-    }
-
-    function changeRecStatus(id, status) {
-      loadRecords();
-      const rec = records.find(r => r.id === id);
-      if (!rec) return;
-      const prevStatus = rec.status;
-      rec.status = status;
-      rec.completedAt = status === "Completed" ? (rec.completedAt || new Date().toISOString()) : null;
-      rec.updatedAt = new Date().toISOString();
-      persistRecords();
-      if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: status, label: rec.description });
-      renderRecords();
-      renderHistoryList();
-    }
-
-    function editRecord(id) {
-      loadRecords();
-      const rec = records.find(r => r.id === id);
-      if (rec) openRecForm(rec);
-    }
-
-    function deleteRecord(id) {
-      if (!confirm("Delete this accomplishment? It will also disappear from any linked application's Activity History.")) return;
-      loadRecords();
-      records = records.filter(r => r.id !== id);
-      persistRecords();
-      renderRecords();
-      renderHistoryList();
-      showToast("Accomplishment deleted");
-    }
-
-    function recordsForDate(dateStr) {
-      return records
-        .filter(r => r.entryDate === dateStr)
-        .sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0));
-    }
-
-    function resetFilters() {
-      if (document.getElementById("filterApp")) document.getElementById("filterApp").value = "ALL";
-      if (document.getElementById("filterCategory")) document.getElementById("filterCategory").value = "ALL";
-      if (document.getElementById("filterStatus")) document.getElementById("filterStatus").value = "ALL";
-      renderRecords();
-      renderHistoryList();
-    }
-    
-    function populateAppFilter() {
-      const sel = document.getElementById("filterApp");
-      if (!sel) return;
-      const currentVal = sel.value;
-      const opts = [
-        `<option value="ALL">All Applications</option>`,
-        `<option value="GENERAL">General (No App)</option>`
-      ];
-      portfolioApps.forEach(a => {
-        opts.push(`<option value="${esc(a.id)}">${esc(a.name)}</option>`);
-      });
-      sel.innerHTML = opts.join("");
-      if (sel.querySelector(`option[value="${currentVal}"]`)) {
-        sel.value = currentVal;
-      }
-    }
-
-    function renderRecords() {
-      const list = document.getElementById("recList");
-      if (!list) return;
-      
-      let items = recordsForDate(selectedDate).slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      
-      const fApp = document.getElementById("filterApp") ? document.getElementById("filterApp").value : "ALL";
-      const fCat = document.getElementById("filterCategory") ? document.getElementById("filterCategory").value : "ALL";
-      const fStat = document.getElementById("filterStatus") ? document.getElementById("filterStatus").value : "ALL";
-      
-      items = items.filter(r => {
-        let matchApp = true;
-        if (fApp === "GENERAL") matchApp = !(r.appIds && r.appIds.length);
-        else if (fApp !== "ALL") matchApp = r.appIds && r.appIds.includes(fApp);
-        
-        let matchCat = (fCat === "ALL") || (r.category === fCat);
-        let matchStat = (fStat === "ALL") || (r.status === fStat);
-        
-        return matchApp && matchCat && matchStat;
-      });
-      
-      // Update Metrics
-      document.getElementById("metricLogged").textContent = items.length;
-      document.getElementById("metricCompleted").textContent = items.filter(r => r.status === "Completed").length;
-      
-      const appSet = new Set();
-      items.forEach(r => (r.appIds || []).forEach(id => appSet.add(id)));
-      document.getElementById("metricApps").textContent = appSet.size;
-
-      if (!items.length) {
-        list.innerHTML = `<div class="rec-empty" style="text-align:center; padding:30px; color:var(--text-muted); font-style:italic;">No activities logged for this day.</div>`;
-        return;
-      }
-      
-      const statuses = ["Completed", "In Progress", "Pending", "Blocked"];
-      list.innerHTML = items.map(r => {
-        const general = !(r.appIds && r.appIds.length);
-        const appPills = general
-          ? `<span class="pill general" style="background:rgba(255,255,255,0.05); color:#fff;">General</span>`
-          : r.appIds.map(id => `<span class="pill app" style="background:rgba(47,129,247,0.15); color:var(--accent-hover);">🔗 ${esc(appName(id))}</span>`).join("");
-        
-        let statusColor = "var(--text-muted)";
-        if (r.status === "Completed") statusColor = "var(--green)";
-        if (r.status === "In Progress") statusColor = "var(--accent-hover)";
-        if (r.status === "Blocked") statusColor = "var(--orange)";
-
-        const opts = statuses.map(s => `<option ${r.status === s ? "selected" : ""}>${s}</option>`).join("");
-        
-        const time = fmtStamp(r.createdAt).split(" at ")[1] || "";
-        
-        return `
-          <div class="rec-card ${general ? "general" : ""}" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position:relative;">
-            <div style="display:flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-              <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
-                <span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">${time}</span>
-                <span style="width: 4px; height: 4px; background: var(--text-muted); border-radius: 50%; opacity: 0.5;"></span>
-                <span style="font-size: 12px; font-weight: 500; color: ${statusColor};">${esc(r.category)}</span>
-                <span style="width: 4px; height: 4px; background: var(--text-muted); border-radius: 50%; opacity: 0.5;"></span>
-                <select style="background:transparent; border:none; color:inherit; font-size:12px; cursor:pointer; outline:none;" onchange="changeRecStatus('${r.id}', this.value)">${opts}</select>
-              </div>
-              <div style="display:flex; gap:12px;">
-                <button style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:13px;" onclick="editRecord('${r.id}')">Edit</button>
-                <button style="background:none; border:none; color:var(--orange); cursor:pointer; font-size:13px;" onclick="deleteRecord('${r.id}')">Delete</button>
-              </div>
-            </div>
-            
-            <div style="font-size: 14px; line-height: 1.5; color: #fff; margin-bottom: 8px;">${esc(r.description)}</div>
-            ${r.nextSteps ? `<div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;"><strong>↳ Next Steps:</strong> ${esc(r.nextSteps)}</div>` : ""}
-            
-            <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
-              ${appPills}
-            </div>
-          </div>`;
-      }).join("");
-    }
-
-    // Keep this view in sync when a linked record changes on the portfolio page
-    window.addEventListener("storage", (e) => {
-      if (e.key === RECORDS_KEY) { loadRecords(); renderRecords(); }
-      if (PORTFOLIO_KEYS.includes(e.key)) { loadPortfolioApps(); renderAppPicker(); renderRecords(); }
-    });
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) { loadRecords(); loadPortfolioApps(); renderAppPicker(); renderRecords(); }
-    });
-
-/* ===== WR-ENGINE-BEGIN (pure logic: no DOM access) ===== */
+</section>`;
+}
+function renderStructuredEditor() {
+document.getElementById("mnSections").innerHTML =
+SECTIONS.map(s => sectionHtml(s, currentStructuredLog)).join("") + notesSectionHtml(currentStructuredLog);
+// Inject dummy textarea for email recap compatibility
+if(!document.getElementById("accomplishmentsText")) {
+const t = document.createElement("textarea");
+t.id = "accomplishmentsText";
+t.style.display = "none";
+t.value = serializeDaily(currentStructuredLog);
+document.body.appendChild(t);
+} else {
+document.getElementById("accomplishmentsText").value = serializeDaily(currentStructuredLog);
+}
+document.querySelectorAll("#mnSections textarea").forEach(autosize);
+}
+function rerenderSection(key) {
+const el = document.querySelector(`#mnSections .mn-sec[data-sec="${key}"]`);
+if (!el) { renderStructuredEditor(); return; }
+const s = SECTIONS.find(x => x.key === key);
+el.outerHTML = sectionHtml(s, currentStructuredLog);
+document.querySelectorAll(`#mnSections .mn-sec[data-sec="${key}"] textarea`).forEach(autosize);
+}
+function autosize(el) {
+if (!el || el.classList.contains("mn-notes")) return;
+el.style.height = "auto";
+el.style.height = el.scrollHeight + 2 + "px";
+}
+function focusEnd(el) {
+if (!el) return;
+el.focus();
+const n = (el.value || "").length;
+try { el.setSelectionRange(n, n); } catch (e) {}
+}
+function findEntry(sec, id) { return (currentStructuredLog[sec] || []).find(e => e.id === id); }
+function onEntryInput(el) {
+const e = findEntry(el.dataset.sec, el.dataset.id);
+if (!e) return;
+e.text = el.value;
+autosize(el);
+onInputText();
+}
+function addEntry(sec, afterId) {
+const list = currentStructuredLog[sec];
+const e = { id: uid("e"), text: "" };
+const i = afterId ? list.findIndex(x => x.id === afterId) : -1;
+if (i >= 0) list.splice(i + 1, 0, e); else list.push(e);
+rerenderSection(sec);
+focusEnd(document.querySelector(`textarea[data-sec="${sec}"][data-id="${e.id}"]`));
+onInputText();
+}
+function removeEntry(sec, id, quiet) {
+const list = currentStructuredLog[sec];
+const i = list.findIndex(x => x.id === id);
+if (i < 0) return;
+if (!quiet && String(list[i].text || "").trim() && !confirm("Remove this entry?")) return;
+const prev = list[i - 1];
+list.splice(i, 1);
+rerenderSection(sec);
+if (quiet && prev) focusEnd(document.querySelector(`textarea[data-sec="${sec}"][data-id="${prev.id}"]`));
+onInputText();
+}
+function onEntryKey(ev, el) {
+if (ev.key === "Enter" && !ev.shiftKey && !ev.isComposing) {
+ev.preventDefault();
+addEntry(el.dataset.sec, el.dataset.id);
+} else if (ev.key === "Backspace" && el.value === "") {
+ev.preventDefault();
+removeEntry(el.dataset.sec, el.dataset.id, true);
+}
+}
+function onNotesInput(el) {
+currentStructuredLog.notes = el.value;
+onInputText();
+}
+function renderHistoryList() {
+const container = document.getElementById("historyListContainer");
+if (!container) return;
+container.innerHTML = "";
+const q = (document.getElementById("historySearch").value || "").toLowerCase();
+const fromD = document.getElementById("historyFrom").value;
+const toD = document.getElementById("historyTo").value;
+// Group records by entryDate
+const dateGroups = {};
+records.forEach(r => {
+const d = r.entryDate || r.createdAt.split('T')[0];
+if (!dateGroups[d]) dateGroups[d] = { total: 0, completed: 0, items: [] };
+dateGroups[d].items.push(r);
+dateGroups[d].total++;
+if (r.status === "Completed") dateGroups[d].completed++;
+});
+// Also include any dates from legacy accomplishmentsByDate just in case they haven't been converted to activities
+Object.keys(accomplishmentsByDate).forEach(d => {
+if (!dateGroups[d] && accomplishmentsByDate[d].trim().length > 0) {
+dateGroups[d] = { total: 0, completed: 0, items: [], legacyText: accomplishmentsByDate[d] };
+}
+});
+let keys = Object.keys(dateGroups);
+// Apply Filters
+keys = keys.filter(k => {
+if (fromD && k < fromD) return false;
+if (toD && k > toD) return false;
+const grp = dateGroups[k];
+if (q) {
+let matches = false;
+if (grp.legacyText && grp.legacyText.toLowerCase().includes(q)) matches = true;
+if (grp.items.some(r => (r.description && r.description.toLowerCase().includes(q)) || (r.nextSteps && r.nextSteps.toLowerCase().includes(q)))) matches = true;
+return matches;
+}
+return true;
+});
+keys.sort((a, b) => b.localeCompare(a)); // Newest first
+document.getElementById("historyCountBadge").textContent = `${keys.length} day${keys.length !== 1 ? 's' : ''}`;
+if (keys.length === 0) {
+container.innerHTML = `<div style="font-size:12px; color:var(--text-muted); padding:10px; text-align:center; font-style:italic;">No recorded activities match.</div>`;
+return;
+}
+keys.forEach(k => {
+const grp = dateGroups[k];
+const item = document.createElement("div");
+item.className = "history-item " + (k === selectedDate ? "active" : "");
+// Let's create a nice formatted date
+const parts = k.split('-');
+let displayDate = k;
+if (parts.length === 3) {
+const dObj = new Date(parts[0], parts[1]-1, parts[2]);
+displayDate = dObj.toLocaleDateString(undefined, {month:"short", day:"numeric", year:"numeric"});
+}
+item.onclick = () => {
+selectedDate = k;
+document.getElementById("datePicker").value = k;
+loadDateEntry(k);
+renderHistoryList();
+};
+const metricsHtml = grp.total > 0
+? `<div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${grp.total} activities · ${grp.completed} completed</div>`
+: `<div style="font-size:11px; color:var(--text-muted); margin-top:4px; font-style:italic;">Legacy notes only</div>`;
+item.innerHTML = `
+<div class="history-item-date">
+<span>${escapeHtml(displayDate)}</span>
+</div>
+${metricsHtml}
+`;
+container.appendChild(item);
+});
+}
+function highlightActiveHistoryItem() {
+document.querySelectorAll(".history-item").forEach(el => {
+const dateText = el.querySelector(".history-item-date span")?.textContent;
+if (dateText === selectedDate) {
+el.classList.add("active");
+} else {
+el.classList.remove("active");
+}
+});
+}
+function copyTodayUpdate() {
+const text = document.getElementById("accomplishmentsText").value;
+if (!text.trim()) {
+showToast("No accomplishments entered for today to copy!");
+return;
+}
+const formatted = `*Application Support Lead Daily Accomplishments (${selectedDate}):*\n\n${text}`;
+navigator.clipboard.writeText(formatted).then(() => {
+showToast("Copied daily standup update to clipboard!");
+});
+}
+function saveNow(showToastMsg) {
+localStorage.setItem("app_support_accomplishments_v1", JSON.stringify(accomplishmentsByDate));
+if (showToastMsg) showToast("Log saved successfully!");
+}
+function clearDayConfirm() {
+if (confirm(`Clear all accomplishments logged for ${selectedDate}?`)) {
+delete accomplishmentsByDate[selectedDate];
+localStorage.setItem("app_support_accomplishments_v1", JSON.stringify(accomplishmentsByDate));
+loadDateEntry(selectedDate);
+renderHistoryList();
+showToast("Cleared entry for this day");
+}
+}
+function showToast(msg) {
+const toast = document.getElementById("toastNotification");
+toast.textContent = msg;
+toast.style.display = "block";
+setTimeout(() => { toast.style.display = "none"; }, 2500);
+}
+window.onload = init;
+const RECORDS_KEY = "app_support_accomplishment_records_v1";
+const PORTFOLIO_KEYS = ["app_support_portfolio_v3", "app_support_portfolio_v2", "app_support_portfolio_v1"];
+let records = [];
+let portfolioApps = [];
+let editingRecId = null;
+let pickedAppIds = new Set();
+const DRAFT_KEY = "app_support_activity_draft_v1";
+function saveActivityDraft() {
+if (editingRecId) return; // Only draft "New" activities
+const draft = {
+desc: document.getElementById("recDesc").value,
+category: document.getElementById("recCategory").value,
+status: document.getElementById("recStatus").value,
+nextSteps: document.getElementById("recNext").value,
+date: document.getElementById("recDate").value,
+appIds: Array.from(pickedAppIds)
+};
+localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+}
+function clearActivityDraft() {
+localStorage.removeItem(DRAFT_KEY);
+}
+function loadRecords() {
+try {
+const parsed = JSON.parse(localStorage.getItem(RECORDS_KEY) || "[]");
+records = Array.isArray(parsed) ? parsed : [];
+} catch (e) { records = []; }
+}
+function persistRecords() {
+localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
+}
+function loadPortfolioApps() {
+const baseApps = [
+["astrodocs","AstroDocs","LIVE"],["atlas","ATLAS","LIVE"],["circa","Circa","LIVE"],["columba","Columba","LIVE"],
+["frameio","Frame IO","LIVE"],["givingtree","Giving Tree","LIVE"],["iscript","iScript","LIVE"],["juno","Juno","LIVE"],
+["mycalls","myCalls","LIVE"],["polaris","Polaris: Deal Tracker","LIVE"],["portalplus","Portal+","LIVE"],
+["scenechronize","Scenechronize","LIVE"],["screenbooker","Screen Booker","LIVE"],["touchstone","Touchstone","LIVE"],
+["vetter","Vetter","LIVE"],["amity","AMITY","ONBOARDING"],["appleticketing","Apple Ticketing Tool","ONBOARDING"],
+["cudos","Cudos","ONBOARDING"],["kroma","Kroma","ONBOARDING"],["siriusplus","Sirius+","ONBOARDING"],
+["watchlist","Watchlist","ONBOARDING"]
+].map(([id, name, stage]) => ({ id, name, stage }));
+portfolioApps = [...baseApps];
+for (const k of PORTFOLIO_KEYS) {
+const raw = localStorage.getItem(k);
+if (raw) {
+try {
+const parsed = JSON.parse(raw);
+if (Array.isArray(parsed)) {
+parsed.forEach(p => {
+if (!portfolioApps.some(a => a.id === p.id)) {
+portfolioApps.push({ id: p.id, name: p.name, stage: p.stage });
+}
+});
+break;
+}
+} catch(e) {}
+}
+}
+portfolioApps.sort((a, b) => a.name.localeCompare(b.name));
+populateAppFilter();
+}
+function appName(id) {
+const a = portfolioApps.find(x => x.id === id);
+return a ? a.name : id;
+}
+function esc(s) {
+return String(s == null ? "" : s)
+.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function fmtStamp(iso) {
+const d = new Date(iso);
+if (isNaN(d.getTime())) return "";
+return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) + " at " +
+d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
+function initRecords() {
+loadRecords();
+loadPortfolioApps();
+renderAppPicker();
+renderRecords();
+renderHistoryList();
+}
+let appDropdownFocusedIndex = -1;
+function renderAppPicker() {
+const chipContainer = document.getElementById("selectedAppChips");
+if (!chipContainer) return;
+const legacySelect = document.getElementById("legacyAppSelect");
+if (legacySelect) {
+legacySelect.innerHTML = portfolioApps.map(a => `<option value="${esc(a.id)}" ${pickedAppIds.has(a.id) ? "selected" : ""}>${esc(a.name)}</option>`).join("");
+}
+chipContainer.innerHTML = Array.from(pickedAppIds).map(id => {
+const app = portfolioApps.find(a => a.id === id);
+const name = app ? app.name : id;
+return `<span class="app-chip">🔗 ${esc(name)} <button type="button" class="chip-remove" title="Remove" aria-label="Remove ${esc(name)}" onclick="removeAppPick('${esc(id)}')">&times;</button></span>`;
+}).join("");
+renderAppDropdown();
+}
+function removeAppPick(id) {
+pickedAppIds.delete(id);
+renderAppPicker();
+saveActivityDraft();
+document.getElementById("appSearchInput").focus();
+}
+function showAppDropdown() {
+document.getElementById("appDropdown").style.display = "block";
+renderAppDropdown();
+}
+function hideAppDropdown() {
+// Small timeout to allow clicks on dropdown items to fire before it disappears
+setTimeout(() => {
+const dd = document.getElementById("appDropdown");
+if (dd) dd.style.display = "none";
+}, 150);
+}
+function onAppSearchInput() {
+appDropdownFocusedIndex = -1;
+showAppDropdown();
+}
+function renderAppDropdown() {
+const dd = document.getElementById("appDropdown");
+if (!dd) return;
+const query = (document.getElementById("appSearchInput").value || "").toLowerCase();
+const available = portfolioApps.filter(a => !pickedAppIds.has(a.id) && a.name.toLowerCase().includes(query));
+if (available.length === 0) {
+dd.innerHTML = `<div style="padding:8px 12px; font-size:12px; color:var(--text-muted); font-style:italic;">No matching applications found</div>`;
+return;
+}
+dd.innerHTML = available.map((a, idx) => `
+<div class="dropdown-item ${idx === appDropdownFocusedIndex ? 'focused' : ''}" onmousedown="selectAppFromDropdown('${esc(a.id)}')">
+<span>${esc(a.name)}</span>
+<span class="stage-badge">${a.stage === 'LIVE' ? 'Live' : 'Onboarding'}</span>
+</div>
+`).join("");
+}
+function selectAppFromDropdown(id) {
+pickedAppIds.add(id);
+const input = document.getElementById("appSearchInput");
+if (input) input.value = "";
+appDropdownFocusedIndex = -1;
+renderAppPicker();
+saveActivityDraft();
+}
+function onAppSearchKey(e) {
+const dd = document.getElementById("appDropdown");
+const isVisible = dd && dd.style.display !== "none";
+const query = (document.getElementById("appSearchInput").value || "").toLowerCase();
+const available = portfolioApps.filter(a => !pickedAppIds.has(a.id) && a.name.toLowerCase().includes(query));
+if (e.key === "ArrowDown") {
+e.preventDefault();
+if (!isVisible) {
+showAppDropdown();
+} else {
+appDropdownFocusedIndex = (appDropdownFocusedIndex + 1) % available.length;
+renderAppDropdown();
+}
+} else if (e.key === "ArrowUp") {
+e.preventDefault();
+if (isVisible) {
+appDropdownFocusedIndex = (appDropdownFocusedIndex - 1 + available.length) % available.length;
+renderAppDropdown();
+}
+} else if (e.key === "Enter") {
+e.preventDefault();
+if (isVisible && appDropdownFocusedIndex >= 0 && available[appDropdownFocusedIndex]) {
+selectAppFromDropdown(available[appDropdownFocusedIndex].id);
+} else if (isVisible && available.length === 1) {
+selectAppFromDropdown(available[0].id);
+}
+} else if (e.key === "Backspace" && document.getElementById("appSearchInput").value === "") {
+const arr = Array.from(pickedAppIds);
+if (arr.length > 0) {
+removeAppPick(arr[arr.length - 1]);
+}
+} else if (e.key === "Escape") {
+hideAppDropdown();
+}
+}
+document.addEventListener("mousedown", (e) => {
+const container = document.getElementById("appMultiSelect");
+if (container && !container.contains(e.target)) {
+const dd = document.getElementById("appDropdown");
+if (dd) dd.style.display = "none";
+}
+});
+function openRecForm(rec) {
+editingRecId = rec ? rec.id : null;
+document.getElementById("recFormTitle").textContent = rec ? "Edit accomplishment" : "New accomplishment";
+document.getElementById("recDesc").value = rec ? rec.description : "";
+document.getElementById("recCategory").value = rec ? rec.category : "Accomplishment";
+document.getElementById("recStatus").value = rec ? rec.status : "Completed";
+document.getElementById("recNext").value = rec ? (rec.nextSteps || "") : "";
+pickedAppIds = new Set(rec ? (rec.appIds || []) : []);
+renderAppPicker();
+document.getElementById("recForm").style.display = "flex";
+const asi = document.getElementById("appSearchInput"); if (asi) asi.value = "";
+document.getElementById("recDesc").focus();
+}
+function closeRecForm() {
+document.getElementById("recForm").style.display = "none";
+if (editingRecId) {
+// We were editing an existing record, clear state so we don't pollute the next "New" form
+editingRecId = null;
+pickedAppIds = new Set();
+}
+// If we are cancelling a "New" activity, the DOM text remains and gets picked up by openRecForm(null) next time
+}
+function saveRecord() {
+const desc = document.getElementById("recDesc").value.trim();
+if (!desc) {
+showToast("Please describe the activity first.");
+document.getElementById("recDesc").focus();
+return;
+}
+loadRecords(); // re-read so changes made on the portfolio page are not overwritten
+const category = document.getElementById("recCategory").value;
+const status = document.getElementById("recStatus").value;
+const nextSteps = document.getElementById("recNext").value.trim();
+const entryDate = document.getElementById("recDate").value || selectedDate;
+const appIds = Array.from(pickedAppIds);
+const nowIso = new Date().toISOString();
+if (editingRecId) {
+const rec = records.find(r => r.id === editingRecId);
+if (rec) {
+rec.description = desc;
+rec.category = category;
+rec.nextSteps = nextSteps;
+rec.appIds = appIds;
+rec.entryDate = entryDate; // Allow date changes during edits
+if (rec.status !== status) {
+const prevStatus = rec.status;
+rec.status = status;
+rec.completedAt = status === "Completed" ? (rec.completedAt || nowIso) : null;
+if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: status, label: rec.description });
+}
+rec.updatedAt = nowIso;
+}
+} else {
+records.push({
+id: "rec_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+description: desc,
+category,
+status,
+nextSteps,
+appIds,
+entryDate: entryDate,
+createdAt: nowIso,
+completedAt: status === "Completed" ? nowIso : null,
+updatedAt: nowIso
+});
+clearActivityDraft();
+}
+persistRecords();
+// Make sure the view switches to the date that the record was just saved under
+if (entryDate !== selectedDate) {
+document.getElementById("datePicker").value = entryDate;
+onDateChange();
+}
+// We must clear state so closeRecForm() doesn't leave an editingRecId active
+editingRecId = null;
+pickedAppIds = new Set();
+closeRecForm();
+renderRecords();
+renderHistoryList();
+showToast(appIds.length ? `Saved and linked to ${appIds.length} application${appIds.length > 1 ? "s" : ""}` : "Saved as general accomplishment");
+}
+function changeRecStatus(id, status) {
+loadRecords();
+const rec = records.find(r => r.id === id);
+if (!rec) return;
+const prevStatus = rec.status;
+rec.status = status;
+rec.completedAt = status === "Completed" ? (rec.completedAt || new Date().toISOString()) : null;
+rec.updatedAt = new Date().toISOString();
+persistRecords();
+if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: status, label: rec.description });
+renderRecords();
+renderHistoryList();
+}
+function editRecord(id) {
+loadRecords();
+const rec = records.find(r => r.id === id);
+if (rec) openRecForm(rec);
+}
+function deleteRecord(id) {
+if (!confirm("Delete this accomplishment? It will also disappear from any linked application's Activity History.")) return;
+loadRecords();
+records = records.filter(r => r.id !== id);
+persistRecords();
+renderRecords();
+renderHistoryList();
+showToast("Accomplishment deleted");
+}
+function recordsForDate(dateStr) {
+return records
+.filter(r => r.entryDate === dateStr)
+.sort((a, b) => (Date.parse(b.createdAt) || 0) - (Date.parse(a.createdAt) || 0));
+}
+function resetFilters() {
+if (document.getElementById("filterApp")) document.getElementById("filterApp").value = "ALL";
+if (document.getElementById("filterCategory")) document.getElementById("filterCategory").value = "ALL";
+if (document.getElementById("filterStatus")) document.getElementById("filterStatus").value = "ALL";
+renderRecords();
+renderHistoryList();
+}
+function populateAppFilter() {
+const sel = document.getElementById("filterApp");
+if (!sel) return;
+const currentVal = sel.value;
+const opts = [
+`<option value="ALL">All Applications</option>`,
+`<option value="GENERAL">General (No App)</option>`
+];
+portfolioApps.forEach(a => {
+opts.push(`<option value="${esc(a.id)}">${esc(a.name)}</option>`);
+});
+sel.innerHTML = opts.join("");
+if (sel.querySelector(`option[value="${currentVal}"]`)) {
+sel.value = currentVal;
+}
+}
+function renderRecords() {
+const list = document.getElementById("recList");
+if (!list) return;
+let items = recordsForDate(selectedDate).slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+const fApp = document.getElementById("filterApp") ? document.getElementById("filterApp").value : "ALL";
+const fCat = document.getElementById("filterCategory") ? document.getElementById("filterCategory").value : "ALL";
+const fStat = document.getElementById("filterStatus") ? document.getElementById("filterStatus").value : "ALL";
+items = items.filter(r => {
+let matchApp = true;
+if (fApp === "GENERAL") matchApp = !(r.appIds && r.appIds.length);
+else if (fApp !== "ALL") matchApp = r.appIds && r.appIds.includes(fApp);
+let matchCat = (fCat === "ALL") || (r.category === fCat);
+let matchStat = (fStat === "ALL") || (r.status === fStat);
+return matchApp && matchCat && matchStat;
+});
+// Update Metrics
+document.getElementById("metricLogged").textContent = items.length;
+document.getElementById("metricCompleted").textContent = items.filter(r => r.status === "Completed").length;
+const appSet = new Set();
+items.forEach(r => (r.appIds || []).forEach(id => appSet.add(id)));
+document.getElementById("metricApps").textContent = appSet.size;
+if (!items.length) {
+list.innerHTML = `<div class="rec-empty" style="text-align:center; padding:30px; color:var(--text-muted); font-style:italic;">No activities logged for this day.</div>`;
+return;
+}
+const statuses = ["Completed", "In Progress", "Pending", "Blocked"];
+list.innerHTML = items.map(r => {
+const general = !(r.appIds && r.appIds.length);
+const appPills = general
+? `<span class="pill general" style="background:rgba(255,255,255,0.05); color:#fff;">General</span>`
+: r.appIds.map(id => `<span class="pill app" style="background:rgba(47,129,247,0.15); color:var(--accent-hover);">🔗 ${esc(appName(id))}</span>`).join("");
+let statusColor = "var(--text-muted)";
+if (r.status === "Completed") statusColor = "var(--green)";
+if (r.status === "In Progress") statusColor = "var(--accent-hover)";
+if (r.status === "Blocked") statusColor = "var(--orange)";
+const opts = statuses.map(s => `<option ${r.status === s ? "selected" : ""}>${s}</option>`).join("");
+const time = fmtStamp(r.createdAt).split(" at ")[1] || "";
+return `
+<div class="rec-card ${general ? "general" : ""}" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 14px; position:relative;">
+<div style="display:flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+<div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+<span style="font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px;">${time}</span>
+<span style="width: 4px; height: 4px; background: var(--text-muted); border-radius: 50%; opacity: 0.5;"></span>
+<span style="font-size: 12px; font-weight: 500; color: ${statusColor};">${esc(r.category)}</span>
+<span style="width: 4px; height: 4px; background: var(--text-muted); border-radius: 50%; opacity: 0.5;"></span>
+<select style="background:transparent; border:none; color:inherit; font-size:12px; cursor:pointer; outline:none;" onchange="changeRecStatus('${r.id}', this.value)">${opts}</select>
+</div>
+<div style="display:flex; gap:12px;">
+<button style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:13px;" onclick="editRecord('${r.id}')">Edit</button>
+<button style="background:none; border:none; color:var(--orange); cursor:pointer; font-size:13px;" onclick="deleteRecord('${r.id}')">Delete</button>
+</div>
+</div>
+<div style="font-size: 14px; line-height: 1.5; color: #fff; margin-bottom: 8px;">${esc(r.description)}</div>
+${r.nextSteps ? `<div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;"><strong>↳ Next Steps:</strong> ${esc(r.nextSteps)}</div>` : ""}
+<div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px;">
+${appPills}
+</div>
+</div>`;
+}).join("");
+}
+// Keep this view in sync when a linked record changes on the portfolio page
+window.addEventListener("storage", (e) => {
+if (e.key === RECORDS_KEY) { loadRecords(); renderRecords(); }
+if (PORTFOLIO_KEYS.includes(e.key)) { loadPortfolioApps(); renderAppPicker(); renderRecords(); }
+});
+document.addEventListener("visibilitychange", () => {
+if (!document.hidden) { loadRecords(); loadPortfolioApps(); renderAppPicker(); renderRecords(); }
+});
 const WR_KIND_LABEL = {
-  note: "Leadership sync discussion",
-  decision: "Leadership sync decision",
-  action: "Leadership sync action item",
-  question: "Leadership sync open question"
+note: "Leadership sync discussion",
+decision: "Leadership sync decision",
+action: "Leadership sync action item",
+question: "Leadership sync open question"
 };
 const WR_MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const WR_DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-
 function wrPad(n) { return String(n).padStart(2, "0"); }
 function wrYmd(d) { return `${d.getFullYear()}-${wrPad(d.getMonth() + 1)}-${wrPad(d.getDate())}`; }
 function wrParse(ymd) { const [y, m, d] = String(ymd).split("-").map(Number); return new Date(y, (m || 1) - 1, d || 1); }
@@ -1788,736 +1569,666 @@ function wrIsoToYmd(iso) { const d = new Date(iso); return isNaN(d.getTime()) ? 
 function wrShort(ymd) { if (!ymd) return ""; const d = wrParse(ymd); return `${WR_MON[d.getMonth()]} ${d.getDate()}`; }
 function wrLong(ymd) { const d = wrParse(ymd); return `${WR_DOW[d.getDay()]}, ${WR_MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`; }
 function wrRangeLabel(s, e) {
-  const sy = wrParse(s).getFullYear(), ey = wrParse(e).getFullYear();
-  return sy === ey ? `${wrShort(s)} – ${wrShort(e)}, ${ey}` : `${wrShort(s)}, ${sy} – ${wrShort(e)}, ${ey}`;
+const sy = wrParse(s).getFullYear(), ey = wrParse(e).getFullYear();
+return sy === ey ? `${wrShort(s)} – ${wrShort(e)}, ${ey}` : `${wrShort(s)}, ${sy} – ${wrShort(e)}, ${ey}`;
 }
 function wrN(n, singular, plural) { return `${n} ${n === 1 ? singular : (plural || singular + "s")}`; }
 function wrYes(v) { return v === true || String(v).toLowerCase() === "yes"; }
 function wrNorm(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(); }
 function wrClean(s, max) {
-  let t = String(s || "").replace(/\s+/g, " ").trim();
-  max = max || 260;
-  if (t.length > max) t = t.slice(0, max - 1).trimEnd() + "…";
-  return t;
+let t = String(s || "").replace(/\s+/g, " ").trim();
+max = max || 260;
+if (t.length > max) t = t.slice(0, max - 1).trimEnd() + "…";
+return t;
 }
-
 // Previous COMPLETED Monday–Sunday week relative to `now`
 function wrPrevFullWeek(now) {
-  now = now || new Date();
-  const dow = (now.getDay() + 6) % 7; // Monday = 0
-  const thisMon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - dow);
-  return {
-    start: wrYmd(new Date(thisMon.getFullYear(), thisMon.getMonth(), thisMon.getDate() - 7)),
-    end: wrYmd(new Date(thisMon.getFullYear(), thisMon.getMonth(), thisMon.getDate() - 1))
-  };
+now = now || new Date();
+const dow = (now.getDay() + 6) % 7; // Monday = 0
+const thisMon = new Date(now.getFullYear(), now.getMonth(), now.getDate() - dow);
+return {
+start: wrYmd(new Date(thisMon.getFullYear(), thisMon.getMonth(), thisMon.getDate() - 7)),
+end: wrYmd(new Date(thisMon.getFullYear(), thisMon.getMonth(), thisMon.getDate() - 1))
+};
 }
-
 function wrPeriodNotes(start, end, now) {
-  now = now || new Date();
-  const notes = [];
-  if (end < wrPrevFullWeek(now).end) {
-    notes.push("Past period: item statuses reflect their current values (the dashboard does not keep status history), and current follow-up / leadership-discussion flags are not included.");
-  }
-  if (end > wrYmd(now)) notes.push("The selected range extends beyond today.");
-  return notes;
+now = now || new Date();
+const notes = [];
+if (end < wrPrevFullWeek(now).end) {
+notes.push("Past period: item statuses reflect their current values (the dashboard does not keep status history), and current follow-up / leadership-discussion flags are not included.");
 }
-
+if (end > wrYmd(now)) notes.push("The selected range extends beyond today.");
+return notes;
+}
 function wrLoadPortfolioFull() {
-  for (const k of PORTFOLIO_KEYS) {
-    const raw = localStorage.getItem(k);
-    if (!raw) continue;
-    try {
-      const arr = JSON.parse(raw);
-      if (Array.isArray(arr) && arr.length) return arr;
-    } catch (e) { /* try next key */ }
-  }
-  loadPortfolioApps();
-  return portfolioApps.map(a => ({ id: a.id, name: a.name, stage: a.stage, activityHistory: [] }));
+for (const k of PORTFOLIO_KEYS) {
+const raw = localStorage.getItem(k);
+if (!raw) continue;
+try {
+const arr = JSON.parse(raw);
+if (Array.isArray(arr) && arr.length) return arr;
+} catch (e) {  }
 }
-
+loadPortfolioApps();
+return portfolioApps.map(a => ({ id: a.id, name: a.name, stage: a.stage, activityHistory: [] }));
+}
 // Free-text daily log -> dated lines. Only the user's own words are used.
 function wrParseDailyLog(start, end, appIdByName) {
-  const progress = [];
-  const priorityByDay = {};
-  Object.keys(accomplishmentsByDate || {}).sort().forEach(day => {
-    if (day < start || day > end) return;
-    let heading = "";
-    String(accomplishmentsByDate[day] || "").split("\n").forEach((raw, idx) => {
-      let line = raw.trim();
-      if (!line) return;
-      const h = line.match(/^#{1,6}\s*(.+)$/);
-      if (h) { heading = h[1].trim().toLowerCase(); return; }
-      line = line.replace(/^[•\u2022\-\*]+\s*/, "").trim();
-      if (!line) return;
-      if (/^\[[^\]]*\]\s*:?\s*$/.test(line)) return;                // unfilled template tag
-      if (/^(none|n\/a|na|nothing|tbd)\.?$/i.test(line)) return;   // empty placeholder
-      let appIds = [], text = line;
-      const b = line.match(/^\[([^\]]+)\]\s*:?\s*(.*)$/);
-      if (b && appIdByName[wrNorm(b[1])]) {
-        appIds = [appIdByName[wrNorm(b[1])]];
-        text = b[2].trim();
-        if (!text) return;
-      }
-      const isPrio = /priorit|next (day|week)|upcoming/.test(heading);
-      const it = {
-        key: `t:${day}:${idx}`, origin: isPrio ? "dailylog-priority" : "dailylog",
-        appIds, kind: null, category: "Daily log", status: "Logged",
-        description: text, nextSteps: "", activityDate: day, completionDate: ""
-      };
-      if (isPrio) (priorityByDay[day] = priorityByDay[day] || []).push(it); else progress.push(it);
-    });
-  });
-  // "Next Day Priorities" are only meaningful from the most recent day that has them
-  const days = Object.keys(priorityByDay).sort();
-  return progress.concat(days.length ? priorityByDay[days[days.length - 1]] : []);
+const progress = [];
+const priorityByDay = {};
+Object.keys(accomplishmentsByDate || {}).sort().forEach(day => {
+if (day < start || day > end) return;
+let heading = "";
+String(accomplishmentsByDate[day] || "").split("\n").forEach((raw, idx) => {
+let line = raw.trim();
+if (!line) return;
+const h = line.match(/^#{1,6}\s*(.+)$/);
+if (h) { heading = h[1].trim().toLowerCase(); return; }
+line = line.replace(/^[•\u2022\-\*]+\s*/, "").trim();
+if (!line) return;
+if (/^\[[^\]]*\]\s*:?\s*$/.test(line)) return;                // unfilled template tag
+if (/^(none|n\/a|na|nothing|tbd)\.?$/i.test(line)) return;   // empty placeholder
+let appIds = [], text = line;
+const b = line.match(/^\[([^\]]+)\]\s*:?\s*(.*)$/);
+if (b && appIdByName[wrNorm(b[1])]) {
+appIds = [appIdByName[wrNorm(b[1])]];
+text = b[2].trim();
+if (!text) return;
 }
-
+const isPrio = /priorit|next (day|week)|upcoming/.test(heading);
+const it = {
+key: `t:${day}:${idx}`, origin: isPrio ? "dailylog-priority" : "dailylog",
+appIds, kind: null, category: "Daily log", status: "Logged",
+description: text, nextSteps: "", activityDate: day, completionDate: ""
+};
+if (isPrio) (priorityByDay[day] = priorityByDay[day] || []).push(it); else progress.push(it);
+});
+});
+// "Next Day Priorities" are only meaningful from the most recent day that has them
+const days = Object.keys(priorityByDay).sort();
+return progress.concat(days.length ? priorityByDay[days[days.length - 1]] : []);
+}
 function wrCollect(apps, start, end) {
-  loadRecords();
-  const appIdByName = {};
-  apps.forEach(a => { appIdByName[wrNorm(a.name)] = a.id; });
-  const items = [];
-
-  apps.forEach(a => {
-    (a.activityHistory || []).forEach((e, i) => {
-      const day = wrIsoToYmd(e.isoDate);
-      if (!day) return;
-      items.push({
-        key: "n:" + (e.id || a.id + i), origin: "portfolio", appIds: [a.id], kind: null,
-        category: e.category || "Update", status: e.status || "In Progress",
-        description: e.description || "", nextSteps: e.nextSteps || "",
-        activityDate: day, completionDate: e.status === "Completed" ? day : ""
-      });
-    });
-    let meetStore = {};
-    try {
-      meetStore = JSON.parse(localStorage.getItem("app_support_stakeholder_meetings_v1") || "{}");
-    } catch (e) {}
-
-    if (meetStore[a.id] && Array.isArray(meetStore[a.id].meetings)) {
-      meetStore[a.id].meetings.forEach(m => {
-        const act = m.date || wrIsoToYmd(m.createdAt);
-        if (!act) return;
-        
-        (m.feedback || []).forEach(f => {
-          if (!String(f.text).trim()) return;
-          items.push({
-            key: "mf:" + f.id, origin: "meeting-sync", appIds: [a.id], kind: "note",
-            category: "Stakeholder Feedback", status: "In Progress",
-            description: f.text, nextSteps: "", activityDate: act, completionDate: ""
-          });
-        });
-        (m.initiatives || []).forEach(i => {
-          if (!String(i.text).trim()) return;
-          items.push({
-            key: "mi:" + i.id, origin: "meeting-sync", appIds: [a.id], kind: null,
-            category: "Initiative", status: "In Progress",
-            description: i.text, nextSteps: "", activityDate: act, completionDate: ""
-          });
-        });
-        (m.issues || []).forEach(i => {
-          if (!String(i.text).trim()) return;
-          items.push({
-            key: "ms:" + i.id, origin: "meeting-sync", appIds: [a.id], kind: null,
-            category: "Issue", status: "Pending",
-            description: i.text, nextSteps: "", activityDate: act, completionDate: ""
-          });
-        });
-        (m.actions || []).forEach(actItem => {
-          if (!String(actItem.action).trim() && !String(actItem.owner).trim() && !actItem.due) return;
-          let ns = [];
-          if (String(actItem.owner).trim()) ns.push("Owner: " + actItem.owner.trim());
-          if (actItem.due) ns.push("Due: " + actItem.due);
-          items.push({
-            key: "ma:" + actItem.id, origin: "meeting-sync", appIds: [a.id], kind: "action",
-            category: "Action Item", status: actItem.status || "Pending",
-            description: String(actItem.action).trim() || "Action item (no description provided)", 
-            nextSteps: ns.join(" · "), activityDate: act, completionDate: actItem.status === "Completed" ? act : ""
-          });
-        });
-      });
-    }
-  });
-
-  // Pull in completed actions and decisions from Mindy Syncs natively
-  let mindyStore = { meetings: [] };
-  try {
-    mindyStore = JSON.parse(localStorage.getItem("app_support_mindy_meetings_v2") || "{}");
-  } catch(e) {}
-  
-  (mindyStore.meetings || []).forEach(m => {
-    const act = m.date || localToday();
-    
-    (m.decisionItems || []).forEach(d => {
-      if (!String(d.description).trim()) return;
-      items.push({
-        key: "mindy_dec:" + d.id, origin: "mindy", appIds: d.appId ? [d.appId] : [], kind: "decision",
-        category: "Decision", status: "Completed",
-        description: d.description, nextSteps: "", activityDate: act, completionDate: act
-      });
-    });
-    
-    (m.actionItems || []).forEach(a => {
-      if (!String(a.description).trim()) return;
-      let ns = [];
-      if (String(a.owner).trim()) ns.push("Owner: " + a.owner.trim());
-      if (a.due) ns.push("Due: " + a.due);
-      items.push({
-        key: "mindy_act:" + a.id, origin: "mindy", appIds: a.appId ? [a.appId] : [], kind: "action",
-        category: "Action Item", status: a.status || "Pending",
-        description: a.description, nextSteps: ns.join(" · "), activityDate: act, completionDate: a.status === "Completed" ? act : ""
-      });
-    });
-  });
-
-  (records || []).forEach(r => {
-    if (!r || !String(r.description || "").trim()) return;
-    const act = r.entryDate || wrIsoToYmd(r.createdAt);
-    let comp = "";
-    if (r.status === "Completed") {
-      // Created as Completed => it happened on its entry date. Completed later => the completion date.
-      const createdAsCompleted = r.completedAt && r.completedAt === r.createdAt;
-      comp = (!r.completedAt || createdAsCompleted) ? act : wrIsoToYmd(r.completedAt);
-    }
-    items.push({
-      key: "r:" + r.id, origin: r.source === "mindy-sync" ? "mindy" : "daily",
-      appIds: Array.isArray(r.appIds) ? r.appIds.slice() : [], kind: r.kind || null,
-      category: r.category || "Update", status: r.status || "Completed",
-      description: r.description, nextSteps: r.nextSteps || "",
-      activityDate: act, completionDate: comp
-    });
-  });
-
-  return items.concat(wrParseDailyLog(start, end, appIdByName));
+loadRecords();
+const appIdByName = {};
+apps.forEach(a => { appIdByName[wrNorm(a.name)] = a.id; });
+const items = [];
+apps.forEach(a => {
+(a.activityHistory || []).forEach((e, i) => {
+const day = wrIsoToYmd(e.isoDate);
+if (!day) return;
+items.push({
+key: "n:" + (e.id || a.id + i), origin: "portfolio", appIds: [a.id], kind: null,
+category: e.category || "Update", status: e.status || "In Progress",
+description: e.description || "", nextSteps: e.nextSteps || "",
+activityDate: day, completionDate: e.status === "Completed" ? day : ""
+});
+});
+let meetStore = {};
+try {
+meetStore = JSON.parse(localStorage.getItem("app_support_stakeholder_meetings_v1") || "{}");
+} catch (e) {}
+if (meetStore[a.id] && Array.isArray(meetStore[a.id].meetings)) {
+meetStore[a.id].meetings.forEach(m => {
+const act = m.date || wrIsoToYmd(m.createdAt);
+if (!act) return;
+(m.feedback || []).forEach(f => {
+if (!String(f.text).trim()) return;
+items.push({
+key: "mf:" + f.id, origin: "meeting-sync", appIds: [a.id], kind: "note",
+category: "Stakeholder Feedback", status: "In Progress",
+description: f.text, nextSteps: "", activityDate: act, completionDate: ""
+});
+});
+(m.initiatives || []).forEach(i => {
+if (!String(i.text).trim()) return;
+items.push({
+key: "mi:" + i.id, origin: "meeting-sync", appIds: [a.id], kind: null,
+category: "Initiative", status: "In Progress",
+description: i.text, nextSteps: "", activityDate: act, completionDate: ""
+});
+});
+(m.issues || []).forEach(i => {
+if (!String(i.text).trim()) return;
+items.push({
+key: "ms:" + i.id, origin: "meeting-sync", appIds: [a.id], kind: null,
+category: "Issue", status: "Pending",
+description: i.text, nextSteps: "", activityDate: act, completionDate: ""
+});
+});
+(m.actions || []).forEach(actItem => {
+if (!String(actItem.action).trim() && !String(actItem.owner).trim() && !actItem.due) return;
+let ns = [];
+if (String(actItem.owner).trim()) ns.push("Owner: " + actItem.owner.trim());
+if (actItem.due) ns.push("Due: " + actItem.due);
+items.push({
+key: "ma:" + actItem.id, origin: "meeting-sync", appIds: [a.id], kind: "action",
+category: "Action Item", status: actItem.status || "Pending",
+description: String(actItem.action).trim() || "Action item (no description provided)",
+nextSteps: ns.join(" · "), activityDate: act, completionDate: actItem.status === "Completed" ? act : ""
+});
+});
+});
 }
-
+});
+// Pull in completed actions and decisions from Mindy Syncs natively
+let mindyStore = { meetings: [] };
+try {
+mindyStore = JSON.parse(localStorage.getItem("app_support_mindy_meetings_v2") || "{}");
+} catch(e) {}
+(mindyStore.meetings || []).forEach(m => {
+const act = m.date || localToday();
+(m.decisionItems || []).forEach(d => {
+if (!String(d.description).trim()) return;
+items.push({
+key: "mindy_dec:" + d.id, origin: "mindy", appIds: d.appId ? [d.appId] : [], kind: "decision",
+category: "Decision", status: "Completed",
+description: d.description, nextSteps: "", activityDate: act, completionDate: act
+});
+});
+(m.actionItems || []).forEach(a => {
+if (!String(a.description).trim()) return;
+let ns = [];
+if (String(a.owner).trim()) ns.push("Owner: " + a.owner.trim());
+if (a.due) ns.push("Due: " + a.due);
+items.push({
+key: "mindy_act:" + a.id, origin: "mindy", appIds: a.appId ? [a.appId] : [], kind: "action",
+category: "Action Item", status: a.status || "Pending",
+description: a.description, nextSteps: ns.join(" · "), activityDate: act, completionDate: a.status === "Completed" ? act : ""
+});
+});
+});
+(records || []).forEach(r => {
+if (!r || !String(r.description || "").trim()) return;
+const act = r.entryDate || wrIsoToYmd(r.createdAt);
+let comp = "";
+if (r.status === "Completed") {
+// Created as Completed => it happened on its entry date. Completed later => the completion date.
+const createdAsCompleted = r.completedAt && r.completedAt === r.createdAt;
+comp = (!r.completedAt || createdAsCompleted) ? act : wrIsoToYmd(r.completedAt);
+}
+items.push({
+key: "r:" + r.id, origin: r.source === "mindy-sync" ? "mindy" : "daily",
+appIds: Array.isArray(r.appIds) ? r.appIds.slice() : [], kind: r.kind || null,
+category: r.category || "Update", status: r.status || "Completed",
+description: r.description, nextSteps: r.nextSteps || "",
+activityDate: act, completionDate: comp
+});
+});
+return items.concat(wrParseDailyLog(start, end, appIdByName));
+}
 // Each documented activity is reported once, even if it exists in more than one section
 function wrDedupe(items) {
-  const rank = { daily: 0, mindy: 0, "meeting-sync": 1, portfolio: 2, sync: 2, dailylog: 3, "dailylog-priority": 3 };
-  const sorted = items.slice().sort((a, b) => (rank[a.origin] ?? 3) - (rank[b.origin] ?? 3));
-  const out = [], byKey = new Map();
-  const isFree = it => it.origin === "dailylog" || it.origin === "dailylog-priority";
-  sorted.forEach(it => {
-    const n = wrNorm(it.description);
-    if (!n) return;
-    const key = it.activityDate + "|" + n;
-    let ex = byKey.get(key);
-    if (!ex && it.origin === "dailylog" && n.length >= 12) {
-      // a typed daily-log line that restates a structured entry from the same day
-      ex = out.find(o => !isFree(o) && o.activityDate === it.activityDate && o.origin !== "sync" && (() => {
-        const on = wrNorm(o.description);
-        return on.length >= 12 && (on.includes(n) || n.includes(on));
-      })());
-    }
-    if (ex) {
-      it.appIds.forEach(id => { if (!ex.appIds.includes(id)) ex.appIds.push(id); });
-      if (!ex.completionDate && it.completionDate) { ex.status = it.status; ex.completionDate = it.completionDate; }
-      if (!ex.nextSteps && it.nextSteps) ex.nextSteps = it.nextSteps;
-      return;
-    }
-    byKey.set(key, it);
-    out.push(it);
-  });
-  return out;
+const rank = { daily: 0, mindy: 0, "meeting-sync": 1, portfolio: 2, sync: 2, dailylog: 3, "dailylog-priority": 3 };
+const sorted = items.slice().sort((a, b) => (rank[a.origin] ?? 3) - (rank[b.origin] ?? 3));
+const out = [], byKey = new Map();
+const isFree = it => it.origin === "dailylog" || it.origin === "dailylog-priority";
+sorted.forEach(it => {
+const n = wrNorm(it.description);
+if (!n) return;
+const key = it.activityDate + "|" + n;
+let ex = byKey.get(key);
+if (!ex && it.origin === "dailylog" && n.length >= 12) {
+// a typed daily-log line that restates a structured entry from the same day
+ex = out.find(o => !isFree(o) && o.activityDate === it.activityDate && o.origin !== "sync" && (() => {
+const on = wrNorm(o.description);
+return on.length >= 12 && (on.includes(n) || n.includes(on));
+})());
 }
-
+if (ex) {
+it.appIds.forEach(id => { if (!ex.appIds.includes(id)) ex.appIds.push(id); });
+if (!ex.completionDate && it.completionDate) { ex.status = it.status; ex.completionDate = it.completionDate; }
+if (!ex.nextSteps && it.nextSteps) ex.nextSteps = it.nextSteps;
+return;
+}
+byKey.set(key, it);
+out.push(it);
+});
+return out;
+}
 function wrClassify(it, start, end) {
-  const inR = d => !!d && d >= start && d <= end;
-  const open = it.status !== "Completed";
-  if (it.origin === "dailylog-priority") return "priority";
-  if (it.origin === "dailylog" || it.origin === "sync") return inR(it.activityDate) ? "progress" : "none";
-  if (open && it.activityDate > end) return "none";
-  if (it.kind === "note") return inR(it.activityDate) ? "progress" : "none";
-  if (open && it.kind === "question") return "challenge";
-  if (open && (it.status === "Blocked" || it.category === "Blocker" || it.category === "Issue")) return "challenge";
-  if (!open) return inR(it.completionDate) ? "completed" : "none";
-  if (it.status === "Pending" || it.category === "Follow-Up" || it.kind === "action") return "priority";
-  if (it.status === "In Progress") return inR(it.activityDate) ? "progress" : "none";
-  return "none";
+const inR = d => !!d && d >= start && d <= end;
+const open = it.status !== "Completed";
+if (it.origin === "dailylog-priority") return "priority";
+if (it.origin === "dailylog" || it.origin === "sync") return inR(it.activityDate) ? "progress" : "none";
+if (open && it.activityDate > end) return "none";
+if (it.kind === "note") return inR(it.activityDate) ? "progress" : "none";
+if (open && it.kind === "question") return "challenge";
+if (open && (it.status === "Blocked" || it.category === "Blocker" || it.category === "Issue")) return "challenge";
+if (!open) return inR(it.completionDate) ? "completed" : "none";
+if (it.status === "Pending" || it.category === "Follow-Up" || it.kind === "action") return "priority";
+if (it.status === "In Progress") return inR(it.activityDate) ? "progress" : "none";
+return "none";
 }
-
 function wrBuildReport(start, end, now) {
-  now = now || new Date();
-  const apps = wrLoadPortfolioFull();
-  const nameById = {}, stageById = {};
-  apps.forEach(a => { nameById[a.id] = a.name; stageById[a.id] = a.stage; });
-  const nm = id => nameById[id] || id;
-  const isOb = id => stageById[id] === "ONBOARDING";
-  const obApps = apps.filter(a => a.stage === "ONBOARDING");
-  const includeCurrent = end >= wrPrevFullWeek(now).end;
-  const notes = wrPeriodNotes(start, end, now);
-  const inR = d => !!d && d >= start && d <= end;
-
-  const items = wrDedupe(wrCollect(apps, start, end));
-  const completed = [], progress = [], challenges = [], priorities = [];
-  const obProgress = {}; obApps.forEach(a => { obProgress[a.id] = []; });
-  const nextRaw = [];
-
-  items.forEach(it => {
-    const cls = wrClassify(it, start, end);
-    if (cls === "completed") completed.push(it);
-    else if (cls === "challenge") challenges.push(it);
-    else if (cls === "priority") priorities.push(it);
-    else if (cls === "progress") {
-      const ob = it.appIds.filter(isOb);
-      if (ob.length) ob.forEach(id => obProgress[id].push(it)); else progress.push(it);
-    }
-    const ns = String(it.nextSteps || "").trim();
-    if (ns && cls !== "priority") {
-      const open = it.status !== "Completed";
-      if (open ? it.activityDate <= end : inR(it.completionDate)) {
-        nextRaw.push({ appIds: it.appIds, text: ns, context: it.description });
-      }
-    }
-  });
-
-  const seenNext = new Set();
-  const nextEntries = nextRaw.filter(n => {
-    const k = wrNorm(n.text) + "|" + n.appIds.slice().sort().join(",");
-    if (seenNext.has(k)) return false;
-    seenNext.add(k);
-    return true;
-  });
-
-  const flagFollow = includeCurrent ? apps.filter(a => wrYes(a.followUp)) : [];
-  const flagMindy = includeCurrent ? apps.filter(a => wrYes(a.discussWithMindy)) : [];
-
-  const firstName = it => it.appIds.length ? nm(it.appIds[0]).toLowerCase() : "\uffff";
-  const byApp = (a, b) => firstName(a) < firstName(b) ? -1 : firstName(a) > firstName(b) ? 1 : (a.activityDate < b.activityDate ? -1 : a.activityDate > b.activityDate ? 1 : 0);
-  [completed, progress, challenges, priorities].forEach(l => l.sort(byApp));
-  Object.keys(obProgress).forEach(k => obProgress[k].sort(byApp));
-
-  const who = ids => ids.length ? ids.map(nm).join(", ") : "Cross-functional";
-  const tag = (it, sec) => {
-    const label = it.kind ? WR_KIND_LABEL[it.kind]
-      : (it.origin === "dailylog" || it.origin === "dailylog-priority") ? "Daily log" : it.category;
-    const bits = [label];
-    if (sec === "completed") bits.push("completed " + wrShort(it.completionDate));
-    else if (sec === "challenge") { if (it.status !== "Logged") bits.push(it.status); bits.push("raised " + wrShort(it.activityDate)); }
-    else { if (it.status && it.status !== "Logged") bits.push(it.status); bits.push((sec === "priority" && it.origin !== "dailylog-priority" ? "logged " : "") + wrShort(it.activityDate)); }
-    return ` _(${bits.join(" · ")})_`;
-  };
-  const line = (it, sec) => `- **${who(it.appIds)}**: ${wrClean(it.description)}${tag(it, sec)}`;
-  const none = txt => `_${txt}_`;
-
-  // ---------- Executive Summary ----------
-  const progressTotal = progress.length + Object.values(obProgress).reduce((n, l) => n + l.length, 0);
-  const touched = new Set();
-  completed.concat(progress, ...Object.values(obProgress)).forEach(it => it.appIds.forEach(id => touched.add(id)));
-  const crossFn = completed.concat(progress).filter(it => !it.appIds.length).length;
-  const SCORE = { Decision: 5, Enhancement: 4, Accomplishment: 4, Issue: 3, Blocker: 3, Update: 2, "Follow-Up": 1 };
-  const scoreOf = it => it.kind === "decision" ? 5 : (SCORE[it.category] || 1);
-  const top = completed.slice().sort((a, b) => scoreOf(b) - scoreOf(a) || (b.completionDate > a.completionDate ? 1 : b.completionDate < a.completionDate ? -1 : 0)).slice(0, 3);
-  const nextCount = priorities.length + nextEntries.length + flagFollow.length;
-  const attnItems = challenges.length;
-
-  const obActive = obApps.filter(a => {
-    const has = it => it.appIds.includes(a.id);
-    return obProgress[a.id].length || completed.some(has) || challenges.some(has) || priorities.some(has) ||
-      nextEntries.some(has) || flagFollow.some(x => x.id === a.id) || flagMindy.some(x => x.id === a.id);
-  });
-
-  const exec = [];
-  if (completed.length || progressTotal) {
-    exec.push(`- **Activity:** ${wrN(completed.length, "item")} completed and ${wrN(progressTotal, "active update")} documented across ${wrN(touched.size, "application")}${crossFn ? `, plus ${wrN(crossFn, "cross-functional item")}` : ""}.`);
-  } else {
-    exec.push(`- **Activity:** No completed items or progress updates were documented in the dashboard for this period.`);
-  }
-  if (top.length) {
-    exec.push(`- **Key completions:** ` + top.map(it => `${who(it.appIds)} — ${wrClean(it.description, 110)}`).join("; ") + ".");
-  }
-  if (obApps.length) {
-    exec.push(obActive.length
-      ? `- **Onboarding:** documented updates for ${obActive.length} of ${obApps.length} onboarding applications (${obActive.map(a => a.name).join(", ")}).`
-      : `- **Onboarding:** no documented updates for the ${obApps.length} onboarding applications this period.`);
-  }
-  if (attnItems || flagMindy.length) {
-    const parts = [];
-    if (attnItems) parts.push(`${wrN(attnItems, "unresolved blocker, issue or open-question item")}`);
-    if (flagMindy.length) parts.push(`${wrN(flagMindy.length, "application")} flagged for leadership discussion`);
-    exec.push(`- **Leadership attention:** ${parts.join(" and ")}.`);
-  }
-  if (nextCount) exec.push(`- **Next week:** ${wrN(nextCount, "documented priority or follow-up item")}.`);
-
-  // ---------- Assemble ----------
-  const md = [];
-  md.push(`# Weekly Application Support Progress Report`);
-  md.push(`**Reporting period:** ${wrLong(start)} – ${wrLong(end)}`);
-  md.push(`**Prepared by:** Lead Project/Program Manager, Application Support`);
-  md.push(`**Generated:** ${wrLong(wrYmd(now))}`);
-  md.push(``);
-
-  md.push(`## Executive Summary`);
-  md.push(exec.length ? exec.join("\n") : none("No activity was documented in the dashboard for this period."));
-  md.push(``);
-
-  md.push(`## Completed This Week`);
-  md.push(completed.length ? completed.map(it => line(it, "completed")).join("\n") : none("No items were marked completed in this period."));
-  md.push(``);
-
-  md.push(`## Progress on Active Initiatives`);
-  md.push(progress.length ? progress.map(it => line(it, "progress")).join("\n") : none("No additional progress updates were documented for this period."));
-  md.push(``);
-
-  md.push(`## Application Onboarding Progress`);
-  if (!obApps.length) {
-    md.push(none("No applications are currently in onboarding."));
-  } else {
-    obApps.forEach(a => {
-      const has = it => it.appIds.includes(a.id);
-      const c = completed.filter(has).length;
-      const ch = challenges.filter(has).length + (flagMindy.some(x => x.id === a.id) ? 1 : 0);
-      const pr = priorities.filter(has).length + nextEntries.filter(has).length + (flagFollow.some(x => x.id === a.id) ? 1 : 0);
-      md.push(`### ${a.name}`);
-      const rows = obProgress[a.id].map(it => `- ${wrClean(it.description)}${tag(it, "progress")}`);
-      const also = [];
-      if (c) also.push(wrN(c, "completed item"));
-      if (ch) also.push(wrN(ch, "open challenge"));
-      if (pr) also.push(wrN(pr, "upcoming item"));
-      if (also.length) rows.push(`- _Also documented in the sections of this report: ${also.join(", ")}._`);
-      md.push(rows.length ? rows.join("\n") : `- No documented updates this period.`);
-    });
-  }
-  md.push(``);
-
-  md.push(`## Challenges & Dependencies`);
-  const chRows = challenges.map(it => line(it, "challenge"));
-  flagMindy.forEach(a => {
-    const note = !wrYes(a.followUp) && a.activity && String(a.activity).trim() ? ` — ${wrClean(a.activity, 220)}` : "";
-    chRows.push(`- **${a.name}**: Flagged for leadership discussion${note}.`.replace(/\.\.$/, "."));
-  });
-  md.push(chRows.length ? chRows.join("\n") : none("No unresolved blockers or items requiring leadership attention were documented."));
-  md.push(``);
-
-  md.push(`## Next Week's Priorities`);
-  const prRows = [];
-  priorities.forEach(it => {
-    prRows.push(line(it, "priority"));
-    if (String(it.nextSteps || "").trim()) prRows.push(`  - Next step: ${wrClean(it.nextSteps, 200)}`);
-  });
-  nextEntries.forEach(n => prRows.push(`- **${who(n.appIds)}**: ${wrClean(n.text, 220)} _(follows: ${wrClean(n.context, 70)})_`));
-  flagFollow.forEach(a => {
-    const note = a.activity && String(a.activity).trim() ? ` — ${wrClean(a.activity, 220)}` : ".";
-    prRows.push(`- **${a.name}**: Follow-up flagged${note}`);
-  });
-  md.push(prRows.length ? prRows.join("\n") : none("No upcoming work or follow-ups were documented."));
-  md.push(``);
-
-  md.push(`---`);
-  md.push(`_Source: Application Support dashboard (Application Portfolio activity history, Daily Accomplishments, Leadership sync notes). Each documented activity is reported once._`);
-
-  return {
-    md: md.join("\n"),
-    notes,
-    stats: {
-      completed: completed.length, progress: progressTotal, challenges: challenges.length,
-      priorities: priorities.length, nextEntries: nextEntries.length,
-      flagFollow: flagFollow.length, flagMindy: flagMindy.length, total: items.length,
-      obActive: obActive.length
-    },
-    items
-  };
+now = now || new Date();
+const apps = wrLoadPortfolioFull();
+const nameById = {}, stageById = {};
+apps.forEach(a => { nameById[a.id] = a.name; stageById[a.id] = a.stage; });
+const nm = id => nameById[id] || id;
+const isOb = id => stageById[id] === "ONBOARDING";
+const obApps = apps.filter(a => a.stage === "ONBOARDING");
+const includeCurrent = end >= wrPrevFullWeek(now).end;
+const notes = wrPeriodNotes(start, end, now);
+const inR = d => !!d && d >= start && d <= end;
+const items = wrDedupe(wrCollect(apps, start, end));
+const completed = [], progress = [], challenges = [], priorities = [];
+const obProgress = {}; obApps.forEach(a => { obProgress[a.id] = []; });
+const nextRaw = [];
+items.forEach(it => {
+const cls = wrClassify(it, start, end);
+if (cls === "completed") completed.push(it);
+else if (cls === "challenge") challenges.push(it);
+else if (cls === "priority") priorities.push(it);
+else if (cls === "progress") {
+const ob = it.appIds.filter(isOb);
+if (ob.length) ob.forEach(id => obProgress[id].push(it)); else progress.push(it);
 }
-
+const ns = String(it.nextSteps || "").trim();
+if (ns && cls !== "priority") {
+const open = it.status !== "Completed";
+if (open ? it.activityDate <= end : inR(it.completionDate)) {
+nextRaw.push({ appIds: it.appIds, text: ns, context: it.description });
+}
+}
+});
+const seenNext = new Set();
+const nextEntries = nextRaw.filter(n => {
+const k = wrNorm(n.text) + "|" + n.appIds.slice().sort().join(",");
+if (seenNext.has(k)) return false;
+seenNext.add(k);
+return true;
+});
+const flagFollow = includeCurrent ? apps.filter(a => wrYes(a.followUp)) : [];
+const flagMindy = includeCurrent ? apps.filter(a => wrYes(a.discussWithMindy)) : [];
+const firstName = it => it.appIds.length ? nm(it.appIds[0]).toLowerCase() : "\uffff";
+const byApp = (a, b) => firstName(a) < firstName(b) ? -1 : firstName(a) > firstName(b) ? 1 : (a.activityDate < b.activityDate ? -1 : a.activityDate > b.activityDate ? 1 : 0);
+[completed, progress, challenges, priorities].forEach(l => l.sort(byApp));
+Object.keys(obProgress).forEach(k => obProgress[k].sort(byApp));
+const who = ids => ids.length ? ids.map(nm).join(", ") : "Cross-functional";
+const tag = (it, sec) => {
+const label = it.kind ? WR_KIND_LABEL[it.kind]
+: (it.origin === "dailylog" || it.origin === "dailylog-priority") ? "Daily log" : it.category;
+const bits = [label];
+if (sec === "completed") bits.push("completed " + wrShort(it.completionDate));
+else if (sec === "challenge") { if (it.status !== "Logged") bits.push(it.status); bits.push("raised " + wrShort(it.activityDate)); }
+else { if (it.status && it.status !== "Logged") bits.push(it.status); bits.push((sec === "priority" && it.origin !== "dailylog-priority" ? "logged " : "") + wrShort(it.activityDate)); }
+return ` _(${bits.join(" · ")})_`;
+};
+const line = (it, sec) => `- **${who(it.appIds)}**: ${wrClean(it.description)}${tag(it, sec)}`;
+const none = txt => `_${txt}_`;
+// ---------- Executive Summary ----------
+const progressTotal = progress.length + Object.values(obProgress).reduce((n, l) => n + l.length, 0);
+const touched = new Set();
+completed.concat(progress, ...Object.values(obProgress)).forEach(it => it.appIds.forEach(id => touched.add(id)));
+const crossFn = completed.concat(progress).filter(it => !it.appIds.length).length;
+const SCORE = { Decision: 5, Enhancement: 4, Accomplishment: 4, Issue: 3, Blocker: 3, Update: 2, "Follow-Up": 1 };
+const scoreOf = it => it.kind === "decision" ? 5 : (SCORE[it.category] || 1);
+const top = completed.slice().sort((a, b) => scoreOf(b) - scoreOf(a) || (b.completionDate > a.completionDate ? 1 : b.completionDate < a.completionDate ? -1 : 0)).slice(0, 3);
+const nextCount = priorities.length + nextEntries.length + flagFollow.length;
+const attnItems = challenges.length;
+const obActive = obApps.filter(a => {
+const has = it => it.appIds.includes(a.id);
+return obProgress[a.id].length || completed.some(has) || challenges.some(has) || priorities.some(has) ||
+nextEntries.some(has) || flagFollow.some(x => x.id === a.id) || flagMindy.some(x => x.id === a.id);
+});
+const exec = [];
+if (completed.length || progressTotal) {
+exec.push(`- **Activity:** ${wrN(completed.length, "item")} completed and ${wrN(progressTotal, "active update")} documented across ${wrN(touched.size, "application")}${crossFn ? `, plus ${wrN(crossFn, "cross-functional item")}` : ""}.`);
+} else {
+exec.push(`- **Activity:** No completed items or progress updates were documented in the dashboard for this period.`);
+}
+if (top.length) {
+exec.push(`- **Key completions:** ` + top.map(it => `${who(it.appIds)} — ${wrClean(it.description, 110)}`).join("; ") + ".");
+}
+if (obApps.length) {
+exec.push(obActive.length
+? `- **Onboarding:** documented updates for ${obActive.length} of ${obApps.length} onboarding applications (${obActive.map(a => a.name).join(", ")}).`
+: `- **Onboarding:** no documented updates for the ${obApps.length} onboarding applications this period.`);
+}
+if (attnItems || flagMindy.length) {
+const parts = [];
+if (attnItems) parts.push(`${wrN(attnItems, "unresolved blocker, issue or open-question item")}`);
+if (flagMindy.length) parts.push(`${wrN(flagMindy.length, "application")} flagged for leadership discussion`);
+exec.push(`- **Leadership attention:** ${parts.join(" and ")}.`);
+}
+if (nextCount) exec.push(`- **Next week:** ${wrN(nextCount, "documented priority or follow-up item")}.`);
+// ---------- Assemble ----------
+const md = [];
+md.push(`# Weekly Application Support Progress Report`);
+md.push(`**Reporting period:** ${wrLong(start)} – ${wrLong(end)}`);
+md.push(`**Prepared by:** Lead Project/Program Manager, Application Support`);
+md.push(`**Generated:** ${wrLong(wrYmd(now))}`);
+md.push(``);
+md.push(`## Executive Summary`);
+md.push(exec.length ? exec.join("\n") : none("No activity was documented in the dashboard for this period."));
+md.push(``);
+md.push(`## Completed This Week`);
+md.push(completed.length ? completed.map(it => line(it, "completed")).join("\n") : none("No items were marked completed in this period."));
+md.push(``);
+md.push(`## Progress on Active Initiatives`);
+md.push(progress.length ? progress.map(it => line(it, "progress")).join("\n") : none("No additional progress updates were documented for this period."));
+md.push(``);
+md.push(`## Application Onboarding Progress`);
+if (!obApps.length) {
+md.push(none("No applications are currently in onboarding."));
+} else {
+obApps.forEach(a => {
+const has = it => it.appIds.includes(a.id);
+const c = completed.filter(has).length;
+const ch = challenges.filter(has).length + (flagMindy.some(x => x.id === a.id) ? 1 : 0);
+const pr = priorities.filter(has).length + nextEntries.filter(has).length + (flagFollow.some(x => x.id === a.id) ? 1 : 0);
+md.push(`### ${a.name}`);
+const rows = obProgress[a.id].map(it => `- ${wrClean(it.description)}${tag(it, "progress")}`);
+const also = [];
+if (c) also.push(wrN(c, "completed item"));
+if (ch) also.push(wrN(ch, "open challenge"));
+if (pr) also.push(wrN(pr, "upcoming item"));
+if (also.length) rows.push(`- _Also documented in the sections of this report: ${also.join(", ")}._`);
+md.push(rows.length ? rows.join("\n") : `- No documented updates this period.`);
+});
+}
+md.push(``);
+md.push(`## Challenges & Dependencies`);
+const chRows = challenges.map(it => line(it, "challenge"));
+flagMindy.forEach(a => {
+const note = !wrYes(a.followUp) && a.activity && String(a.activity).trim() ? ` — ${wrClean(a.activity, 220)}` : "";
+chRows.push(`- **${a.name}**: Flagged for leadership discussion${note}.`.replace(/\.\.$/, "."));
+});
+md.push(chRows.length ? chRows.join("\n") : none("No unresolved blockers or items requiring leadership attention were documented."));
+md.push(``);
+md.push(`## Next Week's Priorities`);
+const prRows = [];
+priorities.forEach(it => {
+prRows.push(line(it, "priority"));
+if (String(it.nextSteps || "").trim()) prRows.push(`  - Next step: ${wrClean(it.nextSteps, 200)}`);
+});
+nextEntries.forEach(n => prRows.push(`- **${who(n.appIds)}**: ${wrClean(n.text, 220)} _(follows: ${wrClean(n.context, 70)})_`));
+flagFollow.forEach(a => {
+const note = a.activity && String(a.activity).trim() ? ` — ${wrClean(a.activity, 220)}` : ".";
+prRows.push(`- **${a.name}**: Follow-up flagged${note}`);
+});
+md.push(prRows.length ? prRows.join("\n") : none("No upcoming work or follow-ups were documented."));
+md.push(``);
+md.push(`---`);
+md.push(`_Source: Application Support dashboard (Application Portfolio activity history, Daily Accomplishments, Leadership sync notes). Each documented activity is reported once._`);
+return {
+md: md.join("\n"),
+notes,
+stats: {
+completed: completed.length, progress: progressTotal, challenges: challenges.length,
+priorities: priorities.length, nextEntries: nextEntries.length,
+flagFollow: flagFollow.length, flagMindy: flagMindy.length, total: items.length,
+obActive: obActive.length
+},
+items
+};
+}
 // Small, safe Markdown renderer for the preview / formatted copy
 function wrInline(escaped) {
-  return escaped
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/_\(([^)]*)\)_/g, "<em>($1)</em>");
+return escaped
+.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+.replace(/_\(([^)]*)\)_/g, "<em>($1)</em>");
 }
 function wrRenderMd(md) {
-  const lines = String(md).split("\n");
-  let html = "", depth = 0;
-  const liOpen = [false, false, false];
-  const closeTo = n => {
-    while (depth > n) {
-      if (liOpen[depth]) { html += "</li>"; liOpen[depth] = false; }
-      html += "</ul>"; depth--;
-    }
-  };
-  lines.forEach(raw => {
-    const li = raw.match(/^(\s*)[-*]\s+(.*)$/);
-    if (li) {
-      const d = li[1].length >= 2 ? 2 : 1;
-      if (d > depth) { while (depth < d) { html += "<ul>"; depth++; } }
-      else { closeTo(d); if (liOpen[d]) { html += "</li>"; liOpen[d] = false; } }
-      const body = li[2].match(/^_(.+)_$/) ? `<em>${esc(li[2].match(/^_(.+)_$/)[1])}</em>` : wrInline(esc(li[2]));
-      html += "<li>" + body; liOpen[d] = true;
-      return;
-    }
-    closeTo(0);
-    const t = raw.trim();
-    if (!t) return;
-    const h = t.match(/^(#{1,3})\s+(.*)$/);
-    if (h) { html += `<h${h[1].length}>${wrInline(esc(h[2]))}</h${h[1].length}>`; return; }
-    if (/^---+$/.test(t)) { html += "<hr>"; return; }
-    const em = t.match(/^_(.+)_$/);
-    html += em ? `<p><em>${esc(em[1])}</em></p>` : `<p>${wrInline(esc(t))}</p>`;
-  });
-  closeTo(0);
-  return html;
+const lines = String(md).split("\n");
+let html = "", depth = 0;
+const liOpen = [false, false, false];
+const closeTo = n => {
+while (depth > n) {
+if (liOpen[depth]) { html += "</li>"; liOpen[depth] = false; }
+html += "</ul>"; depth--;
 }
-/* ===== WR-ENGINE-END ===== */
-
-
-/* ===== WR-UI-BEGIN ===== */
+};
+lines.forEach(raw => {
+const li = raw.match(/^(\s*)[-*]\s+(.*)$/);
+if (li) {
+const d = li[1].length >= 2 ? 2 : 1;
+if (d > depth) { while (depth < d) { html += "<ul>"; depth++; } }
+else { closeTo(d); if (liOpen[d]) { html += "</li>"; liOpen[d] = false; } }
+const body = li[2].match(/^_(.+)_$/) ? `<em>${esc(li[2].match(/^_(.+)_$/)[1])}</em>` : wrInline(esc(li[2]));
+html += "<li>" + body; liOpen[d] = true;
+return;
+}
+closeTo(0);
+const t = raw.trim();
+if (!t) return;
+const h = t.match(/^(#{1,3})\s+(.*)$/);
+if (h) { html += `<h${h[1].length}>${wrInline(esc(h[2]))}</h${h[1].length}>`; return; }
+if (/^---+$/.test(t)) { html += "<hr>"; return; }
+const em = t.match(/^_(.+)_$/);
+html += em ? `<p><em>${esc(em[1])}</em></p>` : `<p>${wrInline(esc(t))}</p>`;
+});
+closeTo(0);
+return html;
+}
 const WR_DRAFT_KEY = "app_support_weekly_report_draft_v1";
 const WR_SAVED_KEY = "app_support_weekly_reports_v1";
 let wrState = { start: "", end: "", edited: false, viewingId: null, tab: "edit", refs: [] };
-
 function wrEl(id) { return document.getElementById(id); }
 function wrReadSaved() { try { const a = JSON.parse(localStorage.getItem(WR_SAVED_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
 function wrWriteSaved(a) { localStorage.setItem(WR_SAVED_KEY, JSON.stringify(a)); }
 function wrReadDraft() { try { return JSON.parse(localStorage.getItem(WR_DRAFT_KEY) || "null"); } catch (e) { return null; } }
-
 function openWeeklyReport() {
-  loadRecords();
-  loadPortfolioApps();
-  const w = wrPrevFullWeek();
-  wrState.viewingId = null;
-  wrEl("weeklyModal").style.display = "flex";
-  wrApplyRange(w.start, w.end);
+loadRecords();
+loadPortfolioApps();
+const w = wrPrevFullWeek();
+wrState.viewingId = null;
+wrEl("weeklyModal").style.display = "flex";
+wrApplyRange(w.start, w.end);
 }
-
 function closeWeeklyReport() {
-  wrEl("weeklyModal").style.display = "none";
+wrEl("weeklyModal").style.display = "none";
 }
-
 function wrApplyRange(start, end) {
-  wrState.start = start; wrState.end = end; wrState.viewingId = null;
-  wrEl("wrFrom").value = start; wrEl("wrTo").value = end;
-  const d = wrReadDraft();
-  if (d && d.start === start && d.end === end && d.text) {
-    wrEl("wrEditor").value = d.text;
-    wrState.edited = true;
-    wrShowBanner(["Restored your unsaved edits for this period."], "Regenerate from dashboard", "wrRegenerate()");
-  } else {
-    wrGenerate();
-  }
-  wrAfterChange();
+wrState.start = start; wrState.end = end; wrState.viewingId = null;
+wrEl("wrFrom").value = start; wrEl("wrTo").value = end;
+const d = wrReadDraft();
+if (d && d.start === start && d.end === end && d.text) {
+wrEl("wrEditor").value = d.text;
+wrState.edited = true;
+wrShowBanner(["Restored your unsaved edits for this period."], "Regenerate from dashboard", "wrRegenerate()");
+} else {
+wrGenerate();
 }
-
+wrAfterChange();
+}
 function wrGenerate() {
-  const res = wrBuildReport(wrState.start, wrState.end);
-  wrEl("wrEditor").value = res.md;
-  wrState.edited = false;
-  localStorage.removeItem(WR_DRAFT_KEY);
-  wrShowBanner(res.notes);
-  wrAfterChange();
+const res = wrBuildReport(wrState.start, wrState.end);
+wrEl("wrEditor").value = res.md;
+wrState.edited = false;
+localStorage.removeItem(WR_DRAFT_KEY);
+wrShowBanner(res.notes);
+wrAfterChange();
 }
-
 function wrRegenerate() {
-  if (wrState.edited && !confirm("Regenerating replaces your edits with a fresh report built from the dashboard. Continue?")) return;
-  wrState.viewingId = null;
-  wrGenerate();
+if (wrState.edited && !confirm("Regenerating replaces your edits with a fresh report built from the dashboard. Continue?")) return;
+wrState.viewingId = null;
+wrGenerate();
 }
-
 function wrOnRangeChange() {
-  let s = wrEl("wrFrom").value, e = wrEl("wrTo").value;
-  if (!s || !e) return;
-  if (s > e) { const t = s; s = e; e = t; }
-  if (wrState.edited && !confirm("You have unsaved edits to this report. Changing the period will discard them. Continue?")) {
-    wrEl("wrFrom").value = wrState.start; wrEl("wrTo").value = wrState.end; return;
-  }
-  localStorage.removeItem(WR_DRAFT_KEY);
-  wrState.edited = false;
-  wrApplyRange(s, e);
+let s = wrEl("wrFrom").value, e = wrEl("wrTo").value;
+if (!s || !e) return;
+if (s > e) { const t = s; s = e; e = t; }
+if (wrState.edited && !confirm("You have unsaved edits to this report. Changing the period will discard them. Continue?")) {
+wrEl("wrFrom").value = wrState.start; wrEl("wrTo").value = wrState.end; return;
 }
-
+localStorage.removeItem(WR_DRAFT_KEY);
+wrState.edited = false;
+wrApplyRange(s, e);
+}
 function wrLastFullWeek() {
-  if (wrState.edited && !confirm("You have unsaved edits to this report. Continue and discard them?")) return;
-  localStorage.removeItem(WR_DRAFT_KEY);
-  wrState.edited = false;
-  const w = wrPrevFullWeek();
-  wrApplyRange(w.start, w.end);
+if (wrState.edited && !confirm("You have unsaved edits to this report. Continue and discard them?")) return;
+localStorage.removeItem(WR_DRAFT_KEY);
+wrState.edited = false;
+const w = wrPrevFullWeek();
+wrApplyRange(w.start, w.end);
 }
-
 function wrOnEdit() {
-  wrState.edited = true;
-  localStorage.setItem(WR_DRAFT_KEY, JSON.stringify({ start: wrState.start, end: wrState.end, text: wrEl("wrEditor").value, savedAt: new Date().toISOString() }));
-  wrRenderPreview();
+wrState.edited = true;
+localStorage.setItem(WR_DRAFT_KEY, JSON.stringify({ start: wrState.start, end: wrState.end, text: wrEl("wrEditor").value, savedAt: new Date().toISOString() }));
+wrRenderPreview();
 }
-
 function wrShowBanner(msgs, actionLabel, actionFn) {
-  const b = wrEl("wrBanner");
-  msgs = (msgs || []).filter(Boolean);
-  if (!msgs.length && !actionLabel) { b.style.display = "none"; b.innerHTML = ""; return; }
-  b.style.display = "flex";
-  b.innerHTML = `<span>${msgs.map(esc).join("<br>")}</span>` +
-    (actionLabel ? `<button class="btn" style="padding:3px 10px;font-size:11px;" onclick="${actionFn}">${esc(actionLabel)}</button>` : "");
+const b = wrEl("wrBanner");
+msgs = (msgs || []).filter(Boolean);
+if (!msgs.length && !actionLabel) { b.style.display = "none"; b.innerHTML = ""; return; }
+b.style.display = "flex";
+b.innerHTML = `<span>${msgs.map(esc).join("<br>")}</span>` +
+(actionLabel ? `<button class="btn" style="padding:3px 10px;font-size:11px;" onclick="${actionFn}">${esc(actionLabel)}</button>` : "");
 }
-
 function wrSetTab(tab) {
-  wrState.tab = tab;
-  wrEl("wrEditor").style.display = tab === "edit" && !wrState.viewingId ? "block" : "none";
-  wrEl("wrPreview").style.display = tab === "preview" || wrState.viewingId ? "block" : "none";
-  wrEl("wrTabEdit").classList.toggle("active", tab === "edit");
-  wrEl("wrTabPreview").classList.toggle("active", tab === "preview");
-  if (tab === "preview") wrRenderPreview();
+wrState.tab = tab;
+wrEl("wrEditor").style.display = tab === "edit" && !wrState.viewingId ? "block" : "none";
+wrEl("wrPreview").style.display = tab === "preview" || wrState.viewingId ? "block" : "none";
+wrEl("wrTabEdit").classList.toggle("active", tab === "edit");
+wrEl("wrTabPreview").classList.toggle("active", tab === "preview");
+if (tab === "preview") wrRenderPreview();
 }
-
 function wrDisplayText() {
-  if (wrState.viewingId) {
-    const v = wrReadSaved().find(x => x.id === wrState.viewingId);
-    return v ? v.text : "";
-  }
-  return wrEl("wrEditor").value;
+if (wrState.viewingId) {
+const v = wrReadSaved().find(x => x.id === wrState.viewingId);
+return v ? v.text : "";
 }
-
+return wrEl("wrEditor").value;
+}
 function wrRenderPreview() {
-  wrEl("wrPreview").innerHTML = wrRenderMd(wrDisplayText());
+wrEl("wrPreview").innerHTML = wrRenderMd(wrDisplayText());
 }
-
 function wrAfterChange() {
-  wrEl("wrSaveBtn").disabled = !!wrState.viewingId;
-  wrEl("wrEditor").readOnly = !!wrState.viewingId;
-  wrSetTab(wrState.viewingId ? "preview" : "edit");
-  wrRenderPreview();
-  wrRenderRefs();
-  wrRenderSaved();
+wrEl("wrSaveBtn").disabled = !!wrState.viewingId;
+wrEl("wrEditor").readOnly = !!wrState.viewingId;
+wrSetTab(wrState.viewingId ? "preview" : "edit");
+wrRenderPreview();
+wrRenderRefs();
+wrRenderSaved();
 }
-
-/* ---- Source notes that are NOT auto-written into the report (user decides what to insert) ---- */
 function wrRenderRefs() {
-  const refs = [];
-  const apps = wrLoadPortfolioFull();
-  const includeCurrent = wrState.end >= wrPrevFullWeek().end;
-  apps.forEach(a => {
-    if (a.activity && String(a.activity).trim() && !(includeCurrent && wrYes(a.followUp))) {
-      refs.push({ label: `${a.name} — support & prioritization notes`, text: `${a.name}: ${wrClean(a.activity, 400)}` });
-    }
-    if (a.monthlySyncNotes && String(a.monthlySyncNotes).trim()) {
-      refs.push({ label: `${a.name} — stakeholder sync notes${a.lastSyncDate ? " (" + wrShort(a.lastSyncDate) + ")" : ""}`, text: `${a.name}: ${wrClean(a.monthlySyncNotes, 400)}` });
-    }
-  });
-  try {
-    const m = JSON.parse(localStorage.getItem("app_support_mindy_notes_v1") || "null");
-    if (m && String(m.decisions || "").trim()) refs.push({ label: "Leadership sync — notes & decisions (free text)", text: wrClean(m.decisions, 600) });
-    if (m && String(m.agenda || "").trim()) refs.push({ label: "Leadership sync — agenda (free text)", text: wrClean(m.agenda, 600) });
-  } catch (e) { /* ignore */ }
-  wrState.refs = refs;
-  wrEl("wrRefsCount").textContent = refs.length;
-  wrEl("wrRefsList").innerHTML = refs.length
-    ? refs.map((r, i) => `<div class="wr-ref"><div><div class="wr-ref-label">${esc(r.label)}</div><div class="wr-ref-text">${esc(wrClean(r.text, 160))}</div></div><button class="link-btn" onclick="wrInsertRef(${i})">Insert</button></div>`).join("")
-    : `<div class="rec-empty">No additional source notes available.</div>`;
+const refs = [];
+const apps = wrLoadPortfolioFull();
+const includeCurrent = wrState.end >= wrPrevFullWeek().end;
+apps.forEach(a => {
+if (a.activity && String(a.activity).trim() && !(includeCurrent && wrYes(a.followUp))) {
+refs.push({ label: `${a.name} — support & prioritization notes`, text: `${a.name}: ${wrClean(a.activity, 400)}` });
 }
-
+if (a.monthlySyncNotes && String(a.monthlySyncNotes).trim()) {
+refs.push({ label: `${a.name} — stakeholder sync notes${a.lastSyncDate ? " (" + wrShort(a.lastSyncDate) + ")" : ""}`, text: `${a.name}: ${wrClean(a.monthlySyncNotes, 400)}` });
+}
+});
+try {
+const m = JSON.parse(localStorage.getItem("app_support_mindy_notes_v1") || "null");
+if (m && String(m.decisions || "").trim()) refs.push({ label: "Leadership sync — notes & decisions (free text)", text: wrClean(m.decisions, 600) });
+if (m && String(m.agenda || "").trim()) refs.push({ label: "Leadership sync — agenda (free text)", text: wrClean(m.agenda, 600) });
+} catch (e) {  }
+wrState.refs = refs;
+wrEl("wrRefsCount").textContent = refs.length;
+wrEl("wrRefsList").innerHTML = refs.length
+? refs.map((r, i) => `<div class="wr-ref"><div><div class="wr-ref-label">${esc(r.label)}</div><div class="wr-ref-text">${esc(wrClean(r.text, 160))}</div></div><button class="link-btn" onclick="wrInsertRef(${i})">Insert</button></div>`).join("")
+: `<div class="rec-empty">No additional source notes available.</div>`;
+}
 function wrInsertRef(i) {
-  if (wrState.viewingId) { showToast("Return to the draft first."); return; }
-  const r = wrState.refs[i]; if (!r) return;
-  const ed = wrEl("wrEditor");
-  const pos = ed.selectionStart != null ? ed.selectionStart : ed.value.length;
-  const ins = (pos > 0 && ed.value[pos - 1] !== "\n" ? "\n" : "") + "- " + r.text + "\n";
-  ed.value = ed.value.slice(0, pos) + ins + ed.value.slice(pos);
-  wrSetTab("edit");
-  wrOnEdit();
-  showToast("Inserted into the report");
+if (wrState.viewingId) { showToast("Return to the draft first."); return; }
+const r = wrState.refs[i]; if (!r) return;
+const ed = wrEl("wrEditor");
+const pos = ed.selectionStart != null ? ed.selectionStart : ed.value.length;
+const ins = (pos > 0 && ed.value[pos - 1] !== "\n" ? "\n" : "") + "- " + r.text + "\n";
+ed.value = ed.value.slice(0, pos) + ins + ed.value.slice(pos);
+wrSetTab("edit");
+wrOnEdit();
+showToast("Inserted into the report");
 }
-
-/* ---- Saved (finalized) historical versions ---- */
 function wrSaveFinal() {
-  if (wrState.viewingId) return;
-  const text = wrEl("wrEditor").value.trim();
-  if (!text) { showToast("Nothing to save."); return; }
-  const saved = wrReadSaved();
-  const version = saved.filter(x => x.start === wrState.start && x.end === wrState.end).length + 1;
-  saved.push({
-    id: "wr_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-    start: wrState.start, end: wrState.end, version,
-    savedAt: new Date().toISOString(), text
-  });
-  wrWriteSaved(saved);
-  localStorage.removeItem(WR_DRAFT_KEY);
-  wrState.edited = false;
-  wrRenderSaved();
-  showToast(`Saved as final version ${version} for ${wrRangeLabel(wrState.start, wrState.end)}`);
+if (wrState.viewingId) return;
+const text = wrEl("wrEditor").value.trim();
+if (!text) { showToast("Nothing to save."); return; }
+const saved = wrReadSaved();
+const version = saved.filter(x => x.start === wrState.start && x.end === wrState.end).length + 1;
+saved.push({
+id: "wr_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+start: wrState.start, end: wrState.end, version,
+savedAt: new Date().toISOString(), text
+});
+wrWriteSaved(saved);
+localStorage.removeItem(WR_DRAFT_KEY);
+wrState.edited = false;
+wrRenderSaved();
+showToast(`Saved as final version ${version} for ${wrRangeLabel(wrState.start, wrState.end)}`);
 }
-
 function wrRenderSaved() {
-  const saved = wrReadSaved().sort((a, b) => (b.savedAt > a.savedAt ? 1 : -1));
-  wrEl("wrSavedCount").textContent = saved.length;
-  wrEl("wrSavedList").innerHTML = saved.length
-    ? saved.map(v => `
-      <div class="wr-ref ${wrState.viewingId === v.id ? "viewing" : ""}">
-        <div>
-          <div class="wr-ref-label">${esc(wrRangeLabel(v.start, v.end))} · Version ${v.version}</div>
-          <div class="wr-ref-text">Saved ${esc(fmtStamp(v.savedAt))}</div>
-        </div>
-        <div style="display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end;">
-          <button class="link-btn" onclick="wrViewSaved('${v.id}')">View</button>
-          <button class="link-btn" onclick="wrUseSavedAsDraft('${v.id}')">Use as draft</button>
-          <button class="link-btn" onclick="wrCopySaved('${v.id}')">Copy</button>
-          <button class="link-btn danger" onclick="wrDeleteSaved('${v.id}')">Delete</button>
-        </div>
-      </div>`).join("")
-    : `<div class="rec-empty">No finalized reports saved yet.</div>`;
+const saved = wrReadSaved().sort((a, b) => (b.savedAt > a.savedAt ? 1 : -1));
+wrEl("wrSavedCount").textContent = saved.length;
+wrEl("wrSavedList").innerHTML = saved.length
+? saved.map(v => `
+<div class="wr-ref ${wrState.viewingId === v.id ? "viewing" : ""}">
+<div>
+<div class="wr-ref-label">${esc(wrRangeLabel(v.start, v.end))} · Version ${v.version}</div>
+<div class="wr-ref-text">Saved ${esc(fmtStamp(v.savedAt))}</div>
+</div>
+<div style="display:flex;gap:2px;flex-wrap:wrap;justify-content:flex-end;">
+<button class="link-btn" onclick="wrViewSaved('${v.id}')">View</button>
+<button class="link-btn" onclick="wrUseSavedAsDraft('${v.id}')">Use as draft</button>
+<button class="link-btn" onclick="wrCopySaved('${v.id}')">Copy</button>
+<button class="link-btn danger" onclick="wrDeleteSaved('${v.id}')">Delete</button>
+</div>
+</div>`).join("")
+: `<div class="rec-empty">No finalized reports saved yet.</div>`;
 }
-
 function wrViewSaved(id) {
-  const v = wrReadSaved().find(x => x.id === id); if (!v) return;
-  wrState.viewingId = id;
-  wrShowBanner([`Viewing saved final version ${v.version} (${wrRangeLabel(v.start, v.end)}, saved ${fmtStamp(v.savedAt)}). It is read-only.`], "Back to draft", "wrBackToDraft()");
-  wrAfterChange();
+const v = wrReadSaved().find(x => x.id === id); if (!v) return;
+wrState.viewingId = id;
+wrShowBanner([`Viewing saved final version ${v.version} (${wrRangeLabel(v.start, v.end)}, saved ${fmtStamp(v.savedAt)}). It is read-only.`], "Back to draft", "wrBackToDraft()");
+wrAfterChange();
 }
-
 function wrBackToDraft() {
-  wrState.viewingId = null;
-  wrShowBanner(wrPeriodNotes(wrState.start, wrState.end));
-  wrAfterChange();
+wrState.viewingId = null;
+wrShowBanner(wrPeriodNotes(wrState.start, wrState.end));
+wrAfterChange();
 }
-
 function wrUseSavedAsDraft(id) {
-  const v = wrReadSaved().find(x => x.id === id); if (!v) return;
-  if (wrState.edited && !confirm("This replaces your current unsaved draft. Continue?")) return;
-  wrState.start = v.start; wrState.end = v.end; wrState.viewingId = null;
-  wrEl("wrFrom").value = v.start; wrEl("wrTo").value = v.end;
-  wrEl("wrEditor").value = v.text;
-  wrState.edited = true;
-  localStorage.setItem(WR_DRAFT_KEY, JSON.stringify({ start: v.start, end: v.end, text: v.text, savedAt: new Date().toISOString() }));
-  wrShowBanner([`Loaded saved version ${v.version} as an editable draft. The saved version is unchanged.`]);
-  wrAfterChange();
+const v = wrReadSaved().find(x => x.id === id); if (!v) return;
+if (wrState.edited && !confirm("This replaces your current unsaved draft. Continue?")) return;
+wrState.start = v.start; wrState.end = v.end; wrState.viewingId = null;
+wrEl("wrFrom").value = v.start; wrEl("wrTo").value = v.end;
+wrEl("wrEditor").value = v.text;
+wrState.edited = true;
+localStorage.setItem(WR_DRAFT_KEY, JSON.stringify({ start: v.start, end: v.end, text: v.text, savedAt: new Date().toISOString() }));
+wrShowBanner([`Loaded saved version ${v.version} as an editable draft. The saved version is unchanged.`]);
+wrAfterChange();
 }
-
 function wrDeleteSaved(id) {
-  if (!confirm("Delete this saved report version? This cannot be undone.")) return;
-  wrWriteSaved(wrReadSaved().filter(x => x.id !== id));
-  if (wrState.viewingId === id) wrBackToDraft(); else wrRenderSaved();
-  showToast("Saved version deleted");
+if (!confirm("Delete this saved report version? This cannot be undone.")) return;
+wrWriteSaved(wrReadSaved().filter(x => x.id !== id));
+if (wrState.viewingId === id) wrBackToDraft(); else wrRenderSaved();
+showToast("Saved version deleted");
 }
-
-/* ---- Copy only; nothing is ever sent anywhere automatically ---- */
 function wrPlain(md) {
-  return String(md).replace(/\*\*/g, "").replace(/_\(([^)]*)\)_/g, "($1)").replace(/^_(.+)_$/gm, "$1");
+return String(md).replace(/\*\*/g, "").replace(/_\(([^)]*)\)_/g, "($1)").replace(/^_(.+)_$/gm, "$1");
 }
-
 function wrWriteClipboard(text, html) {
-  const fallback = () => {
-    const holder = document.createElement(html ? "div" : "textarea");
-    holder.style.position = "fixed"; holder.style.left = "-9999px";
-    if (html) { holder.contentEditable = "true"; holder.innerHTML = html; } else { holder.value = text; }
-    document.body.appendChild(holder);
-    if (html) { const r = document.createRange(); r.selectNodeContents(holder); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } else { holder.select(); }
-    let ok = false; try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
-    document.body.removeChild(holder);
-    showToast(ok ? "Copied to clipboard" : "Copy failed. Select the text and copy manually.");
-  };
-  try {
-    if (html && window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
-      navigator.clipboard.write([new ClipboardItem({
-        "text/html": new Blob([html], { type: "text/html" }),
-        "text/plain": new Blob([text], { type: "text/plain" })
-      })]).then(() => showToast("Copied (formatted) to clipboard"), fallback);
-    } else if (!html && navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => showToast("Copied (plain text) to clipboard"), fallback);
-    } else { fallback(); }
-  } catch (e) { fallback(); }
+const fallback = () => {
+const holder = document.createElement(html ? "div" : "textarea");
+holder.style.position = "fixed"; holder.style.left = "-9999px";
+if (html) { holder.contentEditable = "true"; holder.innerHTML = html; } else { holder.value = text; }
+document.body.appendChild(holder);
+if (html) { const r = document.createRange(); r.selectNodeContents(holder); const s = getSelection(); s.removeAllRanges(); s.addRange(r); } else { holder.select(); }
+let ok = false; try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+document.body.removeChild(holder);
+showToast(ok ? "Copied to clipboard" : "Copy failed. Select the text and copy manually.");
+};
+try {
+if (html && window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+navigator.clipboard.write([new ClipboardItem({
+"text/html": new Blob([html], { type: "text/html" }),
+"text/plain": new Blob([text], { type: "text/plain" })
+})]).then(() => showToast("Copied (formatted) to clipboard"), fallback);
+} else if (!html && navigator.clipboard && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(text).then(() => showToast("Copied (plain text) to clipboard"), fallback);
+} else { fallback(); }
+} catch (e) { fallback(); }
 }
-
 function wrCopyFormatted() { const md = wrDisplayText(); wrWriteClipboard(wrPlain(md), wrRenderMd(md)); }
 function wrCopyPlain() { wrWriteClipboard(wrPlain(wrDisplayText()), null); }
 function wrCopySaved(id) { const v = wrReadSaved().find(x => x.id === id); if (v) wrWriteClipboard(wrPlain(v.text), wrRenderMd(v.text)); }
-/* ===== WR-UI-END ===== */
-
-  </script>
+</script>
 </body>
 </html>

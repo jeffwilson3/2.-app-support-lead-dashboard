@@ -1,2444 +1,2174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Application Portfolio Tracker | App Support Lead</title>
-  <style>
-    :root {
-      --bg: #0d1117;
-      --card-bg: #161b22;
-      --card-border: #30363d;
-      --card-hover: #1c2128;
-      --text: #e6edf3;
-      --text-muted: #8b949e;
-      --accent: #2f81f7;
-      --accent-hover: #58a6ff;
-      --green: #238636;
-      --orange: #f0883e;
-      --orange-dark: #bd561d;
-      --purple: #a371f7;
-      --purple-bg: rgba(163, 113, 247, 0.18);
-      --purple-border: rgba(163, 113, 247, 0.45);
-      --amber-bg: rgba(240, 136, 62, 0.18);
-      --amber-border: rgba(240, 136, 62, 0.45);
-      --cyan: #39c5cf;
-      --cyan-bg: rgba(57, 197, 207, 0.15);
-      --cyan-border: rgba(57, 197, 207, 0.4);
-      --border-radius: 12px;
-      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --font-mono: "SF Mono", Menlo, Consolas, Monaco, monospace;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-sans);
-      line-height: 1.5;
-      padding: 24px;
-      max-width: 1540px;
-      margin: 0 auto;
-    }
-
-    /* Global Nav Bar */
-    .top-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 8px 16px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      font-size: 15px;
-    }
-
-    .nav-tabs {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .nav-tab {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      color: var(--text-muted);
-      border: 1px solid transparent;
-      transition: all 0.15s ease;
-    }
-
-    .nav-tab:hover {
-      color: var(--text);
-      background: var(--card-hover);
-    }
-
-    .nav-tab.active {
-      color: #fff;
-      background: rgba(47, 129, 247, 0.18);
-      border-color: rgba(47, 129, 247, 0.4);
-    }
-
-    .header-main {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .header-title h1 {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .role-badge {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(47, 129, 247, 0.2);
-      color: var(--accent-hover);
-      border: 1px solid rgba(47, 129, 247, 0.4);
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      background: var(--card-bg);
-      color: var(--text);
-      border: 1px solid var(--card-border);
-      padding: 7px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s ease;
-      text-decoration: none;
-    }
-
-    .btn:hover {
-      background: var(--card-hover);
-      border-color: #8b949e;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-    }
-
-    /* KPI Summary Row */
-    .kpi-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .kpi-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--border-radius);
-      padding: 14px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      position: relative;
-    }
-
-    .kpi-card:hover {
-      border-color: #58a6ff;
-      transform: translateY(-1px);
-    }
-
-    .kpi-card.active-filter {
-      border-color: var(--accent);
-      background: rgba(47, 129, 247, 0.12);
-      box-shadow: 0 0 0 1px var(--accent);
-    }
-
-    .kpi-card.active-filter-orange {
-      border-color: var(--orange);
-      background: rgba(240, 136, 62, 0.12);
-      box-shadow: 0 0 0 1px var(--orange);
-    }
-
-    .kpi-card.active-filter-purple {
-      border-color: var(--purple);
-      background: rgba(163, 113, 247, 0.12);
-      box-shadow: 0 0 0 1px var(--purple);
-    }
-
-    .kpi-title {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .kpi-val {
-      font-size: 24px;
-      font-weight: 700;
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-    }
-
-    .kpi-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    /* Active Filter Banner */
-    .filter-banner {
-      background: rgba(47, 129, 247, 0.1);
-      border: 1px solid rgba(47, 129, 247, 0.3);
-      padding: 8px 16px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-    }
-
-    .filter-banner.banner-orange {
-      background: rgba(240, 136, 62, 0.12);
-      border-color: rgba(240, 136, 62, 0.35);
-      color: #ffb07c;
-    }
-
-    .filter-banner.banner-purple {
-      background: rgba(163, 113, 247, 0.12);
-      border-color: rgba(163, 113, 247, 0.35);
-      color: #d2a8ff;
-    }
-
-    /* Filter Toolbar */
-    .portfolio-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      background: var(--card-bg);
-      padding: 12px 16px;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-    }
-
-    .search-filter-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .search-input {
-      background: #0d1117;
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      padding: 7px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      width: 250px;
-      outline: none;
-    }
-    .search-input:focus { border-color: var(--accent); }
-
-    .filter-select {
-      background: #0d1117;
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      padding: 7px 10px;
-      border-radius: 8px;
-      font-size: 13px;
-      outline: none;
-      cursor: pointer;
-    }
-
-    /* Section Headings */
-    .section-title {
-      font-size: 17px;
-      font-weight: 600;
-      margin: 24px 0 14px 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(48, 54, 61, 0.6);
-    }
-
-    .badge-count {
-      background: rgba(255, 255, 255, 0.1);
-      font-size: 12px;
-      font-weight: 500;
-      padding: 2px 7px;
-      border-radius: 999px;
-      color: var(--text-muted);
-    }
-
-    /* Apps Grid */
-    .apps-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-
-    .app-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--border-radius);
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease;
-      position: relative;
-    }
-
-    .app-card.open {
-      border-color: rgba(47, 129, 247, 0.55);          /* blue = the currently highlighted application */
-      box-shadow: 0 0 0 1px rgba(47, 129, 247, 0.18);
-    }
-    .app-card.has-followup .app-row { background: linear-gradient(90deg, rgba(240, 136, 62, 0.09), transparent 38%); }
-    .app-card.has-mindy .app-row    { background: linear-gradient(270deg, rgba(163, 113, 247, 0.09), transparent 38%); }
-    .app-card.has-both .app-row     { background: linear-gradient(90deg, rgba(240, 136, 62, 0.09), transparent 30%, transparent 70%, rgba(163, 113, 247, 0.09)); }
-
-    /* ---- Accordion: compact row (always visible) ---- */
-    .app-row {
-      all: unset;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 4px 10px;
-      width: 100%;
-      min-height: 44px;
-      padding: 9px 14px;
-      cursor: pointer;
-      border-radius: var(--border-radius);
-    }
-    .app-row { transition: background-color 0.15s ease; }
-    .app-card:hover { box-shadow: none; }
-    .app-card.open:hover { box-shadow: 0 0 0 1px rgba(47, 129, 247, 0.18); }
-    .app-row:hover { background-color: rgba(255, 255, 255, 0.045); }
-    .app-card.has-followup .app-row:hover,
-    .app-card.has-mindy .app-row:hover,
-    .app-card.has-both .app-row:hover { background-color: rgba(255, 255, 255, 0.035); }
-    .app-row:hover .row-chevron { color: var(--accent-hover); }
-    .app-row:active { background-color: rgba(255, 255, 255, 0.07); }
-    .app-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-    .app-card.open .app-row { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid rgba(48, 54, 61, 0.7); }
-    .app-row .app-name { font-size: 15px; }
-    .row-name { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 0 1 auto; }
-    .row-bu {
-      font-size: 12px; color: var(--text-muted);
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
-    }
-    .row-spacer { flex: 1 1 8px; }
-    .row-flags { display: inline-flex; align-items: center; gap: 6px; }
-    .row-flag {
-      font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; white-space: nowrap;
-    }
-    .row-flag.fu { background: var(--amber-bg); color: #ffb07c; border: 1px solid var(--amber-border); }
-    .row-flag.dm { background: var(--purple-bg); color: #d2a8ff; border: 1px solid var(--purple-border); }
-    .row-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; font-family: var(--font-mono); }
-    .row-chevron { display: inline-flex; color: var(--text-muted); transition: transform 0.15s ease; transform: rotate(-90deg); }
-    .app-card.open .row-chevron { transform: rotate(0deg); color: var(--accent-hover); }
-
-    /* ---- Accordion: expanded body (all original controls live here) ---- */
-    /* Collapsed content stays in the DOM (so unsaved typing is never lost); it is only clipped to 0 height. */
-    .app-collapse {
-      display: grid;
-      grid-template-rows: 0fr;
-      visibility: hidden;
-      transition: grid-template-rows 0.2s ease, visibility 0s linear 0.2s;
-    }
-    .app-card.open .app-collapse {
-      grid-template-rows: 1fr;
-      visibility: visible;
-      transition: grid-template-rows 0.2s ease, visibility 0s linear 0s;
-    }
-    .app-clip { min-height: 0; overflow: hidden; }
-    .app-body {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 14px 16px 16px;
-    }
-
-    .row-draft {
-      font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; white-space: nowrap;
-      background: rgba(210, 153, 34, 0.14); color: #e3b341; border: 1px solid rgba(210, 153, 34, 0.4);
-    }
-    .unsaved-indicator { font-size: 12px; font-weight: 600; color: #e3b341; white-space: nowrap; }
-    .unsaved-indicator.error { color: #ff7b72; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .row-chevron, .app-card, .app-collapse { transition: none !important; }
-    }
-    @media (max-width: 640px) {
-      .row-bu { flex-basis: 100%; order: 5; }
-      .row-spacer { display: none; }
-    }
-
-    .app-card:hover {
-      border-color: #484f58;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .app-card.has-followup {
-      border-left: 4px solid var(--orange);
-    }
-    .app-card.has-mindy {
-      border-right: 4px solid var(--purple);
-    }
-    .app-card.has-both {
-      border-left: 4px solid var(--orange);
-      border-right: 4px solid var(--purple);
-    }
-
-    .app-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-    }
-
-    .app-name-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .app-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: #fff;
-    }
-
-    .stage-pill {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 7px;
-      border-radius: 6px;
-    }
-
-    .stage-live {
-      background: rgba(35, 134, 54, 0.2);
-      color: #3fb950;
-      border: 1px solid rgba(46, 160, 67, 0.3);
-    }
-
-    .stage-onboarding {
-      background: rgba(56, 139, 253, 0.18);
-      color: #58a6ff;
-      border: 1px solid rgba(56, 139, 253, 0.3);
-    }
-
-    .flags-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      min-height: 22px;
-    }
-
-    .flag-tag {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 2px 8px;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .flag-followup {
-      background: var(--amber-bg);
-      color: #ffb07c;
-      border: 1px solid var(--amber-border);
-    }
-
-    .flag-mindy {
-      background: var(--purple-bg);
-      color: #d2a8ff;
-      border: 1px solid var(--purple-border);
-    }
-
-    .flag-sync {
-      background: var(--cyan-bg);
-      color: #7ee787;
-      border: 1px solid var(--cyan-border);
-    }
-
-    /* 1-Click Segmented Controls */
-    .app-meta-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      background: rgba(13, 17, 23, 0.75);
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(48, 54, 61, 0.6);
-    }
-
-    .meta-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .meta-label {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      letter-spacing: 0.5px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .seg-group {
-      display: inline-flex;
-      background: #161b22;
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 2px;
-      width: 100%;
-    }
-
-    .seg-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 6px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      text-align: center;
-    }
-
-    .seg-btn:hover {
-      color: var(--text);
-    }
-
-    .seg-btn.active-no {
-      background: rgba(255, 255, 255, 0.08);
-      color: var(--text);
-    }
-
-    .seg-btn.active-orange {
-      background: #bd561d;
-      color: #fff;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    .seg-btn.active-purple {
-      background: #8957e5;
-      color: #fff;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Activity area */
-    .activity-section {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .activity-input {
-      background: #0d1117;
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      color: var(--text);
-      font-family: var(--font-sans);
-      font-size: 13px;
-      line-height: 1.45;
-      padding: 8px 10px;
-      min-height: 64px;
-      resize: vertical;
-      outline: none;
-      transition: border-color 0.15s ease;
-    }
-
-    .activity-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent);
-    }
-
-    /* Structured Activity History Section */
-    .activity-history-section {
-      border-top: 1px dashed var(--card-border);
-      padding-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .activity-history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .activity-history-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .activity-history-title {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-    }
-
-    .badge-history-count {
-      font-size: 10px;
-      font-weight: 600;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-muted);
-    }
-
-    .btn-add-update {
-      background: rgba(47, 129, 247, 0.15);
-      border: 1px solid rgba(47, 129, 247, 0.35);
-      color: var(--accent-hover);
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: all 0.15s ease;
-    }
-
-    .btn-add-update:hover {
-      background: rgba(47, 129, 247, 0.28);
-      border-color: var(--accent);
-      color: #fff;
-    }
-
-    /* Add Update Form Drawer */
-    .add-update-form {
-      background: #0d1117;
-      border: 1px solid rgba(47, 129, 247, 0.4);
-      border-radius: 8px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      animation: fadeIn 0.15s ease;
-    }
-
-    .update-form-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      padding-bottom: 4px;
-      border-bottom: 1px solid rgba(48, 54, 61, 0.5);
-    }
-
-    .update-form-title {
-      font-weight: 700;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .update-form-time {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .update-form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .update-form-col {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .update-form-label {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-    }
-
-    .update-form-select, .update-form-input, .update-form-textarea {
-      background: #161b22;
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      font-family: var(--font-sans);
-      font-size: 12px;
-      border-radius: 6px;
-      padding: 6px 8px;
-      outline: none;
-      transition: border-color 0.15s ease;
-    }
-
-    .update-form-select:focus, .update-form-input:focus, .update-form-textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent);
-    }
-
-    .update-form-textarea {
-      min-height: 60px;
-      resize: vertical;
-      line-height: 1.45;
-    }
-
-    .update-form-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 6px;
-      padding-top: 4px;
-    }
-
-    .btn-cancel {
-      background: transparent;
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
-      font-size: 11px;
-      font-weight: 500;
-      padding: 4px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .btn-cancel:hover {
-      background: var(--card-hover);
-      color: var(--text);
-    }
-
-    .btn-save-update {
-      background: var(--accent);
-      border: 1px solid var(--accent);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.15s ease;
-    }
-
-    .btn-save-update:hover {
-      background: var(--accent-hover);
-    }
-
-    /* History Timeline Entries */
-    .activity-history-container {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .activity-history-empty {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-style: italic;
-      padding: 6px 8px;
-      background: rgba(13, 17, 23, 0.4);
-      border-radius: 6px;
-      border: 1px dashed rgba(48, 54, 61, 0.5);
-    }
-
-    .activity-entry {
-      background: #0d1117;
-      border: 1px solid rgba(48, 54, 61, 0.7);
-      border-radius: 6px;
-      padding: 8px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      position: relative;
-      transition: border-color 0.15s ease;
-    }
-
-    .activity-entry.latest-entry {
-      border-left: 3px solid var(--accent);
-    }
-
-    .activity-entry-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .activity-entry-badges {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    /* Category Badges */
-    .cat-badge {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 4px;
-      letter-spacing: 0.3px;
-    }
-
-    .cat-accomplishment {
-      background: rgba(46, 160, 67, 0.2);
-      color: #3fb950;
-      border: 1px solid rgba(46, 160, 67, 0.4);
-    }
-
-    .cat-update {
-      background: rgba(56, 139, 253, 0.18);
-      color: #58a6ff;
-      border: 1px solid rgba(56, 139, 253, 0.35);
-    }
-
-    .cat-issue {
-      background: rgba(240, 136, 62, 0.18);
-      color: #ffb07c;
-      border: 1px solid rgba(240, 136, 62, 0.35);
-    }
-
-    .cat-enhancement {
-      background: rgba(163, 113, 247, 0.18);
-      color: #d2a8ff;
-      border: 1px solid rgba(163, 113, 247, 0.35);
-    }
-
-    .cat-follow-up {
-      background: rgba(210, 153, 34, 0.2);
-      color: #e3b341;
-      border: 1px solid rgba(210, 153, 34, 0.4);
-    }
-
-    .cat-blocker {
-      background: rgba(248, 81, 73, 0.2);
-      color: #ff7b72;
-      border: 1px solid rgba(248, 81, 73, 0.4);
-    }
-
-    .cat-decision {
-      background: rgba(57, 197, 207, 0.18);
-      color: #7ee787;
-      border: 1px solid rgba(57, 197, 207, 0.35);
-    }
-
-    /* Status Pills */
-    .status-pill-entry {
-      font-size: 10px;
-      font-weight: 600;
-      padding: 1px 6px;
-      border-radius: 4px;
-      display: inline-flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .status-in-progress {
-      background: rgba(56, 139, 253, 0.15);
-      color: #58a6ff;
-    }
-
-    .status-completed {
-      background: rgba(46, 160, 67, 0.18);
-      color: #3fb950;
-    }
-
-    .status-pending {
-      background: rgba(210, 153, 34, 0.18);
-      color: #d29922;
-    }
-
-    .status-blocked {
-      background: rgba(248, 81, 73, 0.18);
-      color: #f85149;
-    }
-
-    .activity-entry-time {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .activity-entry-desc {
-      font-size: 12px;
-      color: var(--text);
-      line-height: 1.45;
-      white-space: pre-wrap;
-    }
-
-    .activity-entry-next {
-      font-size: 11px;
-      color: #79c0ff;
-      background: rgba(56, 139, 253, 0.08);
-      border-left: 2px solid var(--accent);
-      padding: 3px 6px;
-      border-radius: 0 4px 4px 0;
-    }
-
-    .history-expand-row {
-      display: flex;
-      justify-content: center;
-      padding-top: 2px;
-    }
-
-    .history-expand-btn {
-      background: transparent;
-      border: none;
-      color: var(--accent-hover);
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      padding: 3px 8px;
-      border-radius: 4px;
-      transition: all 0.15s ease;
-    }
-
-    .history-expand-btn:hover {
-      background: var(--card-hover);
-      color: #fff;
-    }
-
-    .older-history-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    /* Linked Daily Accomplishment entries (shared records) */
-    .activity-entry.linked-entry {
-      border-left: 3px solid var(--cyan);
-    }
-
-    .linked-tag {
-      font-size: 10px;
-      font-weight: 600;
-      padding: 1px 6px;
-      border-radius: 4px;
-      background: var(--cyan-bg);
-      color: #7ee787;
-      border: 1px solid var(--cyan-border);
-    }
-
-    .linked-status-select {
-      background: #161b22;
-      border: 1px solid var(--card-border);
-      color: var(--text);
-      font-size: 10px;
-      font-weight: 600;
-      border-radius: 4px;
-      padding: 1px 4px;
-      outline: none;
-      cursor: pointer;
-    }
-
-    .linked-also {
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    /* Monthly Sync Section inside App Card */
-    .monthly-sync-card-section {
-      border-top: 1px dashed var(--card-border);
-      padding-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .monthly-sync-toggle-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #79c0ff;
-      user-select: none;
-    }
-
-    .monthly-sync-toggle-header:hover {
-      color: #a5d6ff;
-    }
-
-    .sync-notes-box {
-      background: rgba(13, 17, 23, 0.85);
-      border: 1px solid rgba(57, 197, 207, 0.35);
-      border-radius: 6px;
-      padding: 8px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .sync-notes-input {
-      background: #0d1117;
-      border: 1px solid var(--card-border);
-      border-radius: 4px;
-      color: var(--text);
-      font-family: var(--font-sans);
-      font-size: 12px;
-      line-height: 1.45;
-      padding: 6px 8px;
-      min-height: 58px;
-      resize: vertical;
-      outline: none;
-    }
-
-    .sync-notes-input:focus {
-      border-color: var(--cyan);
-      box-shadow: 0 0 0 1px var(--cyan);
-    }
-
-    .sync-date-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 10px;
-      color: var(--text-muted);
-    }
-
-    .app-card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: var(--text-muted);
-      border-top: 1px solid rgba(48, 54, 61, 0.5);
-      padding-top: 8px;
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #238636;
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
-      display: none;
-      animation: fadeIn 0.2s ease;
-      z-index: 100;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Application Portfolio Tracker | App Support Lead</title>
+<style>
+:root {
+--bg: #0d1117;
+--card-bg: #161b22;
+--card-border: #30363d;
+--card-hover: #1c2128;
+--text: #e6edf3;
+--text-muted: #8b949e;
+--accent: #2f81f7;
+--accent-hover: #58a6ff;
+--green: #238636;
+--orange: #f0883e;
+--orange-dark: #bd561d;
+--purple: #a371f7;
+--purple-bg: rgba(163, 113, 247, 0.18);
+--purple-border: rgba(163, 113, 247, 0.45);
+--amber-bg: rgba(240, 136, 62, 0.18);
+--amber-border: rgba(240, 136, 62, 0.45);
+--cyan: #39c5cf;
+--cyan-bg: rgba(57, 197, 207, 0.15);
+--cyan-border: rgba(57, 197, 207, 0.4);
+--border-radius: 12px;
+--font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+--font-mono: "SF Mono", Menlo, Consolas, Monaco, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+background-color: var(--bg);
+color: var(--text);
+font-family: var(--font-sans);
+line-height: 1.5;
+padding: 24px;
+max-width: 1540px;
+margin: 0 auto;
+}
+.top-nav {
+display: flex;
+justify-content: space-between;
+align-items: center;
+background: var(--card-bg);
+border: 1px solid var(--card-border);
+border-radius: 12px;
+padding: 8px 16px;
+margin-bottom: 24px;
+flex-wrap: wrap;
+gap: 12px;
+}
+.nav-brand {
+display: flex;
+align-items: center;
+gap: 10px;
+font-weight: 700;
+font-size: 15px;
+}
+.nav-tabs {
+display: flex;
+gap: 8px;
+align-items: center;
+flex-wrap: wrap;
+}
+.nav-tab {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 8px 14px;
+border-radius: 8px;
+font-size: 13px;
+font-weight: 600;
+text-decoration: none;
+color: var(--text-muted);
+border: 1px solid transparent;
+transition: all 0.15s ease;
+}
+.nav-tab:hover {
+color: var(--text);
+background: var(--card-hover);
+}
+.nav-tab.active {
+color: #fff;
+background: rgba(47, 129, 247, 0.18);
+border-color: rgba(47, 129, 247, 0.4);
+}
+.header-main {
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 16px;
+margin-bottom: 20px;
+}
+.header-title h1 {
+font-size: 26px;
+font-weight: 700;
+letter-spacing: -0.5px;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.role-badge {
+font-size: 11px;
+font-weight: 600;
+text-transform: uppercase;
+padding: 3px 8px;
+border-radius: 999px;
+background: rgba(47, 129, 247, 0.2);
+color: var(--accent-hover);
+border: 1px solid rgba(47, 129, 247, 0.4);
+}
+.header-actions {
+display: flex;
+gap: 10px;
+align-items: center;
+flex-wrap: wrap;
+}
+.btn {
+background: var(--card-bg);
+color: var(--text);
+border: 1px solid var(--card-border);
+padding: 7px 14px;
+border-radius: 8px;
+font-size: 13px;
+font-weight: 500;
+cursor: pointer;
+display: inline-flex;
+align-items: center;
+gap: 6px;
+transition: all 0.15s ease;
+text-decoration: none;
+}
+.btn:hover {
+background: var(--card-hover);
+border-color: #8b949e;
+}
+.btn-primary {
+background: var(--accent);
+border-color: var(--accent);
+color: #fff;
+}
+.btn-primary:hover {
+background: var(--accent-hover);
+}
+.kpi-row {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 14px;
+margin-bottom: 20px;
+}
+.kpi-card {
+background: var(--card-bg);
+border: 1px solid var(--card-border);
+border-radius: var(--border-radius);
+padding: 14px 18px;
+display: flex;
+flex-direction: column;
+gap: 4px;
+cursor: pointer;
+transition: all 0.15s ease;
+position: relative;
+}
+.kpi-card:hover {
+border-color: #58a6ff;
+transform: translateY(-1px);
+}
+.kpi-card.active-filter {
+border-color: var(--accent);
+background: rgba(47, 129, 247, 0.12);
+box-shadow: 0 0 0 1px var(--accent);
+}
+.kpi-card.active-filter-orange {
+border-color: var(--orange);
+background: rgba(240, 136, 62, 0.12);
+box-shadow: 0 0 0 1px var(--orange);
+}
+.kpi-card.active-filter-purple {
+border-color: var(--purple);
+background: rgba(163, 113, 247, 0.12);
+box-shadow: 0 0 0 1px var(--purple);
+}
+.kpi-title {
+font-size: 12px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+color: var(--text-muted);
+font-weight: 600;
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.kpi-val {
+font-size: 24px;
+font-weight: 700;
+display: flex;
+align-items: baseline;
+gap: 6px;
+}
+.kpi-sub {
+font-size: 11px;
+color: var(--text-muted);
+}
+.filter-banner {
+background: rgba(47, 129, 247, 0.1);
+border: 1px solid rgba(47, 129, 247, 0.3);
+padding: 8px 16px;
+border-radius: 8px;
+margin-bottom: 16px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 13px;
+}
+.filter-banner.banner-orange {
+background: rgba(240, 136, 62, 0.12);
+border-color: rgba(240, 136, 62, 0.35);
+color: #ffb07c;
+}
+.filter-banner.banner-purple {
+background: rgba(163, 113, 247, 0.12);
+border-color: rgba(163, 113, 247, 0.35);
+color: #d2a8ff;
+}
+.portfolio-toolbar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 14px;
+flex-wrap: wrap;
+margin-bottom: 20px;
+background: var(--card-bg);
+padding: 12px 16px;
+border-radius: 10px;
+border: 1px solid var(--card-border);
+}
+.search-filter-group {
+display: flex;
+align-items: center;
+gap: 10px;
+flex-wrap: wrap;
+}
+.search-input {
+background: #0d1117;
+border: 1px solid var(--card-border);
+color: var(--text);
+padding: 7px 12px;
+border-radius: 8px;
+font-size: 13px;
+width: 250px;
+outline: none;
+}
+.search-input:focus { border-color: var(--accent); }
+.filter-select {
+background: #0d1117;
+border: 1px solid var(--card-border);
+color: var(--text);
+padding: 7px 10px;
+border-radius: 8px;
+font-size: 13px;
+outline: none;
+cursor: pointer;
+}
+.section-title {
+font-size: 17px;
+font-weight: 600;
+margin: 24px 0 14px 0;
+display: flex;
+align-items: center;
+gap: 8px;
+padding-bottom: 6px;
+border-bottom: 1px solid rgba(48, 54, 61, 0.6);
+}
+.badge-count {
+background: rgba(255, 255, 255, 0.1);
+font-size: 12px;
+font-weight: 500;
+padding: 2px 7px;
+border-radius: 999px;
+color: var(--text-muted);
+}
+.apps-grid {
+display: flex;
+flex-direction: column;
+gap: 8px;
+margin-bottom: 24px;
+}
+.app-card {
+background: var(--card-bg);
+border: 1px solid var(--card-border);
+border-radius: var(--border-radius);
+padding: 0;
+display: flex;
+flex-direction: column;
+gap: 0;
+transition: border-color 0.15s ease, box-shadow 0.15s ease;
+position: relative;
+}
+.app-card.open {
+border-color: rgba(47, 129, 247, 0.55);
+box-shadow: 0 0 0 1px rgba(47, 129, 247, 0.18);
+}
+.app-card.has-followup .app-row { background: linear-gradient(90deg, rgba(240, 136, 62, 0.09), transparent 38%); }
+.app-card.has-mindy .app-row    { background: linear-gradient(270deg, rgba(163, 113, 247, 0.09), transparent 38%); }
+.app-card.has-both .app-row     { background: linear-gradient(90deg, rgba(240, 136, 62, 0.09), transparent 30%, transparent 70%, rgba(163, 113, 247, 0.09)); }
+.app-row {
+all: unset;
+box-sizing: border-box;
+display: flex;
+align-items: center;
+flex-wrap: wrap;
+gap: 4px 10px;
+width: 100%;
+min-height: 44px;
+padding: 9px 14px;
+cursor: pointer;
+border-radius: var(--border-radius);
+}
+.app-row { transition: background-color 0.15s ease; }
+.app-card:hover { box-shadow: none; }
+.app-card.open:hover { box-shadow: 0 0 0 1px rgba(47, 129, 247, 0.18); }
+.app-row:hover { background-color: rgba(255, 255, 255, 0.045); }
+.app-card.has-followup .app-row:hover,
+.app-card.has-mindy .app-row:hover,
+.app-card.has-both .app-row:hover { background-color: rgba(255, 255, 255, 0.035); }
+.app-row:hover .row-chevron { color: var(--accent-hover); }
+.app-row:active { background-color: rgba(255, 255, 255, 0.07); }
+.app-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.app-card.open .app-row { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid rgba(48, 54, 61, 0.7); }
+.app-row .app-name { font-size: 15px; }
+.row-name { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 0 1 auto; }
+.row-bu {
+font-size: 12px; color: var(--text-muted);
+overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+}
+.row-spacer { flex: 1 1 8px; }
+.row-flags { display: inline-flex; align-items: center; gap: 6px; }
+.row-flag {
+font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; white-space: nowrap;
+}
+.row-flag.fu { background: var(--amber-bg); color: #ffb07c; border: 1px solid var(--amber-border); }
+.row-flag.dm { background: var(--purple-bg); color: #d2a8ff; border: 1px solid var(--purple-border); }
+.row-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; font-family: var(--font-mono); }
+.row-chevron { display: inline-flex; color: var(--text-muted); transition: transform 0.15s ease; transform: rotate(-90deg); }
+.app-card.open .row-chevron { transform: rotate(0deg); color: var(--accent-hover); }
+.app-collapse {
+display: grid;
+grid-template-rows: 0fr;
+visibility: hidden;
+transition: grid-template-rows 0.2s ease, visibility 0s linear 0.2s;
+}
+.app-card.open .app-collapse {
+grid-template-rows: 1fr;
+visibility: visible;
+transition: grid-template-rows 0.2s ease, visibility 0s linear 0s;
+}
+.app-clip { min-height: 0; overflow: hidden; }
+.app-body {
+display: flex;
+flex-direction: column;
+gap: 12px;
+padding: 14px 16px 16px;
+}
+.row-draft {
+font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 6px; white-space: nowrap;
+background: rgba(210, 153, 34, 0.14); color: #e3b341; border: 1px solid rgba(210, 153, 34, 0.4);
+}
+.unsaved-indicator { font-size: 12px; font-weight: 600; color: #e3b341; white-space: nowrap; }
+.unsaved-indicator.error { color: #ff7b72; }
+@media (prefers-reduced-motion: reduce) {
+.row-chevron, .app-card, .app-collapse { transition: none !important; }
+}
+@media (max-width: 640px) {
+.row-bu { flex-basis: 100%; order: 5; }
+.row-spacer { display: none; }
+}
+.app-card:hover {
+border-color: #484f58;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+.app-card.has-followup {
+border-left: 4px solid var(--orange);
+}
+.app-card.has-mindy {
+border-right: 4px solid var(--purple);
+}
+.app-card.has-both {
+border-left: 4px solid var(--orange);
+border-right: 4px solid var(--purple);
+}
+.app-card-header {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+gap: 8px;
+}
+.app-name-wrap {
+display: flex;
+align-items: center;
+gap: 8px;
+flex-wrap: wrap;
+}
+.app-name {
+font-size: 16px;
+font-weight: 700;
+color: #fff;
+}
+.stage-pill {
+font-size: 11px;
+font-weight: 600;
+padding: 2px 7px;
+border-radius: 6px;
+}
+.stage-live {
+background: rgba(35, 134, 54, 0.2);
+color: #3fb950;
+border: 1px solid rgba(46, 160, 67, 0.3);
+}
+.stage-onboarding {
+background: rgba(56, 139, 253, 0.18);
+color: #58a6ff;
+border: 1px solid rgba(56, 139, 253, 0.3);
+}
+.flags-row {
+display: flex;
+gap: 6px;
+flex-wrap: wrap;
+min-height: 22px;
+}
+.flag-tag {
+font-size: 11px;
+font-weight: 600;
+padding: 2px 8px;
+border-radius: 6px;
+display: inline-flex;
+align-items: center;
+gap: 4px;
+}
+.flag-followup {
+background: var(--amber-bg);
+color: #ffb07c;
+border: 1px solid var(--amber-border);
+}
+.flag-mindy {
+background: var(--purple-bg);
+color: #d2a8ff;
+border: 1px solid var(--purple-border);
+}
+.flag-sync {
+background: var(--cyan-bg);
+color: #7ee787;
+border: 1px solid var(--cyan-border);
+}
+.app-meta-row {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+background: rgba(13, 17, 23, 0.75);
+padding: 10px 12px;
+border-radius: 8px;
+border: 1px solid rgba(48, 54, 61, 0.6);
+}
+.meta-group {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+.meta-label {
+font-size: 10px;
+font-weight: 700;
+text-transform: uppercase;
+color: var(--text-muted);
+letter-spacing: 0.5px;
+display: flex;
+justify-content: space-between;
+}
+.seg-group {
+display: inline-flex;
+background: #161b22;
+border: 1px solid var(--card-border);
+border-radius: 6px;
+padding: 2px;
+width: 100%;
+}
+.seg-btn {
+flex: 1;
+background: transparent;
+border: none;
+color: var(--text-muted);
+font-size: 12px;
+font-weight: 600;
+padding: 4px 6px;
+border-radius: 4px;
+cursor: pointer;
+transition: all 0.15s ease;
+text-align: center;
+}
+.seg-btn:hover {
+color: var(--text);
+}
+.seg-btn.active-no {
+background: rgba(255, 255, 255, 0.08);
+color: var(--text);
+}
+.seg-btn.active-orange {
+background: #bd561d;
+color: #fff;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.seg-btn.active-purple {
+background: #8957e5;
+color: #fff;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.activity-section {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+.activity-input {
+background: #0d1117;
+border: 1px solid var(--card-border);
+border-radius: 6px;
+color: var(--text);
+font-family: var(--font-sans);
+font-size: 13px;
+line-height: 1.45;
+padding: 8px 10px;
+min-height: 64px;
+resize: vertical;
+outline: none;
+transition: border-color 0.15s ease;
+}
+.activity-input:focus {
+border-color: var(--accent);
+box-shadow: 0 0 0 1px var(--accent);
+}
+.activity-history-section {
+border-top: 1px dashed var(--card-border);
+padding-top: 10px;
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+.activity-history-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 8px;
+}
+.activity-history-title-wrap {
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.activity-history-title {
+font-size: 11px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+color: var(--text-muted);
+}
+.badge-history-count {
+font-size: 10px;
+font-weight: 600;
+padding: 1px 6px;
+border-radius: 999px;
+background: rgba(255, 255, 255, 0.1);
+color: var(--text-muted);
+}
+.btn-add-update {
+background: rgba(47, 129, 247, 0.15);
+border: 1px solid rgba(47, 129, 247, 0.35);
+color: var(--accent-hover);
+font-size: 11px;
+font-weight: 600;
+padding: 3px 8px;
+border-radius: 6px;
+cursor: pointer;
+display: inline-flex;
+align-items: center;
+gap: 4px;
+transition: all 0.15s ease;
+}
+.btn-add-update:hover {
+background: rgba(47, 129, 247, 0.28);
+border-color: var(--accent);
+color: #fff;
+}
+.add-update-form {
+background: #0d1117;
+border: 1px solid rgba(47, 129, 247, 0.4);
+border-radius: 8px;
+padding: 12px;
+display: flex;
+flex-direction: column;
+gap: 8px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+animation: fadeIn 0.15s ease;
+}
+.update-form-top {
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 11px;
+padding-bottom: 4px;
+border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+}
+.update-form-title {
+font-weight: 700;
+color: #fff;
+display: flex;
+align-items: center;
+gap: 4px;
+}
+.update-form-time {
+font-family: var(--font-mono);
+font-size: 10px;
+color: var(--text-muted);
+}
+.update-form-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 8px;
+}
+.update-form-col {
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
+.update-form-label {
+font-size: 10px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+color: var(--text-muted);
+}
+.update-form-select, .update-form-input, .update-form-textarea {
+background: #161b22;
+border: 1px solid var(--card-border);
+color: var(--text);
+font-family: var(--font-sans);
+font-size: 12px;
+border-radius: 6px;
+padding: 6px 8px;
+outline: none;
+transition: border-color 0.15s ease;
+}
+.update-form-select:focus, .update-form-input:focus, .update-form-textarea:focus {
+border-color: var(--accent);
+box-shadow: 0 0 0 1px var(--accent);
+}
+.update-form-textarea {
+min-height: 60px;
+resize: vertical;
+line-height: 1.45;
+}
+.update-form-actions {
+display: flex;
+justify-content: flex-end;
+gap: 6px;
+padding-top: 4px;
+}
+.btn-cancel {
+background: transparent;
+border: 1px solid var(--card-border);
+color: var(--text-muted);
+font-size: 11px;
+font-weight: 500;
+padding: 4px 10px;
+border-radius: 6px;
+cursor: pointer;
+}
+.btn-cancel:hover {
+background: var(--card-hover);
+color: var(--text);
+}
+.btn-save-update {
+background: var(--accent);
+border: 1px solid var(--accent);
+color: #fff;
+font-size: 11px;
+font-weight: 600;
+padding: 4px 12px;
+border-radius: 6px;
+cursor: pointer;
+transition: background 0.15s ease;
+}
+.btn-save-update:hover {
+background: var(--accent-hover);
+}
+.activity-history-container {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+.activity-history-empty {
+font-size: 11px;
+color: var(--text-muted);
+font-style: italic;
+padding: 6px 8px;
+background: rgba(13, 17, 23, 0.4);
+border-radius: 6px;
+border: 1px dashed rgba(48, 54, 61, 0.5);
+}
+.activity-entry {
+background: #0d1117;
+border: 1px solid rgba(48, 54, 61, 0.7);
+border-radius: 6px;
+padding: 8px 10px;
+display: flex;
+flex-direction: column;
+gap: 5px;
+position: relative;
+transition: border-color 0.15s ease;
+}
+.activity-entry.latest-entry {
+border-left: 3px solid var(--accent);
+}
+.activity-entry-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 6px;
+flex-wrap: wrap;
+}
+.activity-entry-badges {
+display: flex;
+align-items: center;
+gap: 6px;
+flex-wrap: wrap;
+}
+.cat-badge {
+font-size: 10px;
+font-weight: 700;
+padding: 2px 7px;
+border-radius: 4px;
+letter-spacing: 0.3px;
+}
+.cat-accomplishment {
+background: rgba(46, 160, 67, 0.2);
+color: #3fb950;
+border: 1px solid rgba(46, 160, 67, 0.4);
+}
+.cat-update {
+background: rgba(56, 139, 253, 0.18);
+color: #58a6ff;
+border: 1px solid rgba(56, 139, 253, 0.35);
+}
+.cat-issue {
+background: rgba(240, 136, 62, 0.18);
+color: #ffb07c;
+border: 1px solid rgba(240, 136, 62, 0.35);
+}
+.cat-enhancement {
+background: rgba(163, 113, 247, 0.18);
+color: #d2a8ff;
+border: 1px solid rgba(163, 113, 247, 0.35);
+}
+.cat-follow-up {
+background: rgba(210, 153, 34, 0.2);
+color: #e3b341;
+border: 1px solid rgba(210, 153, 34, 0.4);
+}
+.cat-blocker {
+background: rgba(248, 81, 73, 0.2);
+color: #ff7b72;
+border: 1px solid rgba(248, 81, 73, 0.4);
+}
+.cat-decision {
+background: rgba(57, 197, 207, 0.18);
+color: #7ee787;
+border: 1px solid rgba(57, 197, 207, 0.35);
+}
+.status-pill-entry {
+font-size: 10px;
+font-weight: 600;
+padding: 1px 6px;
+border-radius: 4px;
+display: inline-flex;
+align-items: center;
+gap: 3px;
+}
+.status-in-progress {
+background: rgba(56, 139, 253, 0.15);
+color: #58a6ff;
+}
+.status-completed {
+background: rgba(46, 160, 67, 0.18);
+color: #3fb950;
+}
+.status-pending {
+background: rgba(210, 153, 34, 0.18);
+color: #d29922;
+}
+.status-blocked {
+background: rgba(248, 81, 73, 0.18);
+color: #f85149;
+}
+.activity-entry-time {
+font-family: var(--font-mono);
+font-size: 10px;
+color: var(--text-muted);
+}
+.activity-entry-desc {
+font-size: 12px;
+color: var(--text);
+line-height: 1.45;
+white-space: pre-wrap;
+}
+.activity-entry-next {
+font-size: 11px;
+color: #79c0ff;
+background: rgba(56, 139, 253, 0.08);
+border-left: 2px solid var(--accent);
+padding: 3px 6px;
+border-radius: 0 4px 4px 0;
+}
+.history-expand-row {
+display: flex;
+justify-content: center;
+padding-top: 2px;
+}
+.history-expand-btn {
+background: transparent;
+border: none;
+color: var(--accent-hover);
+font-size: 11px;
+font-weight: 600;
+cursor: pointer;
+padding: 3px 8px;
+border-radius: 4px;
+transition: all 0.15s ease;
+}
+.history-expand-btn:hover {
+background: var(--card-hover);
+color: #fff;
+}
+.older-history-wrap {
+display: flex;
+flex-direction: column;
+gap: 6px;
+margin-top: 4px;
+}
+.activity-entry.linked-entry {
+border-left: 3px solid var(--cyan);
+}
+.linked-tag {
+font-size: 10px;
+font-weight: 600;
+padding: 1px 6px;
+border-radius: 4px;
+background: var(--cyan-bg);
+color: #7ee787;
+border: 1px solid var(--cyan-border);
+}
+.linked-status-select {
+background: #161b22;
+border: 1px solid var(--card-border);
+color: var(--text);
+font-size: 10px;
+font-weight: 600;
+border-radius: 4px;
+padding: 1px 4px;
+outline: none;
+cursor: pointer;
+}
+.linked-also {
+font-size: 10px;
+color: var(--text-muted);
+}
+.monthly-sync-card-section {
+border-top: 1px dashed var(--card-border);
+padding-top: 10px;
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+.monthly-sync-toggle-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+cursor: pointer;
+font-size: 11px;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+color: #79c0ff;
+user-select: none;
+}
+.monthly-sync-toggle-header:hover {
+color: #a5d6ff;
+}
+.sync-notes-box {
+background: rgba(13, 17, 23, 0.85);
+border: 1px solid rgba(57, 197, 207, 0.35);
+border-radius: 6px;
+padding: 8px 10px;
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+.sync-notes-input {
+background: #0d1117;
+border: 1px solid var(--card-border);
+border-radius: 4px;
+color: var(--text);
+font-family: var(--font-sans);
+font-size: 12px;
+line-height: 1.45;
+padding: 6px 8px;
+min-height: 58px;
+resize: vertical;
+outline: none;
+}
+.sync-notes-input:focus {
+border-color: var(--cyan);
+box-shadow: 0 0 0 1px var(--cyan);
+}
+.sync-date-row {
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 10px;
+color: var(--text-muted);
+}
+.app-card-footer {
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-size: 11px;
+color: var(--text-muted);
+border-top: 1px solid rgba(48, 54, 61, 0.5);
+padding-top: 8px;
+}
+.toast {
+position: fixed;
+bottom: 24px;
+right: 24px;
+background: #238636;
+color: #fff;
+padding: 10px 18px;
+border-radius: 8px;
+font-size: 13px;
+box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+display: none;
+animation: fadeIn 0.2s ease;
+z-index: 100;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(8px); }
+to { opacity: 1; transform: translateY(0); }
+}
+</style>
 </head>
 <body>
-
-  <!-- Navigation Bar -->
-  <nav class="top-nav">
-    <div class="nav-brand">
-      <span style="color:var(--accent);">●</span>
-      <span>Application Support Lead</span>
-    </div>
-    <div class="nav-tabs">
-      <a href="app_support_dashboard.html" class="nav-tab active">
-        <span>📊 Application Portfolio (21)</span>
-      </a>
-      <a href="monthly_stakeholder_sync.html" class="nav-tab">
-        <span>🤝 Monthly Stakeholder Sync Hub</span>
-      </a>
-      <a href="daily_standup_log.html" class="nav-tab">
-        <span>📝 Daily Accomplishments & Standup</span>
-      </a>
-      <a href="mindy_sync_briefing.html" class="nav-tab">
-        <span>🟣 Briefing & Mindy Sync Notes</span>
-      </a>
-    </div>
-    <div style="display:flex; align-items:center; gap:12px;">
-      <span id="unsavedIndicator" class="unsaved-indicator" role="status" aria-live="polite" style="display:none;"></span>
-      <button class="btn btn-primary" onclick="saveAll(true)">Save Changes</button>
-    </div>
-  </nav>
-
-  <!-- Page Header -->
-  <div class="header-main">
-    <div class="header-title">
-      <h1>
-        <span>Application Portfolio & Support Prioritization</span>
-        <span class="role-badge">Lead PM / PgM</span>
-      </h1>
-      <p style="color:var(--text-muted); font-size:13px; margin-top:4px;">
-        Track active support activity, follow-up flags, monthly stakeholder sync notes, and Mindy agenda items.
-      </p>
-    </div>
-    <div class="header-actions">
-      <a href="monthly_stakeholder_sync.html" class="btn" style="border-color: var(--cyan-border); color: #7ee787;">
-        <span>Open Stakeholder Sync Hub →</span>
-      </a>
-      <a href="mindy_sync_briefing.html" class="btn" style="border-color: var(--purple-border); color: #d2a8ff;">
-        <span>Open Mindy Sync Notes →</span>
-      </a>
-      <button class="btn" onclick="resetDefaultsConfirm()">Reset Portfolio</button>
-    </div>
-  </div>
-
-  <!-- KPI Metrics Bar -->
-  <div class="kpi-row">
-    <div class="kpi-card" id="kpiCardAll" onclick="setQuickFilter('ALL')">
-      <div class="kpi-title">Total Portfolio</div>
-      <div class="kpi-val" id="kpiTotalApps">21 <span class="kpi-sub">Apps</span></div>
-      <div class="kpi-sub">15 Live · 6 Onboarding</div>
-    </div>
-    <div class="kpi-card" id="kpiCardFollowUp" onclick="setQuickFilter('FOLLOWUP')">
-      <div class="kpi-title" style="color: var(--orange);">⚡ Follow Up Needed</div>
-      <div class="kpi-val" style="color: var(--orange);" id="kpiFollowUpCount">0 <span class="kpi-sub" style="color:var(--text-muted)">apps</span></div>
-      <div class="kpi-sub" id="kpiFollowUpLabel">Click to filter follow-ups</div>
-    </div>
-    <div class="kpi-card" id="kpiCardMindy" onclick="setQuickFilter('MINDY')">
-      <div class="kpi-title" style="color: #d2a8ff;">🟣 Discuss with Mindy</div>
-      <div class="kpi-val" style="color: var(--purple);" id="kpiMindyCount">0 <span class="kpi-sub" style="color:var(--text-muted)">items</span></div>
-      <div class="kpi-sub" id="kpiMindyLabel">Click to filter Mindy items</div>
-    </div>
-    <div class="kpi-card" id="kpiCardSync" onclick="setQuickFilter('SYNC')">
-      <div class="kpi-title" style="color: #7ee787;">🤝 Monthly Sync Logged</div>
-      <div class="kpi-val" style="color: #7ee787;" id="kpiSyncCount">0 <span class="kpi-sub" style="color:var(--text-muted)">apps</span></div>
-      <div class="kpi-sub" id="kpiSyncLabel">Click to filter sync notes</div>
-    </div>
-    <div class="kpi-card" id="kpiCardLive" onclick="setQuickFilter('LIVE')">
-      <div class="kpi-title">Live Portfolio</div>
-      <div class="kpi-val" style="color: #3fb950;" id="kpiLiveCount">15</div>
-      <div class="kpi-sub">Production systems</div>
-    </div>
-    <div class="kpi-card" id="kpiCardOnboarding" onclick="setQuickFilter('ONBOARDING')">
-      <div class="kpi-title">Onboarding Pipeline</div>
-      <div class="kpi-val" style="color: #58a6ff;" id="kpiOnboardingCount">6</div>
-      <div class="kpi-sub">In-flight intake & readiness</div>
-    </div>
-  </div>
-
-  <!-- Active Filter Notification Banner -->
-  <div id="filterBanner" class="filter-banner" style="display:none;">
-    <span id="filterBannerText">Filtered view active</span>
-    <button class="btn" style="padding:3px 8px; font-size:11px;" onclick="setQuickFilter('ALL')">Reset Filter (Show All 21)</button>
-  </div>
-
-  <!-- Filter & Search Toolbar -->
-  <div class="portfolio-toolbar">
-    <div class="search-filter-group">
-      <input
-        type="text"
-        id="appSearchInput"
-        class="search-input"
-        placeholder="Filter apps by name, notes, or BU..."
-        oninput="filterApps()"
-      />
-      <select id="followUpFilter" class="filter-select" onchange="onFilterDropdownChange()">
-        <option value="ALL">All Follow Up (Yes & No)</option>
-        <option value="YES">⚡ Follow Up: Yes only</option>
-        <option value="NO">Follow Up: No</option>
-      </select>
-      <select id="mindyFilter" class="filter-select" onchange="onFilterDropdownChange()">
-        <option value="ALL">Discuss with Mindy (All)</option>
-        <option value="YES">🟣 Discuss with Mindy: Yes only</option>
-        <option value="NO">Discuss with Mindy: No</option>
-      </select>
-      <select id="buFilter" class="filter-select" onchange="onFilterDropdownChange()">
-        <option value="ALL">All Business Units</option>
-        <option value="Legal Solutions">Legal Solutions</option>
-        <option value="Production and Post Production">Production and Post Production</option>
-        <option value="Marketing and Publicity Solutions">Marketing and Publicity Solutions</option>
-        <option value="Creative and Business Affairs">Creative and Business Affairs</option>
-        <option value="Studio and Production Finance">Studio and Production Finance</option>
-        <option value="Enterprise Solutions">Enterprise Solutions</option>
-      </select>
-      <select id="stageFilter" class="filter-select" onchange="onFilterDropdownChange()">
-        <option value="ALL">All Stages (Live & Onboarding)</option>
-        <option value="LIVE">Live Applications (15)</option>
-        <option value="ONBOARDING">Onboarding in Progress (6)</option>
-      </select>
-      <select id="notesFilter" class="filter-select" onchange="onFilterDropdownChange()">
-        <option value="ALL">All Applications</option>
-        <option value="WITH_NOTES">Has Summary Notes Only</option>
-        <option value="WITH_HISTORY">Has Activity History Only</option>
-        <option value="WITH_SYNC">Has Monthly Sync Notes Only</option>
-      </select>
-    </div>
-
-    <div style="font-size: 12px; color: var(--text-muted);" id="filterCountDisplay">
-      Showing 21 of 21 applications
-    </div>
-  </div>
-
-  <!-- Live Applications Section -->
-  <div id="liveSectionWrapper">
-    <div class="section-title">
-      <span style="color: #3fb950;">●</span>
-      <span>Live Portfolio Applications</span>
-      <span class="badge-count" id="liveSectionCount">15</span>
-    </div>
-    <div class="apps-grid" id="liveAppsGrid"></div>
-  </div>
-
-  <!-- Onboarding Applications Section -->
-  <div id="onboardingSectionWrapper">
-    <div class="section-title">
-      <span style="color: #58a6ff;">●</span>
-      <span>Onboarding in Progress Applications</span>
-      <span class="badge-count" id="onboardingSectionCount">6</span>
-    </div>
-    <div class="apps-grid" id="onboardingAppsGrid"></div>
-  </div>
-
-  <!-- Toast -->
-  <div id="toastNotification" class="toast">Saved successfully!</div>
-
-  <script src="dashboard_data.js"></script>
-  <script>
-    const DEFAULT_PORTFOLIO = [
-      // 15 Live Apps
-      { id: "astrodocs", name: "AstroDocs", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "atlas", name: "ATLAS", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "circa", name: "Circa", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "columba", name: "Columba", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "frameio", name: "Frame IO", stage: "LIVE", businessUnit: "Marketing and Publicity Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "givingtree", name: "Giving Tree", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "iscript", name: "iScript", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "juno", name: "Juno", stage: "LIVE", businessUnit: "Studio and Production Finance", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "mycalls", name: "myCalls", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "polaris", name: "Polaris: Deal Tracker", stage: "LIVE", businessUnit: "Creative and Business Affairs", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "portalplus", name: "Portal+", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "scenechronize", name: "Scenechronize", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "screenbooker", name: "Screen Booker", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "touchstone", name: "Touchstone", stage: "LIVE", businessUnit: "Creative and Business Affairs", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "vetter", name: "Vetter", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-
-      // 6 Onboarding in Progress Apps
-      { id: "amity", name: "AMITY", stage: "ONBOARDING", businessUnit: "Enterprise Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "appleticketing", name: "Apple Ticketing Tool", stage: "ONBOARDING", businessUnit: "Enterprise Solutions", followUp: "Yes", discussWithMindy: "Yes", activity: "Follow up on QA sign-off and discuss onboarding milestone with Mindy", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "cudos", name: "Cudos", stage: "ONBOARDING", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "kroma", name: "Kroma", stage: "ONBOARDING", businessUnit: "Marketing and Publicity Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "siriusplus", name: "Sirius+", stage: "ONBOARDING", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
-      { id: "watchlist", name: "Watchlist", stage: "ONBOARDING", businessUnit: "Studio and Production Finance", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" }
-    ];
-
-    let portfolioData = [];
-
-    /* Shared accomplishment records (single source of truth, also used by the Daily Accomplishments page) */
-    const RECORDS_KEY = "app_support_accomplishment_records_v1";
-    let sharedRecords = [];
-    let meetStore = {};
-    function loadMeetings() {
-      try { meetStore = JSON.parse(localStorage.getItem("app_support_stakeholder_meetings_v1") || "{}"); }
-      catch(e) { meetStore = {}; }
-    }
-
-
-    function loadSharedRecords() {
-      try {
-        const parsed = JSON.parse(localStorage.getItem(RECORDS_KEY) || "[]");
-        sharedRecords = Array.isArray(parsed) ? parsed : [];
-      } catch (e) {
-        sharedRecords = [];
-      }
-    }
-
-    function getLinkedRecords(appId) {
-      return sharedRecords.filter(r => Array.isArray(r.appIds) && r.appIds.includes(appId));
-    }
-
-    function flagTrailHtml(appId) {
-      if (!window.DashData) return "";
-      return DashData.trailHtml(DashData.eventsForEntity("flag", appId), { id: "flagtrail-" + appId });
-    }
-
-    function getHistoryCount(appOrId) {
-      const app = typeof appOrId === "string" ? portfolioData.find(a => a.id === appOrId) : appOrId;
-      if (!app) return 0;
-      return (app.activityHistory || []).length + getLinkedRecords(app.id).length;
-    }
-
-    function normalizeYesNo(val) {
-      if (val === true || val === "Yes" || val === "YES" || val === "yes") return "Yes";
-      return "No";
-    }
-
-    function init() {
-      loadSharedRecords();
-      loadMeetings();
-      const savedPortfolio = localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
-      if (savedPortfolio) {
-        try {
-          const parsed = JSON.parse(savedPortfolio);
-          portfolioData = DEFAULT_PORTFOLIO.map(defApp => {
-            const existing = parsed.find(a => a.id === defApp.id);
-            if (existing) {
-              return {
-                ...defApp,
-                businessUnit: defApp.businessUnit,
-                followUp: normalizeYesNo(existing.followUp !== undefined ? existing.followUp : defApp.followUp),
-                discussWithMindy: normalizeYesNo(existing.discussWithMindy !== undefined ? existing.discussWithMindy : defApp.discussWithMindy),
-                activity: existing.activity !== undefined ? existing.activity : defApp.activity,
-                activityHistory: Array.isArray(existing.activityHistory) ? existing.activityHistory : [],
-                monthlySyncNotes: existing.monthlySyncNotes !== undefined ? existing.monthlySyncNotes : "",
-                lastSyncDate: existing.lastSyncDate !== undefined ? existing.lastSyncDate : "",
-                lastUpdate: existing.lastUpdate || "Today"
-              };
-            }
-            return {
-              ...defApp,
-              activityHistory: []
-            };
-          });
-        } catch (e) {
-          portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
-        }
-      } else {
-        portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
-      }
-
-      renderPortfolio();
-      updateMetrics();
-      highlightActiveKpi();
-    }
-
-    function renderPortfolio() {
-      const liveGrid = document.getElementById("liveAppsGrid");
-      const onboardingGrid = document.getElementById("onboardingAppsGrid");
-      liveGrid.innerHTML = "";
-      onboardingGrid.innerHTML = "";
-
-      portfolioData.forEach((app) => {
-        const card = createAppCard(app);
-        if (app.stage === "LIVE") {
-          liveGrid.appendChild(card);
-        } else {
-          onboardingGrid.appendChild(card);
-        }
-      });
-    }
-
-    function getCardClass(app) {
-      const isFollow = app.followUp === "Yes";
-      const isMindy = app.discussWithMindy === "Yes";
-      if (isFollow && isMindy) return "has-both";
-      if (isFollow) return "has-followup";
-      if (isMindy) return "has-mindy";
-      return "";
-    }
-
-    function createAppCard(app) {
-      const card = document.createElement("div");
-      card.className = cardClassName(app);
-      card.id = `card-${app.id}`;
-      card.dataset.id = app.id;
-      card.dataset.name = app.name.toLowerCase();
-      card.dataset.stage = app.stage;
-      card.dataset.followup = app.followUp;
-      card.dataset.mindy = app.discussWithMindy;
-
-      const hasSync = getAppMeetings(app.id).length > 0;
-
-      const isOpen = openId === app.id;
-      card.innerHTML = `
-        <button type="button" class="app-row" id="row-${app.id}" aria-expanded="${isOpen}" aria-controls="body-${app.id}" onclick="toggleCard('${app.id}')">
-          <span class="row-name">
-            <span class="app-name">${app.name}</span>
-            <span class="stage-pill ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">
-              ${app.stage === 'LIVE' ? 'Live' : 'Onboarding'}
-            </span>
-          </span>
-          <span class="row-bu" title="Business Unit">${escapeHtml(app.businessUnit || 'Enterprise Solutions')}</span>
-          <span class="row-spacer"></span>
-          <span class="row-draft" id="rowdraft-${app.id}" style="display:none;" title="You typed an activity update that has not been added yet. Open the row and click Save Update.">✎ Unsaved draft</span>
-          <span class="row-flags" id="rowflags-${app.id}">${rowFlagsHtml(app)}</span>
-          <span class="row-date" id="rowdate-${app.id}">${rowDateHtml(app)}</span>
-          <span class="row-chevron" aria-hidden="true">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
-          </span>
-        </button>
-
-        <div class="app-collapse" id="body-${app.id}" role="region" aria-labelledby="row-${app.id}" ${isOpen ? "" : "inert"}>
-        <div class="app-clip"><div class="app-body">
-        <div class="flags-row" id="flags-${app.id}">
-          ${app.followUp === "Yes" ? '<span class="flag-tag flag-followup">⚡ Follow Up Needed</span>' : ''}
-          ${app.discussWithMindy === "Yes" ? '<span class="flag-tag flag-mindy">🟣 Discuss with Mindy</span>' : ''}
-          ${hasSync ? '<span class="flag-tag flag-sync">🤝 Monthly Sync Captured</span>' : ''}
-        </div>
-
-        <div class="app-meta-row">
-          <div class="meta-group">
-            <span class="meta-label">
-              <span>Follow Up</span>
-              <span id="followup-badge-${app.id}" style="color:${app.followUp === 'Yes' ? 'var(--orange)' : 'var(--text-muted)'}">${app.followUp}</span>
-            </span>
-            <div class="seg-group" id="followup-seg-${app.id}">
-              <button
-                type="button"
-                class="seg-btn ${app.followUp !== 'Yes' ? 'active-no' : ''}"
-                onclick="setAppFollowUp('${app.id}', 'No')"
-              >No</button>
-              <button
-                type="button"
-                class="seg-btn ${app.followUp === 'Yes' ? 'active-orange' : ''}"
-                onclick="setAppFollowUp('${app.id}', 'Yes')"
-              >⚡ Yes</button>
-            </div>
-          </div>
-
-          <div class="meta-group">
-            <span class="meta-label">
-              <span>Discuss with Mindy</span>
-              <span id="mindy-badge-${app.id}" style="color:${app.discussWithMindy === 'Yes' ? 'var(--purple)' : 'var(--text-muted)'}">${app.discussWithMindy}</span>
-            </span>
-            <div class="seg-group" id="mindy-seg-${app.id}">
-              <button
-                type="button"
-                class="seg-btn ${app.discussWithMindy !== 'Yes' ? 'active-no' : ''}"
-                onclick="setAppDiscussWithMindy('${app.id}', 'No')"
-              >No</button>
-              <button
-                type="button"
-                class="seg-btn ${app.discussWithMindy === 'Yes' ? 'active-purple' : ''}"
-                onclick="setAppDiscussWithMindy('${app.id}', 'Yes')"
-              >🟣 Yes</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="activity-section">
-          <label class="meta-label">
-            <span>Support Activity & Prioritization Notes</span>
-            <span style="font-weight:normal; text-transform:none;">${app.lastUpdate || ''}</span>
-          </label>
+<nav class="top-nav">
+<div class="nav-brand">
+<span style="color:var(--accent);">●</span>
+<span>Application Support Lead</span>
+</div>
+<div class="nav-tabs">
+<a href="app_support_dashboard.html" class="nav-tab active">
+<span>📊 Application Portfolio (21)</span>
+</a>
+<a href="monthly_stakeholder_sync.html" class="nav-tab">
+<span>🤝 Monthly Stakeholder Sync Hub</span>
+</a>
+<a href="daily_standup_log.html" class="nav-tab">
+<span>📝 Daily Accomplishments & Standup</span>
+</a>
+<a href="mindy_sync_briefing.html" class="nav-tab">
+<span>🟣 Briefing & Mindy Sync Notes</span>
+</a>
+</div>
+<div style="display:flex; align-items:center; gap:12px;">
+<span id="unsavedIndicator" class="unsaved-indicator" role="status" aria-live="polite" style="display:none;"></span>
+<button class="btn btn-primary" onclick="saveAll(true)">Save Changes</button>
+</div>
+</nav>
+<div class="header-main">
+<div class="header-title">
+<h1>
+<span>Application Portfolio & Support Prioritization</span>
+<span class="role-badge">Lead PM / PgM</span>
+</h1>
+<p style="color:var(--text-muted); font-size:13px; margin-top:4px;">
+Track active support activity, follow-up flags, monthly stakeholder sync notes, and Mindy agenda items.
+</p>
+</div>
+<div class="header-actions">
+<a href="monthly_stakeholder_sync.html" class="btn" style="border-color: var(--cyan-border); color: #7ee787;">
+<span>Open Stakeholder Sync Hub →</span>
+</a>
+<a href="mindy_sync_briefing.html" class="btn" style="border-color: var(--purple-border); color: #d2a8ff;">
+<span>Open Mindy Sync Notes →</span>
+</a>
+<button class="btn" onclick="resetDefaultsConfirm()">Reset Portfolio</button>
+</div>
+</div>
+<div class="kpi-row">
+<div class="kpi-card" id="kpiCardAll" onclick="setQuickFilter('ALL')">
+<div class="kpi-title">Total Portfolio</div>
+<div class="kpi-val" id="kpiTotalApps">21 <span class="kpi-sub">Apps</span></div>
+<div class="kpi-sub">15 Live · 6 Onboarding</div>
+</div>
+<div class="kpi-card" id="kpiCardFollowUp" onclick="setQuickFilter('FOLLOWUP')">
+<div class="kpi-title" style="color: var(--orange);">⚡ Follow Up Needed</div>
+<div class="kpi-val" style="color: var(--orange);" id="kpiFollowUpCount">0 <span class="kpi-sub" style="color:var(--text-muted)">apps</span></div>
+<div class="kpi-sub" id="kpiFollowUpLabel">Click to filter follow-ups</div>
+</div>
+<div class="kpi-card" id="kpiCardMindy" onclick="setQuickFilter('MINDY')">
+<div class="kpi-title" style="color: #d2a8ff;">🟣 Discuss with Mindy</div>
+<div class="kpi-val" style="color: var(--purple);" id="kpiMindyCount">0 <span class="kpi-sub" style="color:var(--text-muted)">items</span></div>
+<div class="kpi-sub" id="kpiMindyLabel">Click to filter Mindy items</div>
+</div>
+<div class="kpi-card" id="kpiCardSync" onclick="setQuickFilter('SYNC')">
+<div class="kpi-title" style="color: #7ee787;">🤝 Monthly Sync Logged</div>
+<div class="kpi-val" style="color: #7ee787;" id="kpiSyncCount">0 <span class="kpi-sub" style="color:var(--text-muted)">apps</span></div>
+<div class="kpi-sub" id="kpiSyncLabel">Click to filter sync notes</div>
+</div>
+<div class="kpi-card" id="kpiCardLive" onclick="setQuickFilter('LIVE')">
+<div class="kpi-title">Live Portfolio</div>
+<div class="kpi-val" style="color: #3fb950;" id="kpiLiveCount">15</div>
+<div class="kpi-sub">Production systems</div>
+</div>
+<div class="kpi-card" id="kpiCardOnboarding" onclick="setQuickFilter('ONBOARDING')">
+<div class="kpi-title">Onboarding Pipeline</div>
+<div class="kpi-val" style="color: #58a6ff;" id="kpiOnboardingCount">6</div>
+<div class="kpi-sub">In-flight intake & readiness</div>
+</div>
+</div>
+<div id="filterBanner" class="filter-banner" style="display:none;">
+<span id="filterBannerText">Filtered view active</span>
+<button class="btn" style="padding:3px 8px; font-size:11px;" onclick="setQuickFilter('ALL')">Reset Filter (Show All 21)</button>
+</div>
+<div class="portfolio-toolbar">
+<div class="search-filter-group">
+<input
+type="text"
+id="appSearchInput"
+class="search-input"
+placeholder="Filter apps by name, notes, or BU..."
+oninput="filterApps()"
+/>
+<select id="followUpFilter" class="filter-select" onchange="onFilterDropdownChange()">
+<option value="ALL">All Follow Up (Yes & No)</option>
+<option value="YES">⚡ Follow Up: Yes only</option>
+<option value="NO">Follow Up: No</option>
+</select>
+<select id="mindyFilter" class="filter-select" onchange="onFilterDropdownChange()">
+<option value="ALL">Discuss with Mindy (All)</option>
+<option value="YES">🟣 Discuss with Mindy: Yes only</option>
+<option value="NO">Discuss with Mindy: No</option>
+</select>
+<select id="buFilter" class="filter-select" onchange="onFilterDropdownChange()">
+<option value="ALL">All Business Units</option>
+<option value="Legal Solutions">Legal Solutions</option>
+<option value="Production and Post Production">Production and Post Production</option>
+<option value="Marketing and Publicity Solutions">Marketing and Publicity Solutions</option>
+<option value="Creative and Business Affairs">Creative and Business Affairs</option>
+<option value="Studio and Production Finance">Studio and Production Finance</option>
+<option value="Enterprise Solutions">Enterprise Solutions</option>
+</select>
+<select id="stageFilter" class="filter-select" onchange="onFilterDropdownChange()">
+<option value="ALL">All Stages (Live & Onboarding)</option>
+<option value="LIVE">Live Applications (15)</option>
+<option value="ONBOARDING">Onboarding in Progress (6)</option>
+</select>
+<select id="notesFilter" class="filter-select" onchange="onFilterDropdownChange()">
+<option value="ALL">All Applications</option>
+<option value="WITH_NOTES">Has Summary Notes Only</option>
+<option value="WITH_HISTORY">Has Activity History Only</option>
+<option value="WITH_SYNC">Has Monthly Sync Notes Only</option>
+</select>
+</div>
+<div style="font-size: 12px; color: var(--text-muted);" id="filterCountDisplay">
+Showing 21 of 21 applications
+</div>
+</div>
+<div id="liveSectionWrapper">
+<div class="section-title">
+<span style="color: #3fb950;">●</span>
+<span>Live Portfolio Applications</span>
+<span class="badge-count" id="liveSectionCount">15</span>
+</div>
+<div class="apps-grid" id="liveAppsGrid"></div>
+</div>
+<div id="onboardingSectionWrapper">
+<div class="section-title">
+<span style="color: #58a6ff;">●</span>
+<span>Onboarding in Progress Applications</span>
+<span class="badge-count" id="onboardingSectionCount">6</span>
+</div>
+<div class="apps-grid" id="onboardingAppsGrid"></div>
+</div>
+<div id="toastNotification" class="toast">Saved successfully!</div>
+<script src="dashboard_data.js"></script>
+<script>
+const DEFAULT_PORTFOLIO = [
+// 15 Live Apps
+{ id: "astrodocs", name: "AstroDocs", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "atlas", name: "ATLAS", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "circa", name: "Circa", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "columba", name: "Columba", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "frameio", name: "Frame IO", stage: "LIVE", businessUnit: "Marketing and Publicity Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "givingtree", name: "Giving Tree", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "iscript", name: "iScript", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "juno", name: "Juno", stage: "LIVE", businessUnit: "Studio and Production Finance", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "mycalls", name: "myCalls", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "polaris", name: "Polaris: Deal Tracker", stage: "LIVE", businessUnit: "Creative and Business Affairs", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "portalplus", name: "Portal+", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "scenechronize", name: "Scenechronize", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "screenbooker", name: "Screen Booker", stage: "LIVE", businessUnit: "Production and Post Production", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "touchstone", name: "Touchstone", stage: "LIVE", businessUnit: "Creative and Business Affairs", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "vetter", name: "Vetter", stage: "LIVE", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+// 6 Onboarding in Progress Apps
+{ id: "amity", name: "AMITY", stage: "ONBOARDING", businessUnit: "Enterprise Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "appleticketing", name: "Apple Ticketing Tool", stage: "ONBOARDING", businessUnit: "Enterprise Solutions", followUp: "Yes", discussWithMindy: "Yes", activity: "Follow up on QA sign-off and discuss onboarding milestone with Mindy", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "cudos", name: "Cudos", stage: "ONBOARDING", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "kroma", name: "Kroma", stage: "ONBOARDING", businessUnit: "Marketing and Publicity Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "siriusplus", name: "Sirius+", stage: "ONBOARDING", businessUnit: "Legal Solutions", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" },
+{ id: "watchlist", name: "Watchlist", stage: "ONBOARDING", businessUnit: "Studio and Production Finance", followUp: "No", discussWithMindy: "No", activity: "", activityHistory: [], monthlySyncNotes: "", lastSyncDate: "", lastUpdate: "Today" }
+];
+let portfolioData = [];
+const RECORDS_KEY = "app_support_accomplishment_records_v1";
+let sharedRecords = [];
+function loadSharedRecords() {
+try {
+const parsed = JSON.parse(localStorage.getItem(RECORDS_KEY) || "[]");
+sharedRecords = Array.isArray(parsed) ? parsed : [];
+} catch (e) {
+sharedRecords = [];
+}
+}
+function getLinkedRecords(appId) {
+return sharedRecords.filter(r => Array.isArray(r.appIds) && r.appIds.includes(appId));
+}
+function flagTrailHtml(appId) {
+if (!window.DashData) return "";
+return DashData.trailHtml(DashData.eventsForEntity("flag", appId), { id: "flagtrail-" + appId });
+}
+function getHistoryCount(appOrId) {
+const app = typeof appOrId === "string" ? portfolioData.find(a => a.id === appOrId) : appOrId;
+if (!app) return 0;
+return (app.activityHistory || []).length + getLinkedRecords(app.id).length;
+}
+function normalizeYesNo(val) {
+if (val === true || val === "Yes" || val === "YES" || val === "yes") return "Yes";
+return "No";
+}
+function init() {
+loadSharedRecords();
+const savedPortfolio = localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
+if (savedPortfolio) {
+try {
+const parsed = JSON.parse(savedPortfolio);
+portfolioData = DEFAULT_PORTFOLIO.map(defApp => {
+const existing = parsed.find(a => a.id === defApp.id);
+if (existing) {
+return {
+...defApp,
+businessUnit: defApp.businessUnit,
+followUp: normalizeYesNo(existing.followUp !== undefined ? existing.followUp : defApp.followUp),
+discussWithMindy: normalizeYesNo(existing.discussWithMindy !== undefined ? existing.discussWithMindy : defApp.discussWithMindy),
+activity: existing.activity !== undefined ? existing.activity : defApp.activity,
+activityHistory: Array.isArray(existing.activityHistory) ? existing.activityHistory : [],
+monthlySyncNotes: existing.monthlySyncNotes !== undefined ? existing.monthlySyncNotes : "",
+lastSyncDate: existing.lastSyncDate !== undefined ? existing.lastSyncDate : "",
+lastUpdate: existing.lastUpdate || "Today"
+};
+}
+return {
+...defApp,
+activityHistory: []
+};
+});
+} catch (e) {
+portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
+}
+} else {
+portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
+}
+renderPortfolio();
+updateMetrics();
+highlightActiveKpi();
+}
+function renderPortfolio() {
+const liveGrid = document.getElementById("liveAppsGrid");
+const onboardingGrid = document.getElementById("onboardingAppsGrid");
+liveGrid.innerHTML = "";
+onboardingGrid.innerHTML = "";
+portfolioData.forEach((app) => {
+const card = createAppCard(app);
+if (app.stage === "LIVE") {
+liveGrid.appendChild(card);
+} else {
+onboardingGrid.appendChild(card);
+}
+});
+}
+function getCardClass(app) {
+const isFollow = app.followUp === "Yes";
+const isMindy = app.discussWithMindy === "Yes";
+if (isFollow && isMindy) return "has-both";
+if (isFollow) return "has-followup";
+if (isMindy) return "has-mindy";
+return "";
+}
+function createAppCard(app) {
+const card = document.createElement("div");
+card.className = cardClassName(app);
+card.id = `card-${app.id}`;
+card.dataset.id = app.id;
+card.dataset.name = app.name.toLowerCase();
+card.dataset.stage = app.stage;
+card.dataset.followup = app.followUp;
+card.dataset.mindy = app.discussWithMindy;
+const hasSync = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
+const isOpen = openId === app.id;
+card.innerHTML = `
+<button type="button" class="app-row" id="row-${app.id}" aria-expanded="${isOpen}" aria-controls="body-${app.id}" onclick="toggleCard('${app.id}')">
+<span class="row-name">
+<span class="app-name">${app.name}</span>
+<span class="stage-pill ${app.stage === 'LIVE' ? 'stage-live' : 'stage-onboarding'}">
+${app.stage === 'LIVE' ? 'Live' : 'Onboarding'}
+</span>
+</span>
+<span class="row-bu" title="Business Unit">${escapeHtml(app.businessUnit || 'Enterprise Solutions')}</span>
+<span class="row-spacer"></span>
+<span class="row-draft" id="rowdraft-${app.id}" style="display:none;" title="You typed an activity update that has not been added yet. Open the row and click Save Update.">✎ Unsaved draft</span>
+<span class="row-flags" id="rowflags-${app.id}">${rowFlagsHtml(app)}</span>
+<span class="row-date" id="rowdate-${app.id}">${rowDateHtml(app)}</span>
+<span class="row-chevron" aria-hidden="true">
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg>
+</span>
+</button>
+<div class="app-collapse" id="body-${app.id}" role="region" aria-labelledby="row-${app.id}" ${isOpen ? "" : "inert"}>
+<div class="app-clip"><div class="app-body">
+<div class="flags-row" id="flags-${app.id}">
+${app.followUp === "Yes" ? '<span class="flag-tag flag-followup">⚡ Follow Up Needed</span>' : ''}
+${app.discussWithMindy === "Yes" ? '<span class="flag-tag flag-mindy">🟣 Discuss with Mindy</span>' : ''}
+${hasSync ? '<span class="flag-tag flag-sync">🤝 Monthly Sync Captured</span>' : ''}
+</div>
+<div class="app-meta-row">
+<div class="meta-group">
+<span class="meta-label">
+<span>Follow Up</span>
+<span id="followup-badge-${app.id}" style="color:${app.followUp === 'Yes' ? 'var(--orange)' : 'var(--text-muted)'}">${app.followUp}</span>
+</span>
+<div class="seg-group" id="followup-seg-${app.id}">
+<button
+type="button"
+class="seg-btn ${app.followUp !== 'Yes' ? 'active-no' : ''}"
+onclick="setAppFollowUp('${app.id}', 'No')"
+>No</button>
+<button
+type="button"
+class="seg-btn ${app.followUp === 'Yes' ? 'active-orange' : ''}"
+onclick="setAppFollowUp('${app.id}', 'Yes')"
+>⚡ Yes</button>
+</div>
+</div>
+<div class="meta-group">
+<span class="meta-label">
+<span>Discuss with Mindy</span>
+<span id="mindy-badge-${app.id}" style="color:${app.discussWithMindy === 'Yes' ? 'var(--purple)' : 'var(--text-muted)'}">${app.discussWithMindy}</span>
+</span>
+<div class="seg-group" id="mindy-seg-${app.id}">
+<button
+type="button"
+class="seg-btn ${app.discussWithMindy !== 'Yes' ? 'active-no' : ''}"
+onclick="setAppDiscussWithMindy('${app.id}', 'No')"
+>No</button>
+<button
+type="button"
+class="seg-btn ${app.discussWithMindy === 'Yes' ? 'active-purple' : ''}"
+onclick="setAppDiscussWithMindy('${app.id}', 'Yes')"
+>🟣 Yes</button>
+</div>
+</div>
+</div>
+<div class="activity-section">
+<label class="meta-label">
+<span>Support Activity & Prioritization Notes</span>
+<span style="font-weight:normal; text-transform:none;">${app.lastUpdate || ''}</span>
+</label>
           <textarea
             class="activity-input"
             placeholder="Document follow-up items, open tickets, talking points for Mindy, or priority actions..."
             oninput="updateAppActivity('${app.id}', this.value)"
           >${app.activity || ''}</textarea>
-        </div>
-
-        <!-- Structured Chronological Activity History Section -->
-        <div class="activity-history-section">
-          <div class="activity-history-header">
-            <div class="activity-history-title-wrap">
-              <span class="activity-history-title">🕒 Activity History</span>
-              <span class="badge-history-count" id="hist-count-${app.id}">${getHistoryCount(app)}</span>
-            </div>
-            <button type="button" class="btn-add-update" onclick="toggleAddUpdateForm('${app.id}')">
-              + Add Update
-            </button>
-          </div>
-
-          <!-- Add Update Form Drawer -->
-          <div class="add-update-form" id="update-form-${app.id}" style="display: none;">
-            <div class="update-form-top">
-              <span class="update-form-title">📝 Add Activity Update</span>
-              <span class="update-form-time" id="update-time-preview-${app.id}"></span>
-            </div>
-            <div class="update-form-grid">
-              <div class="update-form-col">
-                <label class="update-form-label">Category</label>
-                <select class="update-form-select" id="update-cat-${app.id}">
-                  <option value="Update">Update</option>
-                  <option value="Accomplishment">Accomplishment</option>
-                  <option value="Issue">Issue</option>
-                  <option value="Enhancement">Enhancement</option>
-                  <option value="Follow-Up">Follow-Up</option>
-                  <option value="Blocker">Blocker</option>
-                  <option value="Decision">Decision</option>
-                </select>
-              </div>
-              <div class="update-form-col">
-                <label class="update-form-label">Status</label>
-                <select class="update-form-select" id="update-status-${app.id}">
-                  <option value="In Progress">In Progress</option>
-                  <option value="Completed">Completed</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Blocked">Blocked</option>
-                </select>
-              </div>
-            </div>
-            <div class="update-form-col">
-              <label class="update-form-label">Activity Description</label>
+</div>
+<div class="activity-history-section">
+<div class="activity-history-header">
+<div class="activity-history-title-wrap">
+<span class="activity-history-title">🕒 Activity History</span>
+<span class="badge-history-count" id="hist-count-${app.id}">${getHistoryCount(app)}</span>
+</div>
+<button type="button" class="btn-add-update" onclick="toggleAddUpdateForm('${app.id}')">
++ Add Update
+</button>
+</div>
+<div class="add-update-form" id="update-form-${app.id}" style="display: none;">
+<div class="update-form-top">
+<span class="update-form-title">📝 Add Activity Update</span>
+<span class="update-form-time" id="update-time-preview-${app.id}"></span>
+</div>
+<div class="update-form-grid">
+<div class="update-form-col">
+<label class="update-form-label">Category</label>
+<select class="update-form-select" id="update-cat-${app.id}">
+<option value="Update">Update</option>
+<option value="Accomplishment">Accomplishment</option>
+<option value="Issue">Issue</option>
+<option value="Enhancement">Enhancement</option>
+<option value="Follow-Up">Follow-Up</option>
+<option value="Blocker">Blocker</option>
+<option value="Decision">Decision</option>
+</select>
+</div>
+<div class="update-form-col">
+<label class="update-form-label">Status</label>
+<select class="update-form-select" id="update-status-${app.id}">
+<option value="In Progress">In Progress</option>
+<option value="Completed">Completed</option>
+<option value="Pending">Pending</option>
+<option value="Blocked">Blocked</option>
+</select>
+</div>
+</div>
+<div class="update-form-col">
+<label class="update-form-label">Activity Description</label>
               <textarea class="update-form-textarea" id="update-desc-${app.id}" oninput="updateUnsavedUI('${app.id}')" placeholder="Describe progress, resolution, blocker, or update..."></textarea>
-            </div>
-            <div class="update-form-col">
-              <label class="update-form-label">Next Steps (Optional)</label>
-              <input type="text" class="update-form-input" id="update-next-${app.id}" oninput="updateUnsavedUI('${app.id}')" placeholder="e.g. Awaiting stakeholder confirmation on Friday..." />
-            </div>
-            <div class="update-form-actions">
-              <button type="button" class="btn-cancel" onclick="cancelAddUpdate('${app.id}')">Cancel</button>
-              <button type="button" class="btn-save-update" onclick="submitAppUpdate('${app.id}')">Save Update</button>
-            </div>
-          </div>
-
-          <!-- Chronological History Container -->
-          <div class="activity-history-container" id="history-container-${app.id}">
-            ${renderAppHistoryHtml(app)}
-          </div>
-        </div>
-
-        <!-- Separate Monthly Stakeholder Sync Notes Area -->
-        <div class="monthly-sync-card-section">
-          <div class="monthly-sync-toggle-header" onclick="toggleSyncBox('${app.id}')">
-            <span>🤝 Monthly Stakeholder Sync Notes</span>
-            <span id="sync-arrow-${app.id}" style="font-size:12px;">${hasSync ? '▼ Notes Saved' : '▶ Add Notes'}</span>
-          </div>
-          <div class="sync-notes-box" id="sync-box-${app.id}" style="${hasSync ? 'display:flex;' : 'display:none;'}">
-            <div class="sync-date-row">
-              <span>Sync Date:</span>
-              <input
-                type="date"
-                value="${app.lastSyncDate || ''}"
-                style="background:#161b22; border:1px solid var(--card-border); color:var(--text); font-size:11px; padding:2px 6px; border-radius:4px;"
-                onchange="updateAppSyncDate('${app.id}', this.value)"
-              />
-            </div>
+</div>
+<div class="update-form-col">
+<label class="update-form-label">Next Steps (Optional)</label>
+<input type="text" class="update-form-input" id="update-next-${app.id}" oninput="updateUnsavedUI('${app.id}')" placeholder="e.g. Awaiting stakeholder confirmation on Friday..." />
+</div>
+<div class="update-form-actions">
+<button type="button" class="btn-cancel" onclick="cancelAddUpdate('${app.id}')">Cancel</button>
+<button type="button" class="btn-save-update" onclick="submitAppUpdate('${app.id}')">Save Update</button>
+</div>
+</div>
+<div class="activity-history-container" id="history-container-${app.id}">
+${renderAppHistoryHtml(app)}
+</div>
+</div>
+<div class="monthly-sync-card-section">
+<div class="monthly-sync-toggle-header" onclick="toggleSyncBox('${app.id}')">
+<span>🤝 Monthly Stakeholder Sync Notes</span>
+<span id="sync-arrow-${app.id}" style="font-size:12px;">${hasSync ? '▼ Notes Saved' : '▶ Add Notes'}</span>
+</div>
+<div class="sync-notes-box" id="sync-box-${app.id}" style="${hasSync ? 'display:flex;' : 'display:none;'}">
+<div class="sync-date-row">
+<span>Sync Date:</span>
+<input
+type="date"
+value="${app.lastSyncDate || ''}"
+style="background:#161b22; border:1px solid var(--card-border); color:var(--text); font-size:11px; padding:2px 6px; border-radius:4px;"
+onchange="updateAppSyncDate('${app.id}', this.value)"
+/>
+</div>
             <textarea
               class="sync-notes-input"
               placeholder="Capture takeaways from monthly sync with ${app.name} stakeholders (feedback, upcoming launches, concerns, roadmap requests)..."
               oninput="updateAppSyncNotes('${app.id}', this.value)"
             >${app.monthlySyncNotes || ''}</textarea>
-          </div>
-        </div>
-
-        <div id="flagtrail-${app.id}">${flagTrailHtml(app.id)}</div>
-
-        <div class="app-card-footer">
-          <span>Business Unit: <strong style="color:#fff;">${app.businessUnit || 'Enterprise Solutions'}</strong></span>
-        </div>
-        </div></div></div>
-      `;
-
-      return card;
-    }
-
-    /* ---- Accordion helpers ---- */
-    // Exactly one application can be open. Nothing is restored on load: every row starts collapsed.
-    let openId = null;
-
-    function cardClassName(app) {
-      return "app-card " + getCardClass(app) + (openId === app.id ? " open" : "");
-    }
-
-    // Only toggles a class / attributes. It never rebuilds the card, so typed-but-unsaved text,
-    // an open "Add Update" form and scroll positions inside the card all survive collapse and re-open.
-    function applyCardState(appId, open) {
-      const card = document.getElementById(`card-${appId}`);
-      const body = document.getElementById(`body-${appId}`);
-      const row = document.getElementById(`row-${appId}`);
-      if (card) card.classList.toggle("open", open);
-      if (body) body.inert = !open;                 // collapsed content can't be tabbed into
-      if (row) row.setAttribute("aria-expanded", String(open));
-    }
-
-    function toggleCard(appId) {
-      const previous = openId;
-      if (previous === appId) {                      // clicking the open row closes it
-        openId = null;
-        applyCardState(appId, false);
-        return;
-      }
-      if (previous) applyCardState(previous, false); // opening another closes the previous one
-      openId = appId;
-      applyCardState(appId, true);
-      keepRowInView(appId);
-    }
-
-    // When the previously open card sits above the new one, its collapse shifts the page up.
-    // After the 0.2s transition, bring the clicked row back into view only if it ended up off-screen.
-    function keepRowInView(appId) {
-      setTimeout(() => {
-        if (openId !== appId) return;
-        const row = document.getElementById(`row-${appId}`);
-        if (!row || !row.getBoundingClientRect) return;
-        const top = row.getBoundingClientRect().top;
-        if (top < 0 || top > window.innerHeight - 80) {
-          const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          row.scrollIntoView({ block: "start", behavior: calm ? "auto" : "smooth" });
-        }
-      }, 230);
-    }
-
-    function rowFlagsHtml(app) {
-      return (app.followUp === "Yes" ? '<span class="row-flag fu">⚡ Follow Up</span>' : "") +
-             (app.discussWithMindy === "Yes" ? '<span class="row-flag dm">🟣 Mindy</span>' : "");
-    }
-
-    // Most recent dated activity: this app's Activity History plus linked shared records.
-    // (Edits to the notes box are not timestamped by the dashboard, so they are not counted.)
-    function latestActivityTs(app) {
-      let t = 0;
-      (app.activityHistory || []).forEach(e => { const v = Date.parse(e.isoDate); if (v > t) t = v; });
-      getLinkedRecords(app.id).forEach(r => {
-        [r.createdAt, r.updatedAt].forEach(x => { const v = Date.parse(x); if (v > t) t = v; });
-      });
-      return t;
-    }
-
-    function rowDateHtml(app) {
-      const t = latestActivityTs(app);
-      if (!t) return "";
-      const d = new Date(t);
-      const sameYear = d.getFullYear() === new Date().getFullYear();
-      const short = d.toLocaleDateString(undefined, sameYear ? { month: "short", day: "numeric" } : { month: "short", day: "numeric", year: "numeric" });
-      const full = d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" }) + " at " +
-                   d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-      return `<span title="Most recent activity: ${escapeHtml(full)}">Updated ${escapeHtml(short)}</span>`;
-    }
-
-    function updateRowMeta(appId) {
-      const app = portfolioData.find(a => a.id === appId);
-      if (!app) return;
-      const f = document.getElementById(`rowflags-${appId}`);
-      const d = document.getElementById(`rowdate-${appId}`);
-      if (f) f.innerHTML = rowFlagsHtml(app);
-      if (d) d.innerHTML = rowDateHtml(app);
-    }
-
-    function toggleSyncBox(appId) {
-      const box = document.getElementById(`sync-box-${appId}`);
-      const arrow = document.getElementById(`sync-arrow-${appId}`);
-      if (!box) return;
-      if (box.style.display === "none" || box.style.display === "") {
-        box.style.display = "flex";
-        arrow.textContent = "▼ Notes";
-      } else {
-        box.style.display = "none";
-        arrow.textContent = "▶ Add Notes";
-      }
-    }
-
-    /* Structured Activity History Helper Functions */
-    function escapeHtml(str) {
-      if (!str) return "";
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
-    function formatCurrentDateTime() {
-      const now = new Date();
-      return now.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' +
-             now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-    }
-
-    function getCategoryClass(category) {
-      const cat = (category || "Update").toLowerCase().replace(/[^a-z0-9]/g, '-');
-      return `cat-${cat}`;
-    }
-
-    function getStatusClass(status) {
-      const st = (status || "In Progress").toLowerCase().replace(/[^a-z0-9]/g, '-');
-      return `status-${st}`;
-    }
-
-    function renderSingleHistoryEntry(entry, isLatest) {
-      const catClass = getCategoryClass(entry.category);
-      const stClass = getStatusClass(entry.status);
-      return `
-        <div class="activity-entry ${isLatest ? 'latest-entry' : ''}">
-          <div class="activity-entry-header">
-            <div class="activity-entry-badges">
-              <span class="cat-badge ${catClass}">${escapeHtml(entry.category || 'Update')}</span>
-              <span class="status-pill-entry ${stClass}">● ${escapeHtml(entry.status || 'In Progress')}</span>
-            </div>
-            <span class="activity-entry-time">${escapeHtml(entry.timestamp || '')}</span>
-          </div>
-          <div class="activity-entry-desc">${escapeHtml(entry.description || '')}</div>
-          ${entry.nextSteps && entry.nextSteps.trim() ? `
-            <div class="activity-entry-next"><strong>↳ Next Steps:</strong> ${escapeHtml(entry.nextSteps)}</div>
-          ` : ''}
-        </div>
-      `;
-    }
-
-    function formatIsoTimestamp(iso) {
-      const d = new Date(iso);
-      if (isNaN(d.getTime())) return "";
-      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' +
-             d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-    }
-
-    function renderLinkedHistoryEntry(rec, isLatest, currentAppId) {
-      const isMindy = rec.source === "mindy-sync";
-      const kindLabels = { note: "Meeting Note", decision: "Decision", action: "Action Item", question: "Open Question" };
-      const catClass = getCategoryClass(rec.category);
-      const statuses = ["In Progress", "Completed", "Pending", "Blocked"];
-      const statusOptions = statuses.map(s =>
-        `<option value="${s}" ${rec.status === s ? "selected" : ""}>${s}</option>`
-      ).join("");
-      const otherApps = (rec.appIds || []).filter(id => id !== currentAppId).map(id => {
-        const a = portfolioData.find(x => x.id === id);
-        return a ? a.name : id;
-      });
-      const tag = isMindy
-        ? `<span class="linked-tag" style="background:var(--purple-bg);color:#d2a8ff;border-color:var(--purple-border);">🟣 Mindy Sync${rec.kind && kindLabels[rec.kind] ? " · " + kindLabels[rec.kind] : ""}</span>`
-        : `<span class="linked-tag">🔗 Daily Accomplishment</span>`;
-      const meetingDay = isMindy && rec.entryDate ? (() => {
-        const [y, m, d] = rec.entryDate.split("-").map(Number);
-        return new Date(y, m - 1, d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-      })() : "";
-      return `
-        <div class="activity-entry linked-entry ${isLatest ? 'latest-entry' : ''}" ${isMindy ? 'style="border-left-color: var(--purple);"' : ''}>
-          <div class="activity-entry-header">
-            <div class="activity-entry-badges">
-              <span class="cat-badge ${catClass}">${escapeHtml(rec.category || 'Accomplishment')}</span>
-              <select class="linked-status-select" onchange="updateLinkedStatus('${rec.id}', this.value)" title="Status (synced across views)">${statusOptions}</select>
-              ${tag}
-            </div>
-            <span class="activity-entry-time">${meetingDay ? "Meeting " + escapeHtml(meetingDay) + " · logged " : ""}${escapeHtml(formatIsoTimestamp(rec.createdAt))}</span>
-          </div>
-          <div class="activity-entry-desc">${escapeHtml(rec.description || '')}</div>
-          ${rec.nextSteps && rec.nextSteps.trim() ? `
-            <div class="activity-entry-next"><strong>↳ Next Steps:</strong> ${escapeHtml(rec.nextSteps)}</div>
-          ` : ''}
-          ${otherApps.length ? `<div class="linked-also">Also linked to: ${escapeHtml(otherApps.join(", "))}</div>` : ''}
-          ${window.DashData ? DashData.trailHtml(DashData.eventsForEntity("record", rec.id), { id: "trail-" + currentAppId + "-" + rec.id }) : ''}
-        </div>
-      `;
-    }
-
-    function getMergedHistory(app) {
-      const items = [];
-      (app.activityHistory || []).forEach(e => {
-        items.push({ kind: "native", ts: Date.parse(e.isoDate) || 0, entry: e });
-      });
-      getLinkedRecords(app.id).forEach(r => {
-        items.push({ kind: "linked", ts: Date.parse(r.createdAt) || 0, entry: r });
-      });
-      // Most recent first (stable sort keeps native insertion order for ties)
-      items.sort((a, b) => b.ts - a.ts);
-      return items;
-    }
-
-    function renderHistoryItem(item, isLatest, appId) {
-      return item.kind === "linked"
-        ? renderLinkedHistoryEntry(item.entry, isLatest, appId)
-        : renderSingleHistoryEntry(item.entry, isLatest);
-    }
-
-    function renderAppHistoryHtml(app, isExpanded = false) {
-      const history = getMergedHistory(app);
-      if (history.length === 0) {
-        return `<div class="activity-history-empty">No updates recorded yet. Click <strong>+ Add Update</strong> to log an entry.</div>`;
-      }
-
-      // Display most recent update first
-      let html = renderHistoryItem(history[0], true, app.id);
-
-      if (history.length > 1) {
-        const olderEntries = history.slice(1);
-        const olderDisplay = isExpanded ? 'flex' : 'none';
-        html += `
-          <div class="older-history-wrap" id="older-history-${app.id}" style="display:${olderDisplay};">
-            ${olderEntries.map(i => renderHistoryItem(i, false, app.id)).join("")}
-          </div>
-          <div class="history-expand-row">
-            <button type="button" class="history-expand-btn" id="expand-btn-${app.id}" onclick="toggleHistoryExpand('${app.id}')">
-              ${isExpanded ? '▲ Hide older updates' : `▼ View full history (${history.length} total)`}
-            </button>
-          </div>
-        `;
-      }
-
-      return html;
-    }
-
-    function refreshAppHistory(appId) {
-      const app = portfolioData.find(a => a.id === appId);
-      const container = document.getElementById(`history-container-${appId}`);
-      if (!app || !container) return;
-      const older = document.getElementById(`older-history-${appId}`);
-      const wasExpanded = Boolean(older && older.style.display === "flex");
-      container.innerHTML = renderAppHistoryHtml(app, wasExpanded);
-      const badge = document.getElementById(`hist-count-${appId}`);
-      if (badge) badge.textContent = getHistoryCount(app);
-      updateRowMeta(appId);
-    }
-
-    function refreshAllHistories() {
-      portfolioData.forEach(a => refreshAppHistory(a.id));
-    }
-
-    function updateLinkedStatus(recId, newStatus) {
-      loadSharedRecords();
-      loadMeetings();
-      const rec = sharedRecords.find(r => r.id === recId);
-      if (!rec) return;
-      const prevStatus = rec.status;
-      rec.status = newStatus;
-      rec.updatedAt = new Date().toISOString();
-      if (newStatus === "Completed") {
-        if (!rec.completedAt) rec.completedAt = rec.updatedAt;
-      } else {
-        rec.completedAt = null;
-      }
-      localStorage.setItem(RECORDS_KEY, JSON.stringify(sharedRecords));
-      if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: newStatus, label: rec.description });
-      (rec.appIds || []).forEach(refreshAppHistory);
-      showToast("Status updated (synced with Daily Accomplishments)");
-    }
-
-    // Keep views synchronized when records change in another tab/page
-    window.addEventListener("storage", (e) => {
-      if (e.key === RECORDS_KEY) {
-        loadSharedRecords();
-      loadMeetings();
-        refreshAllHistories();
-        filterApps();
-      }
-      if (e.key === "app_support_portfolio_v3" || e.key === "app_support_portfolio_v2") {
-        syncFlagsFromStorage();
-      }
-    });
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) {
-        loadSharedRecords();
-      loadMeetings();
-        refreshAllHistories();
-        syncFlagsFromStorage();
-        filterApps();
-      }
-    });
-
-    // Pull flag changes made on another page (e.g. "Mark Discussion Resolved" on the Mindy page)
-    // into memory WITHOUT re-rendering the whole board, so nothing being typed is lost and the
-    // 15s auto-save can never write a stale flag back over a newer one.
-    function syncFlagsFromStorage() {
-      let stored = null;
-      try {
-        stored = JSON.parse(localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || "null");
-      } catch (err) { stored = null; }
-      if (!Array.isArray(stored)) return;
-      let changed = false;
-      stored.forEach(s => {
-        const app = portfolioData.find(a => a.id === s.id);
-        if (!app) return;
-        const fu = normalizeYesNo(s.followUp);
-        const dm = normalizeYesNo(s.discussWithMindy);
-        let touched = false;
-        if (app.followUp !== fu || app.discussWithMindy !== dm) {
-          app.followUp = fu;
-          app.discussWithMindy = dm;
-          touched = true;
-        }
-        
-        if (touched) {
-          refreshCardVisuals(app.id);
-          changed = true;
-        }
-      });
-      if (changed) {
-        updateMetrics();
-        highlightActiveKpi();
-        filterApps();
-      }
-    }
-
-    function toggleAddUpdateForm(appId, explicitState) {
-      const form = document.getElementById(`update-form-${appId}`);
-      if (!form) return;
-      const willShow = explicitState !== undefined ? explicitState : (form.style.display === "none" || form.style.display === "");
-      if (willShow) {
-        form.style.display = "flex";
-        const timePreview = document.getElementById(`update-time-preview-${appId}`);
-        if (timePreview) timePreview.textContent = `Auto Date: ${formatCurrentDateTime()}`;
-        const descField = document.getElementById(`update-desc-${appId}`);
-        if (descField) descField.focus();
-      } else {
-        form.style.display = "none";
-      }
-    }
-
-    function toggleHistoryExpand(appId) {
-      const olderWrap = document.getElementById(`older-history-${appId}`);
-      const btn = document.getElementById(`expand-btn-${appId}`);
-      if (!olderWrap || !btn) return;
-
-      const app = portfolioData.find(a => a.id === appId);
-      const totalCount = app ? getHistoryCount(app) : 0;
-
-      if (olderWrap.style.display === "none" || olderWrap.style.display === "") {
-        olderWrap.style.display = "flex";
-        btn.textContent = "▲ Hide older updates";
-      } else {
-        olderWrap.style.display = "none";
-        btn.textContent = `▼ View full history (${totalCount} total)`;
-      }
-    }
-
-    function submitAppUpdate(appId) {
-      const app = portfolioData.find(a => a.id === appId);
-      if (!app) return;
-
-      const descField = document.getElementById(`update-desc-${appId}`);
-      const catField = document.getElementById(`update-cat-${appId}`);
-      const statusField = document.getElementById(`update-status-${appId}`);
-      const nextField = document.getElementById(`update-next-${appId}`);
-
-      const description = descField ? descField.value.trim() : "";
-      if (!description) {
-        alert("Please enter an activity description before saving.");
-        if (descField) descField.focus();
-        return;
-      }
-
-      const category = catField ? catField.value : "Update";
-      const status = statusField ? statusField.value : "In Progress";
-      const nextSteps = nextField ? nextField.value.trim() : "";
-
-      const newEntry = {
-        id: "act_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
-        timestamp: formatCurrentDateTime(),
-        isoDate: new Date().toISOString(),
-        category: category,
-        status: status,
-        description: description,
-        nextSteps: nextSteps
-      };
-
-      if (!Array.isArray(app.activityHistory)) {
-        app.activityHistory = [];
-      }
-      // Prepend newest update
-      app.activityHistory.unshift(newEntry);
-      app.lastUpdate = "Updated now";
-
-      saveAll(false);
-
-      // Re-render history container
-      const container = document.getElementById(`history-container-${appId}`);
-      if (container) {
-        container.innerHTML = renderAppHistoryHtml(app, false);
-      }
-      const countBadge = document.getElementById(`hist-count-${appId}`);
-      if (countBadge) {
-        countBadge.textContent = getHistoryCount(app);
-      }
-      updateRowMeta(appId);
-
-      // Reset & close form
-      if (descField) descField.value = "";
-      if (nextField) nextField.value = "";
-      toggleAddUpdateForm(appId, false);
-      updateUnsavedUI(appId);
-
-      showToast(`Activity logged for ${app.name}`);
-    }
-
-    function setAppFollowUp(appId, val) {
-      const app = portfolioData.find(a => a.id === appId);
-      if (app) {
-        const prev = app.followUp;
-        app.followUp = val;
-        if (window.DashData) DashData.logChange({ type: "flag", entityId: app.id, appIds: [app.id], field: "followUp", from: prev, to: val, label: app.name });
-        app.lastUpdate = "Updated now";
-        saveAll(false);
-        refreshCardVisuals(appId);
-        updateMetrics();
-        filterApps();
-        showToast(`${app.name}: Follow Up set to ${val}`);
-      }
-    }
-
-    function setAppDiscussWithMindy(appId, val) {
-      const app = portfolioData.find(a => a.id === appId);
-      if (app) {
-        const prev = app.discussWithMindy;
-        app.discussWithMindy = val;
-        if (window.DashData) DashData.logChange({ type: "flag", entityId: app.id, appIds: [app.id], field: "discussWithMindy", from: prev, to: val, label: app.name });
-        app.lastUpdate = "Updated now";
-        saveAll(false);
-        refreshCardVisuals(appId);
-        updateMetrics();
-        filterApps();
-        showToast(`${app.name}: Discuss with Mindy set to ${val}`);
-      }
-    }
-
-    function updateAppActivity(appId, newActivity) {
-      const app = portfolioData.find(a => a.id === appId);
-      if (app) {
-        app.activity = newActivity;
-        app.lastUpdate = "Updated now";
-        saveAll(false);
-      }
-    }
-
-    function updateAppSyncNotes(appId, val) { /* Deprecated */ }
-
-    function updateAppSyncDate(appId, val) { /* Deprecated */ }
-
-    function refreshCardVisuals(appId) {
-      const app = portfolioData.find(a => a.id === appId);
-      if (!app) return;
-
-      const card = document.getElementById(`card-${appId}`);
-      if (card) {
-        card.className = cardClassName(app);
-        card.dataset.followup = app.followUp;
-        card.dataset.mindy = app.discussWithMindy;
-
-        const hasSync = getAppMeetings(app.id).length > 0;
-
-        const ftEl = document.getElementById(`flagtrail-${appId}`);
-        if (ftEl) ftEl.innerHTML = flagTrailHtml(appId);
-        updateRowMeta(appId);
-
-        // Flags row
-        const flagsRow = document.getElementById(`flags-${appId}`);
-        if (flagsRow) {
-          let flagsHtml = "";
-          if (app.followUp === "Yes") {
-            flagsHtml += '<span class="flag-tag flag-followup">⚡ Follow Up Needed</span>';
-          }
-          if (app.discussWithMindy === "Yes") {
-            flagsHtml += '<span class="flag-tag flag-mindy">🟣 Discuss with Mindy</span>';
-          }
-          if (hasSync) {
-            flagsHtml += '<span class="flag-tag flag-sync">🤝 Monthly Sync Captured</span>';
-          }
-          flagsRow.innerHTML = flagsHtml;
-        }
-
-        // Follow up segmented control
-        const followSeg = document.getElementById(`followup-seg-${appId}`);
-        if (followSeg) {
-          const isYes = app.followUp === "Yes";
-          followSeg.innerHTML = `
-            <button type="button" class="seg-btn ${!isYes ? 'active-no' : ''}" onclick="setAppFollowUp('${app.id}', 'No')">No</button>
-            <button type="button" class="seg-btn ${isYes ? 'active-orange' : ''}" onclick="setAppFollowUp('${app.id}', 'Yes')">⚡ Yes</button>
-          `;
-        }
-        const followBadge = document.getElementById(`followup-badge-${appId}`);
-        if (followBadge) {
-          followBadge.textContent = app.followUp;
-          followBadge.style.color = app.followUp === 'Yes' ? 'var(--orange)' : 'var(--text-muted)';
-        }
-
-        // Mindy segmented control
-        const mindySeg = document.getElementById(`mindy-seg-${appId}`);
-        if (mindySeg) {
-          const isMindyYes = app.discussWithMindy === "Yes";
-          mindySeg.innerHTML = `
-            <button type="button" class="seg-btn ${!isMindyYes ? 'active-no' : ''}" onclick="setAppDiscussWithMindy('${app.id}', 'No')">No</button>
-            <button type="button" class="seg-btn ${isMindyYes ? 'active-purple' : ''}" onclick="setAppDiscussWithMindy('${app.id}', 'Yes')">🟣 Yes</button>
-          `;
-        }
-        const mindyBadge = document.getElementById(`mindy-badge-${appId}`);
-        if (mindyBadge) {
-          mindyBadge.textContent = app.discussWithMindy;
-          mindyBadge.style.color = app.discussWithMindy === 'Yes' ? 'var(--purple)' : 'var(--text-muted)';
-        }
-      }
-    }
-
-    // ---- Unsaved-state tracking ----
-    // Notes, toggles and sync notes are written to storage on every keystroke/click (see the handlers),
-    // so they are never "pending". The only things that can be unsaved are:
-    //   1) Add Update drafts (text typed into an update form but not yet saved with "Save Update"), and
-    //   2) a failed storage write (e.g. browser storage full), where edits exist only on screen.
-    let saveFailed = false;
-
-    function draftHasText(appId) {
-      const d = document.getElementById(`update-desc-${appId}`);
-      const n = document.getElementById(`update-next-${appId}`);
-      return Boolean((d && String(d.value).trim()) || (n && String(n.value).trim()));
-    }
-
-    function draftApps() {
-      return portfolioData.filter(a => draftHasText(a.id));
-    }
-
-    function hasUnsavedChanges() {
-      return saveFailed || draftApps().length > 0;
-    }
-
-    // Updates the "✎ Unsaved draft" chip on a row (when appId is given) and the indicator next to Save Changes
-    function updateUnsavedUI(appId) {
-      const ids = appId ? [appId] : portfolioData.map(a => a.id);
-      ids.forEach(id => {
-        const chip = document.getElementById(`rowdraft-${id}`);
-        if (chip) chip.style.display = draftHasText(id) ? "inline-flex" : "none";
-      });
-      const ind = document.getElementById("unsavedIndicator");
-      if (!ind) return;
-      const n = draftApps().length;
-      if (saveFailed) {
-        ind.className = "unsaved-indicator error";
-        ind.textContent = "⚠ Not saved to this browser";
-        ind.style.display = "inline";
-      } else if (n) {
-        ind.className = "unsaved-indicator";
-        ind.textContent = `✎ ${n} unsaved update draft${n > 1 ? "s" : ""}`;
-        ind.style.display = "inline";
-      } else {
-        ind.style.display = "none";
-        ind.textContent = "";
-      }
-    }
-
-    // Cancel is an explicit choice to discard, so it asks first when there is text to lose.
-    function cancelAddUpdate(appId) {
-      if (draftHasText(appId) && !confirm("Discard this update draft? The text you typed will be lost.")) return;
-      const d = document.getElementById(`update-desc-${appId}`);
-      const n = document.getElementById(`update-next-${appId}`);
-      if (d) d.value = "";
-      if (n) n.value = "";
-      toggleAddUpdateForm(appId, false);
-      updateUnsavedUI(appId);
-    }
-
-    function resetDraftNote() {
-      const n = draftApps().length;
-      return n ? `⚠ ${n} unsaved update draft${n > 1 ? "s" : ""} will also be discarded.\n\n` : "";
-    }
-
-    // Writes the whole portfolio (every application, expanded or collapsed) and verifies it by reading it back.
-    function saveAll(showNotification) {
-      let ok = true;
-      try {
-        const out = JSON.stringify(portfolioData);
-        localStorage.setItem("app_support_portfolio_v3", out);
-        localStorage.setItem("app_support_portfolio_v2", out);
-        ok = localStorage.getItem("app_support_portfolio_v3") === out && localStorage.getItem("app_support_portfolio_v2") === out;
-      } catch (e) {
-        ok = false;
-      }
-      saveFailed = !ok;
-      updateUnsavedUI();
-      if (showNotification) {
-        if (!ok) {
-          alert("Your changes could NOT be saved to this browser (storage may be full or blocked).\n\nThey are still on screen. Use 💾 Data to export a backup, or free some browser storage, then click Save Changes again.");
-        } else {
-          const n = draftApps().length;
-          showToast(n
-            ? `Saved. ${n} update draft${n > 1 ? "s" : ""} not added yet. Click Save Update on each to keep ${n > 1 ? "them" : "it"}.`
-            : "Portfolio changes saved!");
-        }
-      }
-      return ok;
-    }
-
-    // Warn before leaving (closing the tab, refreshing, or following a link) while something is unsaved.
-    // Browsers show their own generic wording; custom text is not allowed.
-    window.addEventListener("beforeunload", (e) => {
-      if (!hasUnsavedChanges()) return;
-      e.preventDefault();
-      e.returnValue = "";
-    });
-
-    function resetDefaultsConfirm() {
-      if (confirm(resetDraftNote() + "Reset application portfolio back to default state?\n\nCustom notes and activity history on the cards will be cleared. A backup file is downloaded and a restore point is saved first, so this can be undone from 💾 Data.")) {
-        if (window.DashData && !DashData.safeguard("Before Reset Portfolio")) {
-          alert("Reset cancelled: a restore point could not be saved (browser storage may be full). Your data was not changed.");
-          return;
-        }
-        portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
-        renderPortfolio();
-        updateMetrics();
-        setQuickFilter('ALL');
-        saveAll(true);
-      }
-    }
-
-    function onFilterDropdownChange() {
-      highlightActiveKpi();
-      filterApps();
-    }
-
-    function setQuickFilter(mode) {
-      if (mode === 'ALL') {
-        document.getElementById("followUpFilter").value = "ALL";
-        document.getElementById("mindyFilter").value = "ALL";
-        document.getElementById("stageFilter").value = "ALL";
-        document.getElementById("notesFilter").value = "ALL";
-        if (document.getElementById("buFilter")) document.getElementById("buFilter").value = "ALL";
-      } else if (mode === 'FOLLOWUP') {
-        document.getElementById("followUpFilter").value = "YES";
-        document.getElementById("mindyFilter").value = "ALL";
-        document.getElementById("stageFilter").value = "ALL";
-        document.getElementById("notesFilter").value = "ALL";
-      } else if (mode === 'MINDY') {
-        document.getElementById("mindyFilter").value = "YES";
-        document.getElementById("followUpFilter").value = "ALL";
-        document.getElementById("stageFilter").value = "ALL";
-        document.getElementById("notesFilter").value = "ALL";
-      } else if (mode === 'SYNC') {
-        document.getElementById("notesFilter").value = "WITH_SYNC";
-        document.getElementById("followUpFilter").value = "ALL";
-        document.getElementById("mindyFilter").value = "ALL";
-        document.getElementById("stageFilter").value = "ALL";
-      } else if (mode === 'LIVE') {
-        document.getElementById("stageFilter").value = "LIVE";
-        document.getElementById("followUpFilter").value = "ALL";
-        document.getElementById("mindyFilter").value = "ALL";
-        document.getElementById("notesFilter").value = "ALL";
-      } else if (mode === 'ONBOARDING') {
-        document.getElementById("stageFilter").value = "ONBOARDING";
-        document.getElementById("followUpFilter").value = "ALL";
-        document.getElementById("mindyFilter").value = "ALL";
-        document.getElementById("notesFilter").value = "ALL";
-      }
-
-      highlightActiveKpi();
-      filterApps();
-    }
-
-    function highlightActiveKpi() {
-      const followVal = document.getElementById("followUpFilter").value;
-      const mindyVal = document.getElementById("mindyFilter").value;
-      const stageVal = document.getElementById("stageFilter").value;
-      const notesVal = document.getElementById("notesFilter").value;
-
-      document.getElementById("kpiCardAll").className = "kpi-card";
-      document.getElementById("kpiCardFollowUp").className = "kpi-card";
-      document.getElementById("kpiCardMindy").className = "kpi-card";
-      document.getElementById("kpiCardSync").className = "kpi-card";
-      document.getElementById("kpiCardLive").className = "kpi-card";
-      document.getElementById("kpiCardOnboarding").className = "kpi-card";
-
-      const banner = document.getElementById("filterBanner");
-      const bannerText = document.getElementById("filterBannerText");
-
-      if (notesVal === "WITH_SYNC") {
-        document.getElementById("kpiCardSync").className = "kpi-card active-filter";
-        banner.style.display = "flex";
-        banner.className = "filter-banner";
-        bannerText.innerHTML = "🤝 Showing only applications with <strong>Monthly Stakeholder Sync Notes</strong>";
-      } else if (followVal === "YES" && mindyVal === "ALL" && stageVal === "ALL") {
-        document.getElementById("kpiCardFollowUp").className = "kpi-card active-filter-orange";
-        banner.style.display = "flex";
-        banner.className = "filter-banner banner-orange";
-        bannerText.innerHTML = "⚡ Showing only applications where <strong>Follow Up = Yes</strong>";
-      } else if (mindyVal === "YES" && followVal === "ALL" && stageVal === "ALL") {
-        document.getElementById("kpiCardMindy").className = "kpi-card active-filter-purple";
-        banner.style.display = "flex";
-        banner.className = "filter-banner banner-purple";
-        bannerText.innerHTML = "🟣 Showing only applications tagged for <strong>Discuss with Mindy</strong>";
-      } else if (stageVal === "LIVE" && followVal === "ALL" && mindyVal === "ALL") {
-        document.getElementById("kpiCardLive").className = "kpi-card active-filter";
-        banner.style.display = "flex";
-        banner.className = "filter-banner";
-        bannerText.innerHTML = "Showing only <strong>Live Portfolio</strong> applications";
-      } else if (stageVal === "ONBOARDING" && followVal === "ALL" && mindyVal === "ALL") {
-        document.getElementById("kpiCardOnboarding").className = "kpi-card active-filter";
-        banner.style.display = "flex";
-        banner.className = "filter-banner";
-        bannerText.innerHTML = "Showing only <strong>Onboarding Pipeline</strong> applications";
-      } else if (followVal === "ALL" && mindyVal === "ALL" && stageVal === "ALL" && notesVal === "ALL") {
-        document.getElementById("kpiCardAll").className = "kpi-card active-filter";
-        banner.style.display = "none";
-      } else {
-        banner.style.display = "flex";
-        banner.className = "filter-banner";
-        bannerText.innerHTML = "Active custom filter combination applied";
-      }
-    }
-
-    function filterApps() {
-      const searchQuery = (document.getElementById("appSearchInput").value || "").toLowerCase().trim();
-      const followUpVal = document.getElementById("followUpFilter").value.toUpperCase();
-      const mindyVal = document.getElementById("mindyFilter").value.toUpperCase();
-      const buVal = document.getElementById("buFilter") ? document.getElementById("buFilter").value : "ALL";
-      const stageVal = document.getElementById("stageFilter").value.toUpperCase();
-      const notesVal = document.getElementById("notesFilter").value.toUpperCase();
-
-      let visibleCount = 0;
-      let visibleLive = 0;
-      let visibleOnboarding = 0;
-
-      const cards = document.querySelectorAll(".app-card");
-      cards.forEach(card => {
-        const id = card.dataset.id;
-        const app = portfolioData.find(a => a.id === id);
-        if (!app) return;
-
-        // Search check
-        let matchesSearch = true;
-        if (searchQuery.length > 0) {
-          const inHistory = [...(app.activityHistory || []), ...getLinkedRecords(app.id)].some(h =>
-            (h.description && h.description.toLowerCase().includes(searchQuery)) ||
-            (h.category && h.category.toLowerCase().includes(searchQuery)) ||
-            (h.status && h.status.toLowerCase().includes(searchQuery)) ||
-            (h.nextSteps && h.nextSteps.toLowerCase().includes(searchQuery))
-          );
-          matchesSearch = app.name.toLowerCase().includes(searchQuery) ||
-                          (app.activity && app.activity.toLowerCase().includes(searchQuery)) ||
-                          JSON.stringify(getAppMeetings(app.id)).toLowerCase().includes(searchQuery) ||
-                          (app.businessUnit && app.businessUnit.toLowerCase().includes(searchQuery)) ||
-                          Boolean(inHistory);
-        }
-
-        // Business Unit check
-        let matchesBU = (buVal === "ALL") || (app.businessUnit === buVal);
-
-        // Follow Up check
-        const isFollowYes = (app.followUp === "Yes" || app.followUp === "YES" || app.followUp === true);
-        let matchesFollowUp = true;
-        if (followUpVal === "YES") {
-          matchesFollowUp = isFollowYes;
-        } else if (followUpVal === "NO") {
-          matchesFollowUp = !isFollowYes;
-        }
-
-        // Discuss with Mindy check
-        const isMindyYes = (app.discussWithMindy === "Yes" || app.discussWithMindy === "YES" || app.discussWithMindy === true);
-        let matchesMindy = true;
-        if (mindyVal === "YES") {
-          matchesMindy = isMindyYes;
-        } else if (mindyVal === "NO") {
-          matchesMindy = !isMindyYes;
-        }
-
-        // Stage check
-        let matchesStage = true;
-        if (stageVal !== "ALL") {
-          matchesStage = app.stage.toUpperCase() === stageVal;
-        }
-
-        // Notes check
-        let matchesNotes = true;
-        if (notesVal === "WITH_NOTES") {
-          matchesNotes = Boolean(app.activity && app.activity.trim().length > 0);
-        } else if (notesVal === "WITH_HISTORY") {
-          matchesNotes = getHistoryCount(app) > 0;
-        } else if (notesVal === "WITH_SYNC") {
-          matchesNotes = getAppMeetings(app.id).length > 0;
-        }
-
-        if (matchesSearch && matchesBU && matchesFollowUp && matchesMindy && matchesStage && matchesNotes) {
-          card.style.display = "flex";
-          visibleCount++;
-          if (app.stage === "LIVE") visibleLive++;
-          else visibleOnboarding++;
-        } else {
-          card.style.display = "none";
-        }
-      });
-
-      document.getElementById("liveSectionCount").textContent = visibleLive;
-      document.getElementById("onboardingSectionCount").textContent = visibleOnboarding;
-      document.getElementById("liveSectionWrapper").style.display = (visibleLive === 0 && stageVal === "ONBOARDING") ? "none" : "block";
-      document.getElementById("onboardingSectionWrapper").style.display = (visibleOnboarding === 0 && stageVal === "LIVE") ? "none" : "block";
-      document.getElementById("filterCountDisplay").textContent = `Showing ${visibleCount} of ${portfolioData.length} applications`;
-    }
-
-    function updateMetrics() {
-      const total = portfolioData.length;
-      document.getElementById("kpiTotalApps").innerHTML = `${total} <span class="kpi-sub">Apps</span>`;
-
-      const followUpApps = portfolioData.filter(a => a.followUp === "Yes" || a.followUp === "YES");
-      const mindyApps = portfolioData.filter(a => a.discussWithMindy === "Yes" || a.discussWithMindy === "YES");
-      const syncApps = portfolioData.filter(a => getAppMeetings(a.id).length > 0);
-
-      const followUpCountEl = document.getElementById("kpiFollowUpCount");
-      followUpCountEl.innerHTML = `${followUpApps.length} <span class="kpi-sub" style="color:var(--text-muted)">apps</span>`;
-      document.getElementById("kpiFollowUpLabel").textContent = followUpApps.length > 0
-        ? `${followUpApps.length} flagged · Click to view`
-        : "Click to filter follow-ups";
-
-      const mindyCountEl = document.getElementById("kpiMindyCount");
-      mindyCountEl.innerHTML = `${mindyApps.length} <span class="kpi-sub" style="color:var(--text-muted)">items</span>`;
-      document.getElementById("kpiMindyLabel").textContent = mindyApps.length > 0
-        ? `${mindyApps.length} flagged · Click to view`
-        : "Click to filter Mindy items";
-
-      const syncCountEl = document.getElementById("kpiSyncCount");
-      syncCountEl.innerHTML = `${syncApps.length} <span class="kpi-sub" style="color:var(--text-muted)">apps</span>`;
-      document.getElementById("kpiSyncLabel").textContent = syncApps.length > 0
-        ? `${syncApps.length} logged · Click to view`
-        : "Click to filter sync notes";
-
-      const liveApps = portfolioData.filter(a => a.stage === "LIVE");
-      document.getElementById("kpiLiveCount").textContent = liveApps.length;
-
-      const onboardingApps = portfolioData.filter(a => a.stage === "ONBOARDING");
-      document.getElementById("kpiOnboardingCount").textContent = onboardingApps.length;
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById("toastNotification");
-      toast.textContent = msg;
-      toast.style.display = "block";
-      setTimeout(() => { toast.style.display = "none"; }, 2500);
-    }
-
-    setInterval(() => { saveAll(false); }, 15000);
-    window.onload = init;
-  </script>
+</div>
+</div>
+<div id="flagtrail-${app.id}">${flagTrailHtml(app.id)}</div>
+<div class="app-card-footer">
+<span>Business Unit: <strong style="color:#fff;">${app.businessUnit || 'Enterprise Solutions'}</strong></span>
+</div>
+</div></div></div>
+`;
+return card;
+}
+// Exactly one application can be open. Nothing is restored on load: every row starts collapsed.
+let openId = null;
+function cardClassName(app) {
+return "app-card " + getCardClass(app) + (openId === app.id ? " open" : "");
+}
+// Only toggles a class / attributes. It never rebuilds the card, so typed-but-unsaved text,
+// an open "Add Update" form and scroll positions inside the card all survive collapse and re-open.
+function applyCardState(appId, open) {
+const card = document.getElementById(`card-${appId}`);
+const body = document.getElementById(`body-${appId}`);
+const row = document.getElementById(`row-${appId}`);
+if (card) card.classList.toggle("open", open);
+if (body) body.inert = !open;                 // collapsed content can't be tabbed into
+if (row) row.setAttribute("aria-expanded", String(open));
+}
+function toggleCard(appId) {
+const previous = openId;
+if (previous === appId) {                      // clicking the open row closes it
+openId = null;
+applyCardState(appId, false);
+return;
+}
+if (previous) applyCardState(previous, false); // opening another closes the previous one
+openId = appId;
+applyCardState(appId, true);
+keepRowInView(appId);
+}
+// When the previously open card sits above the new one, its collapse shifts the page up.
+// After the 0.2s transition, bring the clicked row back into view only if it ended up off-screen.
+function keepRowInView(appId) {
+setTimeout(() => {
+if (openId !== appId) return;
+const row = document.getElementById(`row-${appId}`);
+if (!row || !row.getBoundingClientRect) return;
+const top = row.getBoundingClientRect().top;
+if (top < 0 || top > window.innerHeight - 80) {
+const calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+row.scrollIntoView({ block: "start", behavior: calm ? "auto" : "smooth" });
+}
+}, 230);
+}
+function rowFlagsHtml(app) {
+return (app.followUp === "Yes" ? '<span class="row-flag fu">⚡ Follow Up</span>' : "") +
+(app.discussWithMindy === "Yes" ? '<span class="row-flag dm">🟣 Mindy</span>' : "");
+}
+// Most recent dated activity: this app's Activity History plus linked shared records.
+// (Edits to the notes box are not timestamped by the dashboard, so they are not counted.)
+function latestActivityTs(app) {
+let t = 0;
+(app.activityHistory || []).forEach(e => { const v = Date.parse(e.isoDate); if (v > t) t = v; });
+getLinkedRecords(app.id).forEach(r => {
+[r.createdAt, r.updatedAt].forEach(x => { const v = Date.parse(x); if (v > t) t = v; });
+});
+return t;
+}
+function rowDateHtml(app) {
+const t = latestActivityTs(app);
+if (!t) return "";
+const d = new Date(t);
+const sameYear = d.getFullYear() === new Date().getFullYear();
+const short = d.toLocaleDateString(undefined, sameYear ? { month: "short", day: "numeric" } : { month: "short", day: "numeric", year: "numeric" });
+const full = d.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric", year: "numeric" }) + " at " +
+d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+return `<span title="Most recent activity: ${escapeHtml(full)}">Updated ${escapeHtml(short)}</span>`;
+}
+function updateRowMeta(appId) {
+const app = portfolioData.find(a => a.id === appId);
+if (!app) return;
+const f = document.getElementById(`rowflags-${appId}`);
+const d = document.getElementById(`rowdate-${appId}`);
+if (f) f.innerHTML = rowFlagsHtml(app);
+if (d) d.innerHTML = rowDateHtml(app);
+}
+function toggleSyncBox(appId) {
+const box = document.getElementById(`sync-box-${appId}`);
+const arrow = document.getElementById(`sync-arrow-${appId}`);
+if (!box) return;
+if (box.style.display === "none" || box.style.display === "") {
+box.style.display = "flex";
+arrow.textContent = "▼ Notes";
+} else {
+box.style.display = "none";
+arrow.textContent = "▶ Add Notes";
+}
+}
+function escapeHtml(str) {
+if (!str) return "";
+return String(str)
+.replace(/&/g, "&amp;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;")
+.replace(/"/g, "&quot;");
+}
+function formatCurrentDateTime() {
+const now = new Date();
+return now.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' +
+now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
+function getCategoryClass(category) {
+const cat = (category || "Update").toLowerCase().replace(/[^a-z0-9]/g, '-');
+return `cat-${cat}`;
+}
+function getStatusClass(status) {
+const st = (status || "In Progress").toLowerCase().replace(/[^a-z0-9]/g, '-');
+return `status-${st}`;
+}
+function renderSingleHistoryEntry(entry, isLatest) {
+const catClass = getCategoryClass(entry.category);
+const stClass = getStatusClass(entry.status);
+return `
+<div class="activity-entry ${isLatest ? 'latest-entry' : ''}">
+<div class="activity-entry-header">
+<div class="activity-entry-badges">
+<span class="cat-badge ${catClass}">${escapeHtml(entry.category || 'Update')}</span>
+<span class="status-pill-entry ${stClass}">● ${escapeHtml(entry.status || 'In Progress')}</span>
+</div>
+<span class="activity-entry-time">${escapeHtml(entry.timestamp || '')}</span>
+</div>
+<div class="activity-entry-desc">${escapeHtml(entry.description || '')}</div>
+${entry.nextSteps && entry.nextSteps.trim() ? `
+<div class="activity-entry-next"><strong>↳ Next Steps:</strong> ${escapeHtml(entry.nextSteps)}</div>
+` : ''}
+</div>
+`;
+}
+function formatIsoTimestamp(iso) {
+const d = new Date(iso);
+if (isNaN(d.getTime())) return "";
+return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' +
+d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
+function renderLinkedHistoryEntry(rec, isLatest, currentAppId) {
+const isMindy = rec.source === "mindy-sync";
+const kindLabels = { note: "Meeting Note", decision: "Decision", action: "Action Item", question: "Open Question" };
+const catClass = getCategoryClass(rec.category);
+const statuses = ["In Progress", "Completed", "Pending", "Blocked"];
+const statusOptions = statuses.map(s =>
+`<option value="${s}" ${rec.status === s ? "selected" : ""}>${s}</option>`
+).join("");
+const otherApps = (rec.appIds || []).filter(id => id !== currentAppId).map(id => {
+const a = portfolioData.find(x => x.id === id);
+return a ? a.name : id;
+});
+const tag = isMindy
+? `<span class="linked-tag" style="background:var(--purple-bg);color:#d2a8ff;border-color:var(--purple-border);">🟣 Mindy Sync${rec.kind && kindLabels[rec.kind] ? " · " + kindLabels[rec.kind] : ""}</span>`
+: `<span class="linked-tag">🔗 Daily Accomplishment</span>`;
+const meetingDay = isMindy && rec.entryDate ? (() => {
+const [y, m, d] = rec.entryDate.split("-").map(Number);
+return new Date(y, m - 1, d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+})() : "";
+return `
+<div class="activity-entry linked-entry ${isLatest ? 'latest-entry' : ''}" ${isMindy ? 'style="border-left-color: var(--purple);"' : ''}>
+<div class="activity-entry-header">
+<div class="activity-entry-badges">
+<span class="cat-badge ${catClass}">${escapeHtml(rec.category || 'Accomplishment')}</span>
+<select class="linked-status-select" onchange="updateLinkedStatus('${rec.id}', this.value)" title="Status (synced across views)">${statusOptions}</select>
+${tag}
+</div>
+<span class="activity-entry-time">${meetingDay ? "Meeting " + escapeHtml(meetingDay) + " · logged " : ""}${escapeHtml(formatIsoTimestamp(rec.createdAt))}</span>
+</div>
+<div class="activity-entry-desc">${escapeHtml(rec.description || '')}</div>
+${rec.nextSteps && rec.nextSteps.trim() ? `
+<div class="activity-entry-next"><strong>↳ Next Steps:</strong> ${escapeHtml(rec.nextSteps)}</div>
+` : ''}
+${otherApps.length ? `<div class="linked-also">Also linked to: ${escapeHtml(otherApps.join(", "))}</div>` : ''}
+${window.DashData ? DashData.trailHtml(DashData.eventsForEntity("record", rec.id), { id: "trail-" + currentAppId + "-" + rec.id }) : ''}
+</div>
+`;
+}
+function getMergedHistory(app) {
+const items = [];
+(app.activityHistory || []).forEach(e => {
+items.push({ kind: "native", ts: Date.parse(e.isoDate) || 0, entry: e });
+});
+getLinkedRecords(app.id).forEach(r => {
+items.push({ kind: "linked", ts: Date.parse(r.createdAt) || 0, entry: r });
+});
+// Most recent first (stable sort keeps native insertion order for ties)
+items.sort((a, b) => b.ts - a.ts);
+return items;
+}
+function renderHistoryItem(item, isLatest, appId) {
+return item.kind === "linked"
+? renderLinkedHistoryEntry(item.entry, isLatest, appId)
+: renderSingleHistoryEntry(item.entry, isLatest);
+}
+function renderAppHistoryHtml(app, isExpanded = false) {
+const history = getMergedHistory(app);
+if (history.length === 0) {
+return `<div class="activity-history-empty">No updates recorded yet. Click <strong>+ Add Update</strong> to log an entry.</div>`;
+}
+// Display most recent update first
+let html = renderHistoryItem(history[0], true, app.id);
+if (history.length > 1) {
+const olderEntries = history.slice(1);
+const olderDisplay = isExpanded ? 'flex' : 'none';
+html += `
+<div class="older-history-wrap" id="older-history-${app.id}" style="display:${olderDisplay};">
+${olderEntries.map(i => renderHistoryItem(i, false, app.id)).join("")}
+</div>
+<div class="history-expand-row">
+<button type="button" class="history-expand-btn" id="expand-btn-${app.id}" onclick="toggleHistoryExpand('${app.id}')">
+${isExpanded ? '▲ Hide older updates' : `▼ View full history (${history.length} total)`}
+</button>
+</div>
+`;
+}
+return html;
+}
+function refreshAppHistory(appId) {
+const app = portfolioData.find(a => a.id === appId);
+const container = document.getElementById(`history-container-${appId}`);
+if (!app || !container) return;
+const older = document.getElementById(`older-history-${appId}`);
+const wasExpanded = Boolean(older && older.style.display === "flex");
+container.innerHTML = renderAppHistoryHtml(app, wasExpanded);
+const badge = document.getElementById(`hist-count-${appId}`);
+if (badge) badge.textContent = getHistoryCount(app);
+updateRowMeta(appId);
+}
+function refreshAllHistories() {
+portfolioData.forEach(a => refreshAppHistory(a.id));
+}
+function updateLinkedStatus(recId, newStatus) {
+loadSharedRecords();
+const rec = sharedRecords.find(r => r.id === recId);
+if (!rec) return;
+const prevStatus = rec.status;
+rec.status = newStatus;
+rec.updatedAt = new Date().toISOString();
+if (newStatus === "Completed") {
+if (!rec.completedAt) rec.completedAt = rec.updatedAt;
+} else {
+rec.completedAt = null;
+}
+localStorage.setItem(RECORDS_KEY, JSON.stringify(sharedRecords));
+if (window.DashData) DashData.logChange({ type: "record", entityId: rec.id, appIds: rec.appIds || [], field: "status", from: prevStatus, to: newStatus, label: rec.description });
+(rec.appIds || []).forEach(refreshAppHistory);
+showToast("Status updated (synced with Daily Accomplishments)");
+}
+// Keep views synchronized when records change in another tab/page
+window.addEventListener("storage", (e) => {
+if (e.key === RECORDS_KEY) {
+loadSharedRecords();
+refreshAllHistories();
+filterApps();
+}
+if (e.key === "app_support_portfolio_v3" || e.key === "app_support_portfolio_v2") {
+syncFlagsFromStorage();
+}
+});
+document.addEventListener("visibilitychange", () => {
+if (!document.hidden) {
+loadSharedRecords();
+refreshAllHistories();
+syncFlagsFromStorage();
+filterApps();
+}
+});
+// Pull flag changes made on another page (e.g. "Mark Discussion Resolved" on the Mindy page)
+// into memory WITHOUT re-rendering the whole board, so nothing being typed is lost and the
+// 15s auto-save can never write a stale flag back over a newer one.
+function syncFlagsFromStorage() {
+let stored = null;
+try {
+stored = JSON.parse(localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || "null");
+} catch (err) { stored = null; }
+if (!Array.isArray(stored)) return;
+let changed = false;
+stored.forEach(s => {
+const app = portfolioData.find(a => a.id === s.id);
+if (!app) return;
+const fu = normalizeYesNo(s.followUp);
+const dm = normalizeYesNo(s.discussWithMindy);
+let touched = false;
+if (app.followUp !== fu || app.discussWithMindy !== dm) {
+app.followUp = fu;
+app.discussWithMindy = dm;
+touched = true;
+}
+// Stakeholder-sync fields are edited on the Monthly Sync Hub page. Pull them in too, otherwise
+// this page's 15-second autosave would write its older copy back over the newer notes.
+const notes = s.monthlySyncNotes !== undefined ? s.monthlySyncNotes : app.monthlySyncNotes;
+const sdate = s.lastSyncDate !== undefined ? s.lastSyncDate : app.lastSyncDate;
+if (notes !== app.monthlySyncNotes || sdate !== app.lastSyncDate) {
+app.monthlySyncNotes = notes;
+app.lastSyncDate = sdate;
+const card = document.getElementById(`card-${app.id}`);
+if (card) {
+const ta = card.querySelector(".sync-notes-input");
+const di = card.querySelector(".sync-date-row input[type=date]");
+if (ta && document.activeElement !== ta) ta.value = notes || "";
+if (di && document.activeElement !== di) di.value = sdate || "";
+}
+touched = true;
+}
+if (touched) {
+refreshCardVisuals(app.id);
+changed = true;
+}
+});
+if (changed) {
+updateMetrics();
+highlightActiveKpi();
+filterApps();
+}
+}
+function toggleAddUpdateForm(appId, explicitState) {
+const form = document.getElementById(`update-form-${appId}`);
+if (!form) return;
+const willShow = explicitState !== undefined ? explicitState : (form.style.display === "none" || form.style.display === "");
+if (willShow) {
+form.style.display = "flex";
+const timePreview = document.getElementById(`update-time-preview-${appId}`);
+if (timePreview) timePreview.textContent = `Auto Date: ${formatCurrentDateTime()}`;
+const descField = document.getElementById(`update-desc-${appId}`);
+if (descField) descField.focus();
+} else {
+form.style.display = "none";
+}
+}
+function toggleHistoryExpand(appId) {
+const olderWrap = document.getElementById(`older-history-${appId}`);
+const btn = document.getElementById(`expand-btn-${appId}`);
+if (!olderWrap || !btn) return;
+const app = portfolioData.find(a => a.id === appId);
+const totalCount = app ? getHistoryCount(app) : 0;
+if (olderWrap.style.display === "none" || olderWrap.style.display === "") {
+olderWrap.style.display = "flex";
+btn.textContent = "▲ Hide older updates";
+} else {
+olderWrap.style.display = "none";
+btn.textContent = `▼ View full history (${totalCount} total)`;
+}
+}
+function submitAppUpdate(appId) {
+const app = portfolioData.find(a => a.id === appId);
+if (!app) return;
+const descField = document.getElementById(`update-desc-${appId}`);
+const catField = document.getElementById(`update-cat-${appId}`);
+const statusField = document.getElementById(`update-status-${appId}`);
+const nextField = document.getElementById(`update-next-${appId}`);
+const description = descField ? descField.value.trim() : "";
+if (!description) {
+alert("Please enter an activity description before saving.");
+if (descField) descField.focus();
+return;
+}
+const category = catField ? catField.value : "Update";
+const status = statusField ? statusField.value : "In Progress";
+const nextSteps = nextField ? nextField.value.trim() : "";
+const newEntry = {
+id: "act_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+timestamp: formatCurrentDateTime(),
+isoDate: new Date().toISOString(),
+category: category,
+status: status,
+description: description,
+nextSteps: nextSteps
+};
+if (!Array.isArray(app.activityHistory)) {
+app.activityHistory = [];
+}
+// Prepend newest update
+app.activityHistory.unshift(newEntry);
+app.lastUpdate = "Updated now";
+saveAll(false);
+// Re-render history container
+const container = document.getElementById(`history-container-${appId}`);
+if (container) {
+container.innerHTML = renderAppHistoryHtml(app, false);
+}
+const countBadge = document.getElementById(`hist-count-${appId}`);
+if (countBadge) {
+countBadge.textContent = getHistoryCount(app);
+}
+updateRowMeta(appId);
+// Reset & close form
+if (descField) descField.value = "";
+if (nextField) nextField.value = "";
+toggleAddUpdateForm(appId, false);
+updateUnsavedUI(appId);
+showToast(`Activity logged for ${app.name}`);
+}
+function setAppFollowUp(appId, val) {
+const app = portfolioData.find(a => a.id === appId);
+if (app) {
+const prev = app.followUp;
+app.followUp = val;
+if (window.DashData) DashData.logChange({ type: "flag", entityId: app.id, appIds: [app.id], field: "followUp", from: prev, to: val, label: app.name });
+app.lastUpdate = "Updated now";
+saveAll(false);
+refreshCardVisuals(appId);
+updateMetrics();
+filterApps();
+showToast(`${app.name}: Follow Up set to ${val}`);
+}
+}
+function setAppDiscussWithMindy(appId, val) {
+const app = portfolioData.find(a => a.id === appId);
+if (app) {
+const prev = app.discussWithMindy;
+app.discussWithMindy = val;
+if (window.DashData) DashData.logChange({ type: "flag", entityId: app.id, appIds: [app.id], field: "discussWithMindy", from: prev, to: val, label: app.name });
+app.lastUpdate = "Updated now";
+saveAll(false);
+refreshCardVisuals(appId);
+updateMetrics();
+filterApps();
+showToast(`${app.name}: Discuss with Mindy set to ${val}`);
+}
+}
+function updateAppActivity(appId, newActivity) {
+const app = portfolioData.find(a => a.id === appId);
+if (app) {
+app.activity = newActivity;
+app.lastUpdate = "Updated now";
+saveAll(false);
+}
+}
+function updateAppSyncNotes(appId, val) {
+const app = portfolioData.find(a => a.id === appId);
+if (app) {
+app.monthlySyncNotes = val;
+app.lastUpdate = "Updated now";
+saveAll(false);
+refreshCardVisuals(appId);
+updateMetrics();
+}
+}
+function updateAppSyncDate(appId, val) {
+const app = portfolioData.find(a => a.id === appId);
+if (app) {
+app.lastSyncDate = val;
+saveAll(false);
+}
+}
+function refreshCardVisuals(appId) {
+const app = portfolioData.find(a => a.id === appId);
+if (!app) return;
+const card = document.getElementById(`card-${appId}`);
+if (card) {
+card.className = cardClassName(app);
+card.dataset.followup = app.followUp;
+card.dataset.mindy = app.discussWithMindy;
+const hasSync = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
+const ftEl = document.getElementById(`flagtrail-${appId}`);
+if (ftEl) ftEl.innerHTML = flagTrailHtml(appId);
+updateRowMeta(appId);
+// Flags row
+const flagsRow = document.getElementById(`flags-${appId}`);
+if (flagsRow) {
+let flagsHtml = "";
+if (app.followUp === "Yes") {
+flagsHtml += '<span class="flag-tag flag-followup">⚡ Follow Up Needed</span>';
+}
+if (app.discussWithMindy === "Yes") {
+flagsHtml += '<span class="flag-tag flag-mindy">🟣 Discuss with Mindy</span>';
+}
+if (hasSync) {
+flagsHtml += '<span class="flag-tag flag-sync">🤝 Monthly Sync Captured</span>';
+}
+flagsRow.innerHTML = flagsHtml;
+}
+// Follow up segmented control
+const followSeg = document.getElementById(`followup-seg-${appId}`);
+if (followSeg) {
+const isYes = app.followUp === "Yes";
+followSeg.innerHTML = `
+<button type="button" class="seg-btn ${!isYes ? 'active-no' : ''}" onclick="setAppFollowUp('${app.id}', 'No')">No</button>
+<button type="button" class="seg-btn ${isYes ? 'active-orange' : ''}" onclick="setAppFollowUp('${app.id}', 'Yes')">⚡ Yes</button>
+`;
+}
+const followBadge = document.getElementById(`followup-badge-${appId}`);
+if (followBadge) {
+followBadge.textContent = app.followUp;
+followBadge.style.color = app.followUp === 'Yes' ? 'var(--orange)' : 'var(--text-muted)';
+}
+// Mindy segmented control
+const mindySeg = document.getElementById(`mindy-seg-${appId}`);
+if (mindySeg) {
+const isMindyYes = app.discussWithMindy === "Yes";
+mindySeg.innerHTML = `
+<button type="button" class="seg-btn ${!isMindyYes ? 'active-no' : ''}" onclick="setAppDiscussWithMindy('${app.id}', 'No')">No</button>
+<button type="button" class="seg-btn ${isMindyYes ? 'active-purple' : ''}" onclick="setAppDiscussWithMindy('${app.id}', 'Yes')">🟣 Yes</button>
+`;
+}
+const mindyBadge = document.getElementById(`mindy-badge-${appId}`);
+if (mindyBadge) {
+mindyBadge.textContent = app.discussWithMindy;
+mindyBadge.style.color = app.discussWithMindy === 'Yes' ? 'var(--purple)' : 'var(--text-muted)';
+}
+}
+}
+// ---- Unsaved-state tracking ----
+// Notes, toggles and sync notes are written to storage on every keystroke/click (see the handlers),
+// so they are never "pending". The only things that can be unsaved are:
+//   1) Add Update drafts (text typed into an update form but not yet saved with "Save Update"), and
+//   2) a failed storage write (e.g. browser storage full), where edits exist only on screen.
+let saveFailed = false;
+function draftHasText(appId) {
+const d = document.getElementById(`update-desc-${appId}`);
+const n = document.getElementById(`update-next-${appId}`);
+return Boolean((d && String(d.value).trim()) || (n && String(n.value).trim()));
+}
+function draftApps() {
+return portfolioData.filter(a => draftHasText(a.id));
+}
+function hasUnsavedChanges() {
+return saveFailed || draftApps().length > 0;
+}
+// Updates the "✎ Unsaved draft" chip on a row (when appId is given) and the indicator next to Save Changes
+function updateUnsavedUI(appId) {
+const ids = appId ? [appId] : portfolioData.map(a => a.id);
+ids.forEach(id => {
+const chip = document.getElementById(`rowdraft-${id}`);
+if (chip) chip.style.display = draftHasText(id) ? "inline-flex" : "none";
+});
+const ind = document.getElementById("unsavedIndicator");
+if (!ind) return;
+const n = draftApps().length;
+if (saveFailed) {
+ind.className = "unsaved-indicator error";
+ind.textContent = "⚠ Not saved to this browser";
+ind.style.display = "inline";
+} else if (n) {
+ind.className = "unsaved-indicator";
+ind.textContent = `✎ ${n} unsaved update draft${n > 1 ? "s" : ""}`;
+ind.style.display = "inline";
+} else {
+ind.style.display = "none";
+ind.textContent = "";
+}
+}
+// Cancel is an explicit choice to discard, so it asks first when there is text to lose.
+function cancelAddUpdate(appId) {
+if (draftHasText(appId) && !confirm("Discard this update draft? The text you typed will be lost.")) return;
+const d = document.getElementById(`update-desc-${appId}`);
+const n = document.getElementById(`update-next-${appId}`);
+if (d) d.value = "";
+if (n) n.value = "";
+toggleAddUpdateForm(appId, false);
+updateUnsavedUI(appId);
+}
+function resetDraftNote() {
+const n = draftApps().length;
+return n ? `⚠ ${n} unsaved update draft${n > 1 ? "s" : ""} will also be discarded.\n\n` : "";
+}
+// Writes the whole portfolio (every application, expanded or collapsed) and verifies it by reading it back.
+function saveAll(showNotification) {
+let ok = true;
+try {
+const out = JSON.stringify(portfolioData);
+localStorage.setItem("app_support_portfolio_v3", out);
+localStorage.setItem("app_support_portfolio_v2", out);
+ok = localStorage.getItem("app_support_portfolio_v3") === out && localStorage.getItem("app_support_portfolio_v2") === out;
+} catch (e) {
+ok = false;
+}
+saveFailed = !ok;
+updateUnsavedUI();
+if (showNotification) {
+if (!ok) {
+alert("Your changes could NOT be saved to this browser (storage may be full or blocked).\n\nThey are still on screen. Use 💾 Data to export a backup, or free some browser storage, then click Save Changes again.");
+} else {
+const n = draftApps().length;
+showToast(n
+? `Saved. ${n} update draft${n > 1 ? "s" : ""} not added yet. Click Save Update on each to keep ${n > 1 ? "them" : "it"}.`
+: "Portfolio changes saved!");
+}
+}
+return ok;
+}
+// Warn before leaving (closing the tab, refreshing, or following a link) while something is unsaved.
+// Browsers show their own generic wording; custom text is not allowed.
+window.addEventListener("beforeunload", (e) => {
+if (!hasUnsavedChanges()) return;
+e.preventDefault();
+e.returnValue = "";
+});
+function resetDefaultsConfirm() {
+if (confirm(resetDraftNote() + "Reset application portfolio back to default state?\n\nCustom notes and activity history on the cards will be cleared. A backup file is downloaded and a restore point is saved first, so this can be undone from 💾 Data.")) {
+if (window.DashData && !DashData.safeguard("Before Reset Portfolio")) {
+alert("Reset cancelled: a restore point could not be saved (browser storage may be full). Your data was not changed.");
+return;
+}
+portfolioData = JSON.parse(JSON.stringify(DEFAULT_PORTFOLIO));
+renderPortfolio();
+updateMetrics();
+setQuickFilter('ALL');
+saveAll(true);
+}
+}
+function onFilterDropdownChange() {
+highlightActiveKpi();
+filterApps();
+}
+function setQuickFilter(mode) {
+if (mode === 'ALL') {
+document.getElementById("followUpFilter").value = "ALL";
+document.getElementById("mindyFilter").value = "ALL";
+document.getElementById("stageFilter").value = "ALL";
+document.getElementById("notesFilter").value = "ALL";
+if (document.getElementById("buFilter")) document.getElementById("buFilter").value = "ALL";
+} else if (mode === 'FOLLOWUP') {
+document.getElementById("followUpFilter").value = "YES";
+document.getElementById("mindyFilter").value = "ALL";
+document.getElementById("stageFilter").value = "ALL";
+document.getElementById("notesFilter").value = "ALL";
+} else if (mode === 'MINDY') {
+document.getElementById("mindyFilter").value = "YES";
+document.getElementById("followUpFilter").value = "ALL";
+document.getElementById("stageFilter").value = "ALL";
+document.getElementById("notesFilter").value = "ALL";
+} else if (mode === 'SYNC') {
+document.getElementById("notesFilter").value = "WITH_SYNC";
+document.getElementById("followUpFilter").value = "ALL";
+document.getElementById("mindyFilter").value = "ALL";
+document.getElementById("stageFilter").value = "ALL";
+} else if (mode === 'LIVE') {
+document.getElementById("stageFilter").value = "LIVE";
+document.getElementById("followUpFilter").value = "ALL";
+document.getElementById("mindyFilter").value = "ALL";
+document.getElementById("notesFilter").value = "ALL";
+} else if (mode === 'ONBOARDING') {
+document.getElementById("stageFilter").value = "ONBOARDING";
+document.getElementById("followUpFilter").value = "ALL";
+document.getElementById("mindyFilter").value = "ALL";
+document.getElementById("notesFilter").value = "ALL";
+}
+highlightActiveKpi();
+filterApps();
+}
+function highlightActiveKpi() {
+const followVal = document.getElementById("followUpFilter").value;
+const mindyVal = document.getElementById("mindyFilter").value;
+const stageVal = document.getElementById("stageFilter").value;
+const notesVal = document.getElementById("notesFilter").value;
+document.getElementById("kpiCardAll").className = "kpi-card";
+document.getElementById("kpiCardFollowUp").className = "kpi-card";
+document.getElementById("kpiCardMindy").className = "kpi-card";
+document.getElementById("kpiCardSync").className = "kpi-card";
+document.getElementById("kpiCardLive").className = "kpi-card";
+document.getElementById("kpiCardOnboarding").className = "kpi-card";
+const banner = document.getElementById("filterBanner");
+const bannerText = document.getElementById("filterBannerText");
+if (notesVal === "WITH_SYNC") {
+document.getElementById("kpiCardSync").className = "kpi-card active-filter";
+banner.style.display = "flex";
+banner.className = "filter-banner";
+bannerText.innerHTML = "🤝 Showing only applications with <strong>Monthly Stakeholder Sync Notes</strong>";
+} else if (followVal === "YES" && mindyVal === "ALL" && stageVal === "ALL") {
+document.getElementById("kpiCardFollowUp").className = "kpi-card active-filter-orange";
+banner.style.display = "flex";
+banner.className = "filter-banner banner-orange";
+bannerText.innerHTML = "⚡ Showing only applications where <strong>Follow Up = Yes</strong>";
+} else if (mindyVal === "YES" && followVal === "ALL" && stageVal === "ALL") {
+document.getElementById("kpiCardMindy").className = "kpi-card active-filter-purple";
+banner.style.display = "flex";
+banner.className = "filter-banner banner-purple";
+bannerText.innerHTML = "🟣 Showing only applications tagged for <strong>Discuss with Mindy</strong>";
+} else if (stageVal === "LIVE" && followVal === "ALL" && mindyVal === "ALL") {
+document.getElementById("kpiCardLive").className = "kpi-card active-filter";
+banner.style.display = "flex";
+banner.className = "filter-banner";
+bannerText.innerHTML = "Showing only <strong>Live Portfolio</strong> applications";
+} else if (stageVal === "ONBOARDING" && followVal === "ALL" && mindyVal === "ALL") {
+document.getElementById("kpiCardOnboarding").className = "kpi-card active-filter";
+banner.style.display = "flex";
+banner.className = "filter-banner";
+bannerText.innerHTML = "Showing only <strong>Onboarding Pipeline</strong> applications";
+} else if (followVal === "ALL" && mindyVal === "ALL" && stageVal === "ALL" && notesVal === "ALL") {
+document.getElementById("kpiCardAll").className = "kpi-card active-filter";
+banner.style.display = "none";
+} else {
+banner.style.display = "flex";
+banner.className = "filter-banner";
+bannerText.innerHTML = "Active custom filter combination applied";
+}
+}
+function filterApps() {
+const searchQuery = (document.getElementById("appSearchInput").value || "").toLowerCase().trim();
+const followUpVal = document.getElementById("followUpFilter").value.toUpperCase();
+const mindyVal = document.getElementById("mindyFilter").value.toUpperCase();
+const buVal = document.getElementById("buFilter") ? document.getElementById("buFilter").value : "ALL";
+const stageVal = document.getElementById("stageFilter").value.toUpperCase();
+const notesVal = document.getElementById("notesFilter").value.toUpperCase();
+let visibleCount = 0;
+let visibleLive = 0;
+let visibleOnboarding = 0;
+const cards = document.querySelectorAll(".app-card");
+cards.forEach(card => {
+const id = card.dataset.id;
+const app = portfolioData.find(a => a.id === id);
+if (!app) return;
+// Search check
+let matchesSearch = true;
+if (searchQuery.length > 0) {
+const inHistory = [...(app.activityHistory || []), ...getLinkedRecords(app.id)].some(h =>
+(h.description && h.description.toLowerCase().includes(searchQuery)) ||
+(h.category && h.category.toLowerCase().includes(searchQuery)) ||
+(h.status && h.status.toLowerCase().includes(searchQuery)) ||
+(h.nextSteps && h.nextSteps.toLowerCase().includes(searchQuery))
+);
+matchesSearch = app.name.toLowerCase().includes(searchQuery) ||
+(app.activity && app.activity.toLowerCase().includes(searchQuery)) ||
+(app.monthlySyncNotes && app.monthlySyncNotes.toLowerCase().includes(searchQuery)) ||
+(app.businessUnit && app.businessUnit.toLowerCase().includes(searchQuery)) ||
+Boolean(inHistory);
+}
+// Business Unit check
+let matchesBU = (buVal === "ALL") || (app.businessUnit === buVal);
+// Follow Up check
+const isFollowYes = (app.followUp === "Yes" || app.followUp === "YES" || app.followUp === true);
+let matchesFollowUp = true;
+if (followUpVal === "YES") {
+matchesFollowUp = isFollowYes;
+} else if (followUpVal === "NO") {
+matchesFollowUp = !isFollowYes;
+}
+// Discuss with Mindy check
+const isMindyYes = (app.discussWithMindy === "Yes" || app.discussWithMindy === "YES" || app.discussWithMindy === true);
+let matchesMindy = true;
+if (mindyVal === "YES") {
+matchesMindy = isMindyYes;
+} else if (mindyVal === "NO") {
+matchesMindy = !isMindyYes;
+}
+// Stage check
+let matchesStage = true;
+if (stageVal !== "ALL") {
+matchesStage = app.stage.toUpperCase() === stageVal;
+}
+// Notes check
+let matchesNotes = true;
+if (notesVal === "WITH_NOTES") {
+matchesNotes = Boolean(app.activity && app.activity.trim().length > 0);
+} else if (notesVal === "WITH_HISTORY") {
+matchesNotes = getHistoryCount(app) > 0;
+} else if (notesVal === "WITH_SYNC") {
+matchesNotes = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
+}
+if (matchesSearch && matchesBU && matchesFollowUp && matchesMindy && matchesStage && matchesNotes) {
+card.style.display = "flex";
+visibleCount++;
+if (app.stage === "LIVE") visibleLive++;
+else visibleOnboarding++;
+} else {
+card.style.display = "none";
+}
+});
+document.getElementById("liveSectionCount").textContent = visibleLive;
+document.getElementById("onboardingSectionCount").textContent = visibleOnboarding;
+document.getElementById("liveSectionWrapper").style.display = (visibleLive === 0 && stageVal === "ONBOARDING") ? "none" : "block";
+document.getElementById("onboardingSectionWrapper").style.display = (visibleOnboarding === 0 && stageVal === "LIVE") ? "none" : "block";
+document.getElementById("filterCountDisplay").textContent = `Showing ${visibleCount} of ${portfolioData.length} applications`;
+}
+function updateMetrics() {
+const total = portfolioData.length;
+document.getElementById("kpiTotalApps").innerHTML = `${total} <span class="kpi-sub">Apps</span>`;
+const followUpApps = portfolioData.filter(a => a.followUp === "Yes" || a.followUp === "YES");
+const mindyApps = portfolioData.filter(a => a.discussWithMindy === "Yes" || a.discussWithMindy === "YES");
+const syncApps = portfolioData.filter(a => a.monthlySyncNotes && a.monthlySyncNotes.trim().length > 0);
+const followUpCountEl = document.getElementById("kpiFollowUpCount");
+followUpCountEl.innerHTML = `${followUpApps.length} <span class="kpi-sub" style="color:var(--text-muted)">apps</span>`;
+document.getElementById("kpiFollowUpLabel").textContent = followUpApps.length > 0
+? `${followUpApps.length} flagged · Click to view`
+: "Click to filter follow-ups";
+const mindyCountEl = document.getElementById("kpiMindyCount");
+mindyCountEl.innerHTML = `${mindyApps.length} <span class="kpi-sub" style="color:var(--text-muted)">items</span>`;
+document.getElementById("kpiMindyLabel").textContent = mindyApps.length > 0
+? `${mindyApps.length} flagged · Click to view`
+: "Click to filter Mindy items";
+const syncCountEl = document.getElementById("kpiSyncCount");
+syncCountEl.innerHTML = `${syncApps.length} <span class="kpi-sub" style="color:var(--text-muted)">apps</span>`;
+document.getElementById("kpiSyncLabel").textContent = syncApps.length > 0
+? `${syncApps.length} logged · Click to view`
+: "Click to filter sync notes";
+const liveApps = portfolioData.filter(a => a.stage === "LIVE");
+document.getElementById("kpiLiveCount").textContent = liveApps.length;
+const onboardingApps = portfolioData.filter(a => a.stage === "ONBOARDING");
+document.getElementById("kpiOnboardingCount").textContent = onboardingApps.length;
+}
+function showToast(msg) {
+const toast = document.getElementById("toastNotification");
+toast.textContent = msg;
+toast.style.display = "block";
+setTimeout(() => { toast.style.display = "none"; }, 2500);
+}
+setInterval(() => { saveAll(false); }, 15000);
+window.onload = init;
+</script>
 </body>
 </html>
