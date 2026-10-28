@@ -668,6 +668,20 @@
   <script>
     let portfolioData = [];
     let mindyStore = { activeId: null, meetings: [] };
+    function curMindy() {
+      let m = mindyStore.meetings.find(x => x.id === mindyStore.activeId);
+      if (!m && mindyStore.meetings.length > 0) {
+        m = mindyStore.meetings[mindyStore.meetings.length - 1];
+        mindyStore.activeId = m.id;
+      }
+      if (!m) {
+        m = { id: "mindy_" + Date.now(), date: localToday(), agendaItems: [], decisionItems: [], actionItems: [] };
+        mindyStore.meetings.push(m);
+        mindyStore.activeId = m.id;
+      }
+      return m;
+    }
+
     let mindyHistory = []; // legacy support array (replaced)
 
     /* ---- Shared record store (same store used by the Portfolio and Daily pages) ----
@@ -817,7 +831,6 @@
     }
 
     
-    let mindyHistory = [];
 
     function loadMindyNotes() {
       try {
@@ -993,11 +1006,14 @@
 
     
 
+    function saveMindyStore() {
+      localStorage.setItem("app_support_mindy_meetings_v2", JSON.stringify(mindyStore));
+    }
+    
     function autoSaveMindyNotes() {
-      
-      
-      localStorage.setItem("app_support_mindy_notes_v1", JSON.stringify(curMindy()));
-      document.getElementById("agendaSaveTime").textContent = "Saved " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      saveMindyStore();
+      const el = document.getElementById("agendaSaveTime");
+      if (el) el.textContent = "Saved " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     }
 
     function saveMindyNotes(showToastMsg) {
@@ -1159,7 +1175,226 @@
         </div>`;
     }
 
+    
+    
+    function renderDecisionsAndActions() {
+      const decContainer = document.getElementById("mindyDecisionsContainer");
+      const actContainer = document.getElementById("mindyActionsContainer");
+      if (!decContainer || !actContainer) return;
+      
+      const m = curMindy();
+      if (!m.decisionItems) m.decisionItems = [];
+      if (!m.actionItems) m.actionItems = [];
+      
+      const appOptions = `<option value="">-- Select Application --</option>` + portfolioData.map(a => `<option value="${esc(a.id)}">${esc(a.name)}</option>`).join("");
+      
+      decContainer.innerHTML = m.decisionItems.map(d => `
+        <div class="agenda-item" data-id="${esc(d.id)}">
+          <div class="agenda-item-header">
+            <input type="text" class="agenda-input title" value="${esc(d.description)}" placeholder="Decision description..." oninput="updateDecision('${esc(d.id)}', 'description', this.value)">
+            <div class="agenda-tools">
+              <button class="agenda-btn danger" onclick="removeDecision('${esc(d.id)}')">×</button>
+            </div>
+          </div>
+          <div class="agenda-item-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <select class="agenda-select" onchange="updateDecision('${esc(d.id)}', 'appId', this.value)">
+                ${appOptions.replace(`value="${esc(d.appId)}"`, `value="${esc(d.appId)}" selected`)}
+              </select>
+            </div>
+          </div>
+        </div>
+      `).join("");
+      
+      actContainer.innerHTML = m.actionItems.map(a => `
+        <div class="agenda-item" data-id="${esc(a.id)}">
+          <div class="agenda-item-header">
+            <input type="text" class="agenda-input title" value="${esc(a.description)}" placeholder="Action item description..." oninput="updateAction('${esc(a.id)}', 'description', this.value)">
+            <div class="agenda-tools">
+              <button class="agenda-btn danger" onclick="removeAction('${esc(a.id)}')">×</button>
+            </div>
+          </div>
+          <div class="agenda-item-body">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <select class="agenda-select" onchange="updateAction('${esc(a.id)}', 'appId', this.value)">
+                ${appOptions.replace(`value="${esc(a.appId)}"`, `value="${esc(a.appId)}" selected`)}
+              </select>
+              <input type="text" class="agenda-select" placeholder="Owner" style="width:100px;" value="${esc(a.owner)}" oninput="updateAction('${esc(a.id)}', 'owner', this.value)">
+              <input type="date" class="agenda-select" style="padding: 2px 4px;" value="${esc(a.due)}" onchange="updateAction('${esc(a.id)}', 'due', this.value)">
+              <select class="agenda-select" onchange="updateAction('${esc(a.id)}', 'status', this.value)">
+                ${["Pending", "In Progress", "Blocked", "Completed", "Resolved"].map(st => `<option ${a.status === st ? 'selected' : ''}>${st}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+    
+    function addDecisionItem() {
+      const m = curMindy();
+      if (!m.decisionItems) m.decisionItems = [];
+      m.decisionItems.push({
+        id: "dec_" + Date.now() + Math.random().toString(36).slice(2, 6),
+        description: "",
+        appId: ""
+      });
+      autoSaveMindyNotes();
+      renderDecisionsAndActions();
+    }
+    
+    function updateDecision(id, field, value) {
+      const m = curMindy();
+      const item = (m.decisionItems || []).find(x => x.id === id);
+      if (item) { item[field] = value; autoSaveMindyNotes(); }
+    }
+    
+    function removeDecision(id) {
+      const m = curMindy();
+      m.decisionItems = (m.decisionItems || []).filter(x => x.id !== id);
+      autoSaveMindyNotes();
+      renderDecisionsAndActions();
+    }
+
+    function addActionItem() {
+      const m = curMindy();
+      if (!m.actionItems) m.actionItems = [];
+      m.actionItems.push({
+        id: "act_" + Date.now() + Math.random().toString(36).slice(2, 6),
+        description: "",
+        owner: "",
+        due: "",
+        appId: "",
+        status: "Pending"
+      });
+      autoSaveMindyNotes();
+      renderDecisionsAndActions();
+    }
+    
+    function updateAction(id, field, value) {
+      const m = curMindy();
+      const item = (m.actionItems || []).find(x => x.id === id);
+      if (item) { item[field] = value; autoSaveMindyNotes(); }
+    }
+    
+    function removeAction(id) {
+      const m = curMindy();
+      m.actionItems = (m.actionItems || []).filter(x => x.id !== id);
+      autoSaveMindyNotes();
+      renderDecisionsAndActions();
+    }
+
+    function renderAgenda() {
+      const container = document.getElementById("mindyAgendaContainer");
+      if (!container) return;
+      
+      const m = curMindy();
+      
+      if (!m.agendaItems) {
+        m.agendaItems = [];
+      }
+      
+      const appOptions = `<option value="">-- Select Application --</option>` + portfolioData.map(a => `<option value="${esc(a.id)}">${esc(a.name)}</option>`).join("");
+      
+      container.innerHTML = m.agendaItems.map((ag, idx) => `
+        <div class="agenda-item" data-id="${esc(ag.id)}" draggable="true" ondragstart="agendaDragStart(event, ${idx})" ondragover="agendaDragOver(event)" ondrop="agendaDrop(event, ${idx})">
+          <div class="agenda-item-header">
+            <span class="agenda-drag" title="Drag to reorder">⋮⋮</span>
+            <input type="text" class="agenda-input title" value="${esc(ag.title)}" placeholder="Topic Title" oninput="updateAgendaItem('${esc(ag.id)}', 'title', this.value)">
+            <div class="agenda-tools">
+              <button class="agenda-btn danger" onclick="removeAgendaItem('${esc(ag.id)}')">×</button>
+            </div>
+          </div>
+          <div class="agenda-item-body">
+            <textarea class="agenda-input" placeholder="Discussion details..." rows="2" style="resize:vertical;" oninput="updateAgendaItem('${esc(ag.id)}', 'details', this.value)">${esc(ag.details)}</textarea>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <select class="agenda-select" onchange="updateAgendaItem('${esc(ag.id)}', 'appId', this.value)">
+                ${appOptions.replace(`value="${esc(ag.appId)}"`, `value="${esc(ag.appId)}" selected`)}
+              </select>
+              <select class="agenda-select" onchange="updateAgendaItem('${esc(ag.id)}', 'priority', this.value)">
+                ${["Low", "Medium", "High", "Critical"].map(p => `<option ${ag.priority === p ? 'selected' : ''}>${p}</option>`).join("")}
+              </select>
+              <select class="agenda-select" onchange="updateAgendaItem('${esc(ag.id)}', 'status', this.value)">
+                ${["Open", "Discussed", "Deferred", "Resolved"].map(st => `<option ${ag.status === st ? 'selected' : ''}>${st}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+        </div>
+      `).join("");
+      
+      renderAgendaSuggestions();
+      
+      if(typeof renderDecisionsAndActions === 'function') {
+         renderDecisionsAndActions();
+      }
+    }
+    
+    function addAgendaItem(appId = "", title = "") {
+      const m = curMindy();
+      if (!m.agendaItems) m.agendaItems = [];
+      m.agendaItems.push({
+        id: "ag_" + Date.now() + Math.random().toString(36).slice(2, 6),
+        title: title,
+        appId: appId,
+        details: "",
+        priority: "Medium",
+        status: "Open"
+      });
+      autoSaveMindyNotes();
+      renderAgenda();
+    }
+    
+    function updateAgendaItem(id, field, value) {
+      const m = curMindy();
+      const item = m.agendaItems.find(a => a.id === id);
+      if (item) {
+        item[field] = value;
+        autoSaveMindyNotes();
+        if (field === 'appId') renderAgendaSuggestions(); // re-eval suggestions
+      }
+    }
+    
+    function removeAgendaItem(id) {
+      const m = curMindy();
+      m.agendaItems = m.agendaItems.filter(a => a.id !== id);
+      autoSaveMindyNotes();
+      renderAgenda();
+    }
+    
+    let agendaDragIndex = null;
+    function agendaDragStart(e, idx) { agendaDragIndex = idx; e.dataTransfer.effectAllowed = "move"; }
+    function agendaDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; }
+    function agendaDrop(e, targetIdx) {
+      e.preventDefault();
+      if (agendaDragIndex === null || agendaDragIndex === targetIdx) return;
+      const m = curMindy();
+      const items = m.agendaItems;
+      const [moved] = items.splice(agendaDragIndex, 1);
+      items.splice(targetIdx, 0, moved);
+      autoSaveMindyNotes();
+      renderAgenda();
+    }
+    
+    function renderAgendaSuggestions() {
+      const mindyApps = portfolioData.filter(a => a.discussWithMindy === "Yes");
+      const m = curMindy();
+      const currentAppIds = new Set((m.agendaItems || []).map(a => a.appId).filter(Boolean));
+      
+      const suggestions = mindyApps.filter(a => !currentAppIds.has(a.id));
+      
+      const container = document.getElementById("suggestedAgendaContainer");
+      const list = document.getElementById("suggestedAgendaList");
+      if (!container || !list) return;
+      
+      if (suggestions.length === 0) {
+        container.style.display = "none";
+      } else {
+        container.style.display = "block";
+        list.innerHTML = suggestions.map(a => `<span class="suggestion-pill" onclick="addAgendaItem('${esc(a.id)}', 'Discuss: ${esc(a.name)}')">+ ${esc(a.name)}</span>`).join("");
+      }
+    }
+    
     function renderSyncLists() {
+      renderAgenda();
       renderAgenda();
       const mindyListEl = document.getElementById("mindyAppsList");
       const followUpListEl = document.getElementById("followUpAppsList");
@@ -1440,73 +1675,53 @@
 
     function generateExecutiveBriefing() {
       const cur = curMindy();
-      let md = `# Meeting Briefing with Mindy
-`;
+      let md = `# Meeting Briefing with Mindy\n`;
       const dateParts = (cur.date || "").split("-");
       let dateStr = cur.date;
       if(dateParts.length === 3) {
           dateStr = new Date(dateParts[0], dateParts[1]-1, dateParts[2]).toLocaleDateString(undefined, { weekday:"long", month:"long", day:"numeric", year:"numeric" });
       }
-      md += `**Date:** ${dateStr}
+      md += `**Date:** ${dateStr}\n\n`;
 
-`;
-
-      md += `## 📋 Agenda Topics
-`;
+      md += `## 📋 Agenda Topics\n`;
       if (cur.agendaItems && cur.agendaItems.length > 0) {
         cur.agendaItems.forEach(a => {
           md += `- **${esc(a.title)}**`;
           if (a.appId) md += ` (${esc(a.appId)})`;
-          md += ` - *${esc(a.status)}*
-`;
-          if (a.details) md += `  ${esc(a.details).split("
-").join("
-  ")}
-`;
+          md += ` - *${esc(a.status)}*\n`;
+          if (a.details) md += `  ${esc(a.details).split("\\n").join("\\n  ")}\n`;
         });
       } else {
-        md += `_No structured agenda topics recorded._
-`;
+        md += `_No structured agenda topics recorded._\n`;
       }
-      md += `
-`;
+      md += `\n`;
 
-      md += `## ✍️ Key Decisions
-`;
+      md += `## ✍️ Key Decisions\n`;
       if (cur.decisionItems && cur.decisionItems.length > 0) {
         cur.decisionItems.forEach(d => {
           md += `- **${esc(d.description)}**`;
           if (d.appId) md += ` (${esc(d.appId)})`;
-          md += `
-`;
+          md += `\n`;
         });
       } else {
-        md += `_No decisions recorded._
-`;
+        md += `_No decisions recorded._\n`;
       }
-      md += `
-`;
+      md += `\n`;
 
-      md += `## ✅ Action Items & Next Steps
-`;
+      md += `## ✅ Action Items & Next Steps\n`;
       if (cur.actionItems && cur.actionItems.length > 0) {
         cur.actionItems.forEach(a => {
           md += `- **${esc(a.description)}**`;
           if (a.appId) md += ` (${esc(a.appId)})`;
-          md += `
-  *Owner:* ${esc(a.owner || "Unassigned")} | *Due:* ${esc(a.due || "None")} | *Status:* ${esc(a.status)}
-`;
+          md += `\n  *Owner:* ${esc(a.owner || "Unassigned")} | *Due:* ${esc(a.due || "None")} | *Status:* ${esc(a.status)}\n`;
         });
       } else {
-        md += `_No action items recorded._
-`;
+        md += `_No action items recorded._\n`;
       }
-      md += `
-`;
+      md += `\n`;
 
       // Outstanding Blockers
-      md += `## 🚧 Outstanding Blockers & High Priorities
-`;
+      md += `## 🚧 Outstanding Blockers & High Priorities\n`;
       let blockers = [];
       (cur.agendaItems || []).forEach(a => {
         if (a.priority === "Critical" || a.status === "Blocked") {
@@ -1523,12 +1738,9 @@
       });
       
       if (blockers.length > 0) {
-        md += blockers.join("
-") + "
-";
+        md += blockers.join("\\n") + "\\n";
       } else {
-        md += `_No active blockers or critical issues identified._
-`;
+        md += `_No active blockers or critical issues identified._\n`;
       }
 
       document.getElementById("exportContent").value = md;

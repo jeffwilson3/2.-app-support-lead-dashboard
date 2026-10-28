@@ -1296,6 +1296,12 @@
     /* Shared accomplishment records (single source of truth, also used by the Daily Accomplishments page) */
     const RECORDS_KEY = "app_support_accomplishment_records_v1";
     let sharedRecords = [];
+    let meetStore = {};
+    function loadMeetings() {
+      try { meetStore = JSON.parse(localStorage.getItem("app_support_stakeholder_meetings_v1") || "{}"); }
+      catch(e) { meetStore = {}; }
+    }
+
 
     function loadSharedRecords() {
       try {
@@ -1328,6 +1334,7 @@
 
     function init() {
       loadSharedRecords();
+      loadMeetings();
       const savedPortfolio = localStorage.getItem("app_support_portfolio_v3") || localStorage.getItem("app_support_portfolio_v2") || localStorage.getItem("app_support_portfolio_v1");
       if (savedPortfolio) {
         try {
@@ -1399,7 +1406,7 @@
       card.dataset.followup = app.followUp;
       card.dataset.mindy = app.discussWithMindy;
 
-      const hasSync = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
+      const hasSync = getAppMeetings(app.id).length > 0;
 
       const isOpen = openId === app.id;
       card.innerHTML = `
@@ -1828,6 +1835,7 @@
 
     function updateLinkedStatus(recId, newStatus) {
       loadSharedRecords();
+      loadMeetings();
       const rec = sharedRecords.find(r => r.id === recId);
       if (!rec) return;
       const prevStatus = rec.status;
@@ -1848,6 +1856,7 @@
     window.addEventListener("storage", (e) => {
       if (e.key === RECORDS_KEY) {
         loadSharedRecords();
+      loadMeetings();
         refreshAllHistories();
         filterApps();
       }
@@ -1858,6 +1867,7 @@
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden) {
         loadSharedRecords();
+      loadMeetings();
         refreshAllHistories();
         syncFlagsFromStorage();
         filterApps();
@@ -1885,22 +1895,7 @@
           app.discussWithMindy = dm;
           touched = true;
         }
-        // Stakeholder-sync fields are edited on the Monthly Sync Hub page. Pull them in too, otherwise
-        // this page's 15-second autosave would write its older copy back over the newer notes.
-        const notes = s.monthlySyncNotes !== undefined ? s.monthlySyncNotes : app.monthlySyncNotes;
-        const sdate = s.lastSyncDate !== undefined ? s.lastSyncDate : app.lastSyncDate;
-        if (notes !== app.monthlySyncNotes || sdate !== app.lastSyncDate) {
-          app.monthlySyncNotes = notes;
-          app.lastSyncDate = sdate;
-          const card = document.getElementById(`card-${app.id}`);
-          if (card) {
-            const ta = card.querySelector(".sync-notes-input");
-            const di = card.querySelector(".sync-date-row input[type=date]");
-            if (ta && document.activeElement !== ta) ta.value = notes || "";
-            if (di && document.activeElement !== di) di.value = sdate || "";
-          }
-          touched = true;
-        }
+        
         if (touched) {
           refreshCardVisuals(app.id);
           changed = true;
@@ -2043,24 +2038,9 @@
       }
     }
 
-    function updateAppSyncNotes(appId, val) {
-      const app = portfolioData.find(a => a.id === appId);
-      if (app) {
-        app.monthlySyncNotes = val;
-        app.lastUpdate = "Updated now";
-        saveAll(false);
-        refreshCardVisuals(appId);
-        updateMetrics();
-      }
-    }
+    function updateAppSyncNotes(appId, val) { /* Deprecated */ }
 
-    function updateAppSyncDate(appId, val) {
-      const app = portfolioData.find(a => a.id === appId);
-      if (app) {
-        app.lastSyncDate = val;
-        saveAll(false);
-      }
-    }
+    function updateAppSyncDate(appId, val) { /* Deprecated */ }
 
     function refreshCardVisuals(appId) {
       const app = portfolioData.find(a => a.id === appId);
@@ -2072,7 +2052,7 @@
         card.dataset.followup = app.followUp;
         card.dataset.mindy = app.discussWithMindy;
 
-        const hasSync = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
+        const hasSync = getAppMeetings(app.id).length > 0;
 
         const ftEl = document.getElementById(`flagtrail-${appId}`);
         if (ftEl) ftEl.innerHTML = flagTrailHtml(appId);
@@ -2358,7 +2338,7 @@
           );
           matchesSearch = app.name.toLowerCase().includes(searchQuery) ||
                           (app.activity && app.activity.toLowerCase().includes(searchQuery)) ||
-                          (app.monthlySyncNotes && app.monthlySyncNotes.toLowerCase().includes(searchQuery)) ||
+                          JSON.stringify(getAppMeetings(app.id)).toLowerCase().includes(searchQuery) ||
                           (app.businessUnit && app.businessUnit.toLowerCase().includes(searchQuery)) ||
                           Boolean(inHistory);
         }
@@ -2397,7 +2377,7 @@
         } else if (notesVal === "WITH_HISTORY") {
           matchesNotes = getHistoryCount(app) > 0;
         } else if (notesVal === "WITH_SYNC") {
-          matchesNotes = Boolean(app.monthlySyncNotes && app.monthlySyncNotes.trim().length > 0);
+          matchesNotes = getAppMeetings(app.id).length > 0;
         }
 
         if (matchesSearch && matchesBU && matchesFollowUp && matchesMindy && matchesStage && matchesNotes) {
@@ -2423,7 +2403,7 @@
 
       const followUpApps = portfolioData.filter(a => a.followUp === "Yes" || a.followUp === "YES");
       const mindyApps = portfolioData.filter(a => a.discussWithMindy === "Yes" || a.discussWithMindy === "YES");
-      const syncApps = portfolioData.filter(a => a.monthlySyncNotes && a.monthlySyncNotes.trim().length > 0);
+      const syncApps = portfolioData.filter(a => getAppMeetings(a.id).length > 0);
 
       const followUpCountEl = document.getElementById("kpiFollowUpCount");
       followUpCountEl.innerHTML = `${followUpApps.length} <span class="kpi-sub" style="color:var(--text-muted)">apps</span>`;
